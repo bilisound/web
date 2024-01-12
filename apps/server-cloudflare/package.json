@@ -1,0 +1,17 @@
+{
+	"name": "@bilisound2/server-cloudflare",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy index.ts",
+		"dev": "wrangler dev index.ts --local",
+		"start-stackblitz": "WRANGLER_SEND_METRICS=false wrangler dev index.ts --local"
+	},
+	"dependencies": {
+		"itty-router": "^4.0.9"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20230518.0",
+		"wrangler": "^3.1.0"
+	}
+}

@@ -1,0 +1,11 @@
+body {
+    overflow: hidden;
+}
+
+:where(*:not(input):not(textarea)) {
+    user-select: none;
+}
+
+.user-selectable {
+    user-select: text;
+}

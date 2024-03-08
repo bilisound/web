@@ -1,5 +1,5 @@
 {
-  "version": "1.1.5",
+  "version": "2.0.0",
   "private": true,
   "name": "@bilisound2/client-web-spa",
   "author": "tcdw <tcdw2011@gmail.com>",
@@ -19,21 +19,19 @@
   "dependencies": {
     "@bilisound2/theme": "workspace:*",
     "@bilisound2/utils": "workspace:*",
-    "@ffmpeg/core": "^0.12.4",
-    "@ffmpeg/ffmpeg": "^0.12.7",
-    "@netlify/functions": "^2.4.0",
+    "@ffmpeg/core": "^0.12.6",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@netlify/functions": "^2.6.0",
     "@nikolovlazar/chakra-ui-prose": "^1.2.1",
-    "mediainfo.js": "^0.2.1",
+    "mediainfo.js": "^0.2.2",
     "react-markdown": "^9.0.1",
-    "remix-utils": "^7.3.0",
-    "umi": "^4.0.89"
+    "remix-utils": "^7.5.0",
+    "umi": "^4.1.2"
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
     "eslint-config-bilisound2": "workspace:*",
-    "netlify-cli": "^17.10.1",
+    "netlify-cli": "^17.18.1",
     "swc": "^1.0.11",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   }
 }

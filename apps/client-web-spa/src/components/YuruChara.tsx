@@ -15,7 +15,10 @@ const YuruChara: React.FC = () => (
             right: 0,
             bottom: "150px",
             zIndex: 1,
-            opacity: 0.3,
+            opacity: {
+                base: 0.3,
+                _dark: 0.2,
+            },
             pointerEvents: "none",
             mixBlendMode: {
                 base: "multiply",

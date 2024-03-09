@@ -1,5 +1,15 @@
 import React from "react";
+import { css } from "@/styled-system/css";
 
-export default function Page() {
-    return <div>Hello</div>
-}
+export default () => (
+    <div
+        className={css({
+            color: "red.500",
+            _dark: {
+                color: "green.500",
+            },
+        })}
+    >
+        Hello
+    </div>
+);

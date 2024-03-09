@@ -23,14 +23,21 @@
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@netlify/functions": "^2.6.0",
     "@nikolovlazar/chakra-ui-prose": "^1.2.1",
+    "@radix-ui/react-popover": "^1.0.7",
     "mediainfo.js": "^0.2.2",
     "react-markdown": "^9.0.1",
     "remix-utils": "^7.5.0",
     "umi": "^4.1.2"
   },
   "devDependencies": {
+    "@pandacss/dev": "^0.34.1",
+    "@umijs/lint": "^4.1.2",
     "eslint-config-bilisound2": "workspace:*",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "netlify-cli": "^17.18.1",
+    "postcss": "^8.4.35",
+    "prettier": "^2.8.8",
     "swc": "^1.0.11",
     "typescript": "^5.4.2"
   }

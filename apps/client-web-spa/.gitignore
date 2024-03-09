@@ -8,3 +8,7 @@
 /dist
 .swc
 /src/version.json
+
+## Panda
+/src/styled-system
+/src/styled-system-studio

@@ -9,8 +9,8 @@ import useColorModeStore from "@/store/colorMode";
 
 const menuItem = flex({
     w: "full",
-    ps: 4,
-    pe: 6,
+    ps: 2,
+    pe: 4,
     py: 2,
     lineHeight: 1.25,
     justifyContent: "flex-start",
@@ -19,6 +19,7 @@ const menuItem = flex({
     gap: 2,
     cursor: "pointer",
     transitionDuration: "fast",
+    borderRadius: "md",
     _hover: {
         bg: "primary.950/5",
     },
@@ -67,7 +68,7 @@ export default function ColorModeButton() {
             <Popover.Portal>
                 <Popover.Content
                     className={flex({
-                        py: 2,
+                        p: 1,
                         bg: "white",
                         _dark: {
                             bg: "neutral.800",

@@ -29,6 +29,17 @@ export default defineConfig({
             "content": "yes"
         }
     ],
+    headScripts: [
+        {
+            content: `
+            // On page load or when changing themes, best to add inline in \`head\` to avoid FOUC
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }`
+        }
+    ],
     links: [
         {
             "href": "/resources/manifest.webmanifest",
@@ -219,5 +230,6 @@ export default defineConfig({
         {
             "href": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
             "rel": "stylesheet",
-        }]
+        }
+        ],
 });

@@ -7,7 +7,14 @@ export default function Header() {
         <header
             className={flex({
                 justifyContent: "center",
-                bg: "primary.500",
+                bg: {
+                    base: "primary.500",
+                    _dark: "neutral.900",
+                },
+                _dark: {
+                    borderBottomColor: "neutral.700",
+                    borderBottomWidth: 1,
+                },
             })}
         >
             <div

@@ -10,9 +10,52 @@ export default defineConfig({
     // Files to exclude
     exclude: [],
 
+    globalCss: {
+        body: {
+            bg: {
+                base: "white",
+                _dark: "neutral.900",
+            },
+        },
+    },
+
     // Useful for theme customization
     theme: {
         extend: {
+            keyframes: {
+                bsFadeinLeft: {
+                    "0%": { opacity: "0", transform: "translateX(-2px)" },
+                    "100%": { opacity: "1" },
+                },
+                bsFadeoutLeft: {
+                    "0%": { opacity: "1" },
+                    "100%": { opacity: "0", transform: "translateX(-2px)" },
+                },
+                bsFadeinRight: {
+                    "0%": { opacity: "0", transform: "translateX(2px)" },
+                    "100%": { opacity: "1" },
+                },
+                bsFadeoutRight: {
+                    "0%": { opacity: "1" },
+                    "100%": { opacity: "0", transform: "translateX(2px)" },
+                },
+                bsFadeinTop: {
+                    "0%": { opacity: "0", transform: "translateY(-2px)" },
+                    "100%": { opacity: "1" },
+                },
+                bsFadeoutTop: {
+                    "0%": { opacity: "1" },
+                    "100%": { opacity: "0", transform: "translateY(-2px)" },
+                },
+                bsFadeinBottom: {
+                    "0%": { opacity: "0", transform: "translateY(2px)" },
+                    "100%": { opacity: "1" },
+                },
+                bsFadeoutBottom: {
+                    "0%": { opacity: "1" },
+                    "100%": { opacity: "0", transform: "translateY(2px)" },
+                },
+            },
             tokens: {
                 colors: {
                     primary: {

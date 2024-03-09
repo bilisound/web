@@ -8,17 +8,24 @@ import { ReactComponent as IconLight } from "@/icons/fa-solid--moon.svg";
 
 const menuItem = flex({
     w: "full",
-    px: 4,
-    h: 10,
-    lineHeight: 1,
+    ps: 4,
+    pe: 6,
+    py: 2,
+    lineHeight: 1.25,
     justifyContent: "flex-start",
     alignItems: "center",
-    fontSize: "md",
+    fontSize: "sm",
     gap: 2,
     cursor: "pointer",
     transitionDuration: "fast",
     _hover: {
         bg: "primary.950/5",
+    },
+    _dark: {
+        color: "white",
+        _hover: {
+            bg: "primary.50/10",
+        },
     },
 });
 
@@ -35,8 +42,12 @@ export default function ColorModeButton() {
                         borderRadius: "full",
                         color: "white",
                         transitionDuration: "fast",
+                        cursor: "pointer",
+                        _hover: {
+                            bg: "primary.50/10",
+                        },
                         _active: {
-                            bg: "white/20",
+                            bg: "primary.50/10",
                         },
                     })}
                 >
@@ -59,29 +70,36 @@ export default function ColorModeButton() {
                     className={flex({
                         py: 2,
                         bg: "white",
+                        _dark: {
+                            bg: "neutral.800",
+                        },
                         borderRadius: "md",
                         boxShadow: "lg",
                         flexDirection: "column",
                         alignItems: "flex-start",
+                        filter: "drop-shadow(0 0 1px rgba(0,0,0,0.1))",
+                        animationDuration: "150ms",
+                        '&[data-state="open"]': {
+                            animationName: "bsFadeinBottom",
+                        },
+                        '&[data-state="closed"]': {
+                            animationName: "bsFadeoutBottom",
+                        },
                     })}
                     sideOffset={5}
                 >
                     <button type={"button"} className={menuItem}>
-                        <IconLight />
+                        <IconLight className={css({ color: "primary.500" })} />
                         明亮
                     </button>
                     <button type={"button"} className={menuItem}>
-                        <IconDark />
+                        <IconDark className={css({ color: "primary.500" })} />
                         暗黑
                     </button>
                     <button type={"button"} className={menuItem}>
-                        <IconAuto />
+                        <IconAuto className={css({ color: "primary.500" })} />
                         跟随系统
                     </button>
-                    {/*<Popover.Close className="PopoverClose" aria-label="Close">
-                        close
-                    </Popover.Close>*/}
-                    <Popover.Arrow className={css({ fill: "white" })} />
                 </Popover.Content>
             </Popover.Portal>
         </Popover.Root>

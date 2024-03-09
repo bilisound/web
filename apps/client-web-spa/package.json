@@ -14,7 +14,8 @@
     "preview": "serve -s -l 8001 dist",
     "version-json": "node ./scripts/generate-version.js",
     "predeploy": "pnpm run build",
-    "deploy": "netlify deploy --prod"
+    "deploy": "netlify deploy --prod",
+    "clean": "rimraf ./dist && umi mfsu remove --all"
   },
   "dependencies": {
     "@bilisound2/theme": "workspace:*",

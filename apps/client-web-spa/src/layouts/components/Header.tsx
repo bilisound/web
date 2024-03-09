@@ -7,6 +7,7 @@ export default function Header() {
         <header
             className={flex({
                 justifyContent: "center",
+                px: 4,
                 bg: {
                     base: "primary.500",
                     _dark: "neutral.900",
@@ -35,7 +36,7 @@ export default function Header() {
                 >
                     Bilisound
                 </h1>
-                <div>
+                <div className={css({ me: -2 })}>
                     <ColorModeButton />
                 </div>
             </div>

@@ -6,6 +6,8 @@ export default function Header() {
     return (
         <header
             className={flex({
+                pos: "sticky",
+                top: 0,
                 justifyContent: "center",
                 px: 4,
                 bg: {

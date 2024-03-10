@@ -15,7 +15,8 @@
     "version-json": "node ./scripts/generate-version.js",
     "predeploy": "pnpm run build",
     "deploy": "netlify deploy --prod",
-    "clean": "rimraf ./dist && umi mfsu remove --all"
+    "clean": "rimraf ./dist && umi mfsu remove --all",
+    "prepare": "panda codegen"
   },
   "dependencies": {
     "@bilisound2/theme": "workspace:*",
@@ -33,10 +34,12 @@
   "devDependencies": {
     "@pandacss/dev": "^0.34.1",
     "@umijs/lint": "^4.1.2",
+    "autoprefixer": "^10.4.18",
     "eslint-config-bilisound2": "workspace:*",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "netlify-cli": "^17.18.1",
+    "pandacss-preset-typography": "^0.1.5",
     "postcss": "^8.4.35",
     "prettier": "^2.8.8",
     "swc": "^1.0.11",

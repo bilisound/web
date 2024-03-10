@@ -19,6 +19,7 @@ export default function Layout() {
             <div
                 className={css({
                     flex: "auto",
+                    px: 4,
                 })}
             >
                 <Outlet />

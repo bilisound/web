@@ -1,8 +1,17 @@
 import { defineConfig } from "@pandacss/dev";
+import typographyPreset from "pandacss-preset-typography";
 
 export default defineConfig({
     // Whether to use css reset
     preflight: true,
+
+    presets: [
+        typographyPreset(),
+        // Re-add the panda presets if you want to keep
+        // the default keyframes, breakpoints, tokens
+        // and textStyles provided by PandaCSS
+        "@pandacss/dev/presets",
+    ],
 
     // Where to look for your css declarations
     include: ["./src/**/*.{js,jsx,ts,tsx}", "./pages/**/*.{js,jsx,ts,tsx}"],
@@ -84,5 +93,5 @@ export default defineConfig({
     },
 
     // The output directory for your css system
-    outdir: "styled-system",
+    outdir: "src/styled-system",
 });

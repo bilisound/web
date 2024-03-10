@@ -1,33 +1,22 @@
 import React from "react";
-import { useBilisoundStore } from "@/store/bilisoundStore";
-import { shallow } from "zustand/shallow";
+
 import version from "../../version.json";
 import { css } from "@/styled-system/css";
 import { flex } from "@/styled-system/patterns";
 
 const Footer: React.FC = () => {
-    // 内容
-    const { playingEpisode } = useBilisoundStore(
-        state => ({
-            playingEpisode: state.playingEpisode,
-        }),
-        shallow,
-    );
-
-    const withoutVideo = playingEpisode <= 0;
-
     return (
         <footer
             className={flex({
                 marginTop: "auto",
                 px: 4,
-                pb: withoutVideo ? "env(safe-area-inset-bottom, 0)" : 0,
+                pb: "env(safe-area-inset-bottom, 0)",
                 color: {
                     base: "black",
                     _dark: "white",
                 },
                 borderTopColor: {
-                    base: "neutral.100",
+                    base: "neutral.200",
                     _dark: "neutral.700",
                 },
                 borderTopWidth: 1,

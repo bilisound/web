@@ -6,7 +6,13 @@ export default defineConfig({
     preflight: true,
 
     presets: [
-        typographyPreset(),
+        typographyPreset({
+            recipe: {
+                semanticTokens: {
+                    defaults: false,
+                },
+            },
+        }),
         // Re-add the panda presets if you want to keep
         // the default keyframes, breakpoints, tokens
         // and textStyles provided by PandaCSS
@@ -87,6 +93,110 @@ export default defineConfig({
             sizes: {
                 container: {
                     value: "60rem",
+                },
+            },
+            colors: {
+                prose: {
+                    body: {
+                        value: {
+                            base: "{colors.neutral.700}",
+                            _dark: "{colors.neutral.300}",
+                        },
+                    },
+                    heading: {
+                        value: {
+                            base: "{colors.neutral.900}",
+                            _dark: "{colors.neutral.100}",
+                        },
+                    },
+                    lead: {
+                        value: {
+                            base: "{colors.neutral.600}",
+                            _dark: "{colors.neutral.400}",
+                        },
+                    },
+                    link: {
+                        value: {
+                            base: "{colors.neutral.900}",
+                            _dark: "{colors.neutral.100}",
+                        },
+                    },
+                    bold: {
+                        value: {
+                            base: "{colors.neutral.900}",
+                            _dark: "{colors.neutral.100}",
+                        },
+                    },
+                    counter: {
+                        value: "{colors.neutral.500}",
+                    },
+                    bullet: {
+                        value: {
+                            base: "{colors.neutral.300}",
+                            _dark: "{colors.neutral.700}",
+                        },
+                    },
+                    hrBorder: {
+                        value: {
+                            base: "{colors.neutral.200}",
+                            _dark: "{colors.neutral.800}",
+                        },
+                    },
+                    quote: {
+                        value: {
+                            base: "{colors.neutral.900}",
+                            _dark: "{colors.neutral.100}",
+                        },
+                    },
+                    quoteBorder: {
+                        value: {
+                            base: "{colors.neutral.200}",
+                            _dark: "{colors.neutral.800}",
+                        },
+                    },
+                    caption: {
+                        value: "{colors.neutral.500}",
+                    },
+                    kbd: {
+                        value: {
+                            base: "{colors.neutral.900}",
+                            _dark: "{colors.neutral.100}",
+                        },
+                    },
+                    kbdShadow: {
+                        // Expects an RGB value
+                        value: "0 0 0",
+                    },
+                    code: {
+                        value: {
+                            base: "{colors.neutral.900}",
+                            _dark: "{colors.neutral.100}",
+                        },
+                    },
+                    preCode: {
+                        value: {
+                            base: "{colors.neutral.200}",
+                            _dark: "{colors.neutral.800}",
+                        },
+                    },
+                    preBg: {
+                        value: {
+                            base: "{colors.neutral.800}",
+                            _dark: "{colors.neutral.200}",
+                        },
+                    },
+                    thBorder: {
+                        value: {
+                            base: "{colors.neutral.300}",
+                            _dark: "{colors.neutral.700}",
+                        },
+                    },
+                    tdBorder: {
+                        value: {
+                            base: "{colors.neutral.200}",
+                            _dark: "{colors.neutral.800}",
+                        },
+                    },
                 },
             },
         },

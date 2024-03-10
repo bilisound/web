@@ -8,7 +8,7 @@
     "build": "umi build",
     "dev": "umi dev",
     "postinstall": "umi setup",
-    "prebuild": "pnpm run version-json",
+    "prebuild": "pnpm run version-json && pnpm run prepare",
     "predev": "pnpm run version-json",
     "setup": "umi setup",
     "preview": "serve -s -l 8001 dist",
@@ -44,5 +44,8 @@
     "prettier": "^2.8.8",
     "swc": "^1.0.11",
     "typescript": "^5.4.2"
-  }
+  },
+  "browserslist": [
+    "last 2 versions, not dead, > 1%"
+  ]
 }

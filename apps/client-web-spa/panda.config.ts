@@ -96,6 +96,12 @@ export default defineConfig({
                 },
             },
             colors: {
+                "bs-border": {
+                    value: {
+                        base: "{colors.neutral.200}",
+                        _dark: "{colors.neutral.700}",
+                    },
+                },
                 prose: {
                     body: {
                         value: {

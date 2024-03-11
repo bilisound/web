@@ -15,10 +15,7 @@ const Footer: React.FC = () => {
                     base: "black",
                     _dark: "white",
                 },
-                borderTopColor: {
-                    base: "neutral.200",
-                    _dark: "neutral.700",
-                },
+                borderTopColor: "bs-border",
                 borderTopWidth: 1,
                 justifyContent: "center",
             })}

@@ -4,8 +4,7 @@ import { FormContext, formContextDefaultOption, FormContextOption } from "@/comp
 import { SystemStyleObject } from "@/styled-system/types";
 import { css } from "@/styled-system/css";
 
-export interface FormItemProps {
-    direction?: FormContextOption["direction"];
+export interface FormItemProps extends Partial<FormContextOption> {
     error?: React.ReactNode;
     formErrorCSS?: SystemStyleObject;
     formItemCSS?: SystemStyleObject;
@@ -13,8 +12,6 @@ export interface FormItemProps {
     formValueCSS?: SystemStyleObject;
     htmlFor: string;
     label?: React.ReactNode;
-    labelAlign?: FormContextOption["labelAlign"];
-    labelWidth?: FormContextOption["labelWidth"];
     required?: boolean;
 }
 

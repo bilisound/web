@@ -20,6 +20,11 @@ export default function Layout() {
                 className={css({
                     flex: "auto",
                     px: 4,
+                    display: "flex",
+                    alignItems: "stretch",
+                    "& > *": {
+                        w: "full",
+                    },
                 })}
             >
                 <Outlet />

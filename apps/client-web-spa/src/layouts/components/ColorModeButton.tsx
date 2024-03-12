@@ -44,8 +44,8 @@ export default function ColorModeButton() {
                     type={"button"}
                     aria-label={"Dark mode"}
                     className={center({
-                        w: 12,
-                        h: 12,
+                        w: 10,
+                        h: 10,
                         borderRadius: "full",
                         color: "white",
                         transitionDuration: "fast",
@@ -59,9 +59,9 @@ export default function ColorModeButton() {
                     })}
                 >
                     {actualColorMode === "dark" ? (
-                        <IconDark className={css({ w: 5, h: 5 })} />
+                        <IconDark className={css({ w: 4, h: 4 })} />
                     ) : (
-                        <IconLight className={css({ w: 5, h: 5 })} />
+                        <IconLight className={css({ w: 4, h: 4 })} />
                     )}
                 </button>
             </Popover.Trigger>

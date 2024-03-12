@@ -22,7 +22,7 @@ export default function Header() {
         >
             <div
                 className={flex({
-                    h: 16,
+                    h: 14,
                     width: "container",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -31,7 +31,7 @@ export default function Header() {
                 <h1
                     className={css({
                         color: "white",
-                        fontSize: "xl",
+                        fontSize: "lg",
                         fontWeight: 700,
                         textTransform: "uppercase",
                     })}

@@ -5,11 +5,12 @@ export const bsInput = cva({
         colorPalette: "primary",
         border: "1px solid",
         borderColor: "bs-border",
+        w: "full",
         h: 10,
         px: 3,
         py: 0,
         rounded: "lg",
-        fontSize: "md",
+        fontSize: "sm",
         bg: {
             base: "white",
             _dark: "neutral.800",
@@ -20,12 +21,12 @@ export const bsInput = cva({
         },
         _active: {
             borderColor: "colorPalette.500",
-            outline: "2.5px solid",
+            outline: "3px solid",
             outlineColor: "colorPalette.500/40",
         },
         _focus: {
             borderColor: "colorPalette.500",
-            outline: "2.5px solid",
+            outline: "3px solid",
             outlineColor: "colorPalette.500/40",
         },
     },

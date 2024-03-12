@@ -18,6 +18,7 @@ const Footer: React.FC = () => {
                 borderTopColor: "bs-border",
                 borderTopWidth: 1,
                 justifyContent: "center",
+                fontSize: "sm",
             })}
         >
             <div

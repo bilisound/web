@@ -91,7 +91,7 @@ export const bsFormValue = cva({
             vertical: {
                 pos: "static",
                 pb: 4,
-                "&:has([data-error])": {
+                "&:has([data-error]):not(:has([data-error]:empty))": {
                     pb: 0,
                 },
             },

@@ -31,10 +31,9 @@ export type GetBilisoundMetadataResponse = {
 
 const infoCache = new Map<string, Wrap<GetBilisoundMetadataResponse>>();
 
-export async function getBilisoundMetadata(data: { id: string }, options: { consumeCache?: boolean } = {}) {
+export async function getBilisoundMetadata(data: { id: string }) {
     const got = infoCache.get(data.id);
-    if (options.consumeCache && got) {
-        infoCache.delete(data.id);
+    if (got) {
         return got;
     }
     const res = await request
@@ -42,9 +41,7 @@ export async function getBilisoundMetadata(data: { id: string }, options: { cons
             searchParams: data,
         })
         .json<Wrap<GetBilisoundMetadataResponse>>();
-    if (!options.consumeCache) {
-        infoCache.set(data.id, res);
-    }
+    infoCache.set(data.id, res);
     return res;
 }
 

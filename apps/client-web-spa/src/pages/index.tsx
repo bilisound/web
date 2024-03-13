@@ -12,6 +12,7 @@ import { ReactComponent as IconLoading } from "@/icons/loading.svg";
 import { resolveVideo } from "@/utils/format";
 import { getBilisoundMetadata } from "@/api/online";
 import { sendToast } from "@/utils/toast";
+import { useNavigate } from "umi";
 
 interface Values {
     query: string;
@@ -19,10 +20,12 @@ interface Values {
 
 async function handleRequest(req: Values) {
     const resolvedInput = await resolveVideo(req.query);
-    return getBilisoundMetadata({ id: resolvedInput }, { consumeCache: false });
+    return getBilisoundMetadata({ id: resolvedInput });
 }
 
 export default function Page() {
+    const navigate = useNavigate();
+
     return (
         <div className={center()}>
             <Formik<Values>
@@ -35,6 +38,7 @@ export default function Page() {
                         sendToast("操作成功：" + value.data.bvid, {
                             type: "success",
                         });
+                        navigate("/video/" + value.data.bvid);
                     } catch (e) {
                         sendToast(e as any, {
                             type: "error",

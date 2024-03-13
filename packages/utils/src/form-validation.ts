@@ -3,17 +3,17 @@ export const B23_REGEX = /(https?:\/\/b23\.tv\/[a-zA-Z0-9]+)/;
 export function validateUserQuery(value: string) {
     value = value.trim();
     if (/^BV.+$/.test(value) || /^av\d+$/.test(value) || /^\d+$/.test(value)) {
-        return true;
+        return undefined;
     }
 
     if (B23_REGEX.test(value)) {
-        return true;
+        return undefined;
     }
 
     try {
         const url = new URL(value);
         if (url.hostname === "b23.tv") {
-            return true;
+            return undefined;
         }
 
         if (!url.hostname.endsWith("bilibili.com")) {

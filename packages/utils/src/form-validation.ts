@@ -30,5 +30,5 @@ export function validateUserQuery(value: string) {
     } catch (e) {
         return "请输入有效的地址";
     }
-    return true;
+    return undefined;
 }

@@ -8,9 +8,18 @@ import { css } from "@/styled-system/css";
 import FormItem from "@/components/ui/FormItem";
 import FormProvider from "@/components/ui/FormProvider";
 import { validateUserQuery } from "@bilisound2/utils";
+import { ReactComponent as IconLoading } from "@/icons/loading.svg";
+import { resolveVideo } from "@/utils/format";
+import { getBilisoundMetadata } from "@/api/online";
+import { sendToast } from "@/utils/toast";
 
 interface Values {
     query: string;
+}
+
+async function handleRequest(req: Values) {
+    const resolvedInput = await resolveVideo(req.query);
+    return getBilisoundMetadata({ id: resolvedInput }, { consumeCache: false });
 }
 
 export default function Page() {
@@ -20,14 +29,21 @@ export default function Page() {
                 initialValues={{
                     query: "",
                 }}
-                onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                    }, 500);
+                onSubmit={async values => {
+                    try {
+                        const value = await handleRequest(values);
+                        sendToast("操作成功：" + value.data.bvid, {
+                            type: "success",
+                        });
+                    } catch (e) {
+                        sendToast(e as any, {
+                            type: "error",
+                        });
+                        throw e;
+                    }
                 }}
             >
-                {({ errors, touched }) => (
+                {({ errors, touched, isSubmitting }) => (
                     <Form
                         className={css(bsForm.raw(), {
                             w: "full",
@@ -52,8 +68,9 @@ export default function Page() {
                             </FormItem>
                         </FormProvider>
                         <div className={center({ w: "full" })}>
-                            <button type="submit" className={bsButton()}>
-                                查询
+                            <button type="submit" className={bsButton()} disabled={isSubmitting}>
+                                {isSubmitting && <IconLoading />}
+                                查询 / 抽出
                             </button>
                         </div>
                     </Form>

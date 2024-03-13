@@ -11,6 +11,19 @@ export default defineConfig({
             .resolve.set("fullySpecified", false)
     },
     jsMinifier: "swc",
+    svgo: {
+        plugins: [
+            {
+                name: 'preset-default',
+                params: {
+                    overrides: {
+                        removeViewBox: false,
+                    },
+                },
+            },
+        ]
+    },
+    clientLoader: {},
     metas: [
         {
             "name": "renderer",

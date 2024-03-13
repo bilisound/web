@@ -26,8 +26,10 @@
     "@netlify/functions": "^2.6.0",
     "@nikolovlazar/chakra-ui-prose": "^1.2.1",
     "@radix-ui/react-popover": "^1.0.7",
+    "ahooks": "^3.7.10",
     "formik": "^2.4.5",
     "mediainfo.js": "^0.2.2",
+    "react-hot-toast": "^2.4.1",
     "react-markdown": "^9.0.1",
     "remix-utils": "^7.5.0",
     "umi": "^4.1.2"

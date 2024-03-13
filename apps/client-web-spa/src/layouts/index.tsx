@@ -16,7 +16,7 @@ export default function Layout() {
             })}
         >
             <Header />
-            <div
+            <main
                 className={css({
                     flex: "auto",
                     px: 4,
@@ -28,7 +28,7 @@ export default function Layout() {
                 })}
             >
                 <Outlet />
-            </div>
+            </main>
             <Footer />
             <YuruChara />
         </div>

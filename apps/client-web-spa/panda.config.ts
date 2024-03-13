@@ -31,6 +31,10 @@ export default defineConfig({
                 base: "white",
                 _dark: "neutral.900",
             },
+            color: {
+                base: "black",
+                _dark: "neutral.50",
+            },
         },
     },
 

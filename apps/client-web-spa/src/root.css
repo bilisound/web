@@ -11,6 +11,10 @@
     --bs-loader-bg: #028373;
 }
 
+#root {
+    display: contents;
+}
+
 .bs-loader {
     width: 50px;
     height: 12px;

@@ -12,11 +12,13 @@ export default function Header() {
                 px: 4,
                 bg: {
                     base: "primary.500",
-                    _dark: "neutral.900",
+                    _dark: "neutral.900/75",
                 },
                 _dark: {
                     borderBottomColor: "neutral.700",
                     borderBottomWidth: 1,
+                    backdropFilter: "auto",
+                    backdropBlur: "lg",
                 },
             })}
         >

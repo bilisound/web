@@ -19,6 +19,11 @@ const Footer: React.FC = () => {
                 borderTopWidth: 1,
                 justifyContent: "center",
                 fontSize: "sm",
+                // pos: "sticky",
+                // bottom: 0,
+                // backdropFilter: "auto",
+                // backdropBlur: "lg",
+                // bg: "white/75",
             })}
         >
             <div

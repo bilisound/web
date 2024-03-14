@@ -12,7 +12,7 @@ export default function Layout() {
             className={vstack({
                 alignItems: "stretch",
                 minH: "100dvh",
-                gap: 4,
+                gap: [4, 4, 5],
             })}
         >
             <Header />

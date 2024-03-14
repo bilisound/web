@@ -94,6 +94,11 @@ export default defineConfig({
             },
         },
         semanticTokens: {
+            fonts: {
+                roboto: {
+                    value: "Roboto, sans-serif",
+                },
+            },
             sizes: {
                 container: {
                     value: "60rem",

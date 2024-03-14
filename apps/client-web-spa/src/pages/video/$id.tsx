@@ -1,26 +1,27 @@
 import { useParams } from "umi";
-import { useRequest } from "ahooks";
 import { getBilisoundMetadata } from "@/api/online";
 import { css } from "@/styled-system/css";
 import { aspectRatio, circle, grid, hstack, vstack } from "@/styled-system/patterns";
 import { getImageProxyUrl } from "@/utils/misc";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
     const { id } = useParams<{
         id: string;
     }>();
-    const { data, loading } = useRequest(async () => {
-        if (!id) {
-            return null;
-        }
-        return getBilisoundMetadata({ id });
+    const { data, isLoading } = useQuery({
+        queryKey: [id ?? ""],
+        queryFn: async () => {
+            if (!id) {
+                return;
+            }
+            return getBilisoundMetadata({ id }, true);
+        },
     });
 
-    if (loading) {
+    if (isLoading) {
         return <div>Loading...</div>;
     }
-
-    // return <pre className={css({ overflowX: "scroll" })}>{JSON.stringify(data, null, 4)}</pre>;
 
     if (!data) {
         return <div>Data is not loaded</div>;

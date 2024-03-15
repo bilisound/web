@@ -5,6 +5,7 @@ import YuruChara from "@/components/YuruChara";
 import { vstack } from "@/styled-system/patterns";
 import Footer from "@/layouts/components/Footer";
 import { css } from "@/styled-system/css";
+import AudioPlayer from "@/layouts/components/AudioPlayer";
 
 export default function Layout() {
     return (
@@ -30,6 +31,7 @@ export default function Layout() {
                 <Outlet />
             </main>
             <Footer />
+            <AudioPlayer />
             <YuruChara />
         </div>
     );

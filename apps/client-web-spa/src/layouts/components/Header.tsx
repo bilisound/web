@@ -1,6 +1,7 @@
 import { css } from "@/styled-system/css";
 import { flex } from "@/styled-system/patterns";
 import ColorModeButton from "@/layouts/components/ColorModeButton";
+import { Link } from "umi";
 
 export default function Header() {
     return (
@@ -30,15 +31,18 @@ export default function Header() {
                     alignItems: "center",
                 })}
             >
-                <h1
-                    className={css({
-                        color: "white",
-                        fontSize: "lg",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                    })}
-                >
-                    Bilisound
+                <h1>
+                    <Link
+                        to={"/"}
+                        className={css({
+                            color: "white",
+                            fontSize: "lg",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                        })}
+                    >
+                        Bilisound
+                    </Link>
                 </h1>
                 <div className={css({ me: -2 })}>
                     <ColorModeButton />

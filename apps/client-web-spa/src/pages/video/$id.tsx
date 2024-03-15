@@ -1,10 +1,50 @@
 import { useParams } from "umi";
 import { getBilisoundMetadata, GetBilisoundMetadataResponse } from "@/api/online";
-import { css } from "@/styled-system/css";
+import { css, cva } from "@/styled-system/css";
 import { circle, grid, hstack, vstack } from "@/styled-system/patterns";
 import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
+import { memo } from "react";
+import { play, pushQueue, useQueue } from "@/utils/audio";
+
+const episode = cva({
+    base: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        textAlign: "start",
+        py: 3,
+        px: 4,
+        borderRadius: "lg",
+        w: "full",
+        fontSize: "sm",
+        gap: 3,
+        _focus: {
+            outline: "0.125rem solid",
+            outlineColor: "primary.500",
+        },
+    },
+    variants: {
+        active: {
+            true: {
+                bg: {
+                    base: "primary.700",
+                },
+                color: "white",
+            },
+            false: {
+                bg: {
+                    base: "primary.900/5",
+                    _dark: "primary.100/5",
+                },
+            },
+        },
+    },
+    defaultVariants: {
+        active: false,
+    },
+});
 
 function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
     return (
@@ -61,27 +101,18 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
     );
 }
 
-function Episode({ detail }: { detail: GetBilisoundMetadataResponse["pages"][number] }) {
+function EpisodeRaw({
+    detail,
+    isCurrent = false,
+    onClick,
+}: {
+    detail: GetBilisoundMetadataResponse["pages"][number];
+    isCurrent?: boolean;
+    onClick?: () => void;
+}) {
     return (
         <li>
-            <button
-                type="button"
-                className={`group ${hstack({
-                    justifyContent: "flex-start",
-                    textAlign: "start",
-                    py: 3,
-                    px: 4,
-                    bg: {
-                        base: "primary.900/5",
-                        _dark: "primary.100/5",
-                    },
-                    borderRadius: "lg", // 使用更大的圆角以提供更现代的外观
-                    w: "full",
-                    fontSize: "sm", // 使用基础字体大小提高可读性
-                    gap: 3, // 在元素之间添加更多间隔
-                    // boxShadow: "md", // 添加阴影以增加立体感
-                })}`}
-            >
+            <button type="button" className={`group ${episode({ active: isCurrent })}`} onClick={onClick}>
                 <span
                     className={css({
                         fontSize: "md",
@@ -117,13 +148,37 @@ function Episode({ detail }: { detail: GetBilisoundMetadataResponse["pages"][num
     );
 }
 
+const Episode = memo(EpisodeRaw, (a, b) => {
+    return a.isCurrent === b.isCurrent && a.detail === b.detail;
+});
+
 function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
+    const { current } = useQueue();
+
     return (
         <section className={css({ w: "full", maxW: "container" })}>
             <h3 className={css({ fontSize: "lg", fontWeight: 600 })}>{`视频选集 (${detail.pages.length})`}</h3>
             <ul className={grid({ columns: [1, 1, 2], gap: 3, mt: 4 })}>
                 {detail.pages.map(e => {
-                    return <Episode key={e.page} detail={e} />;
+                    return (
+                        <Episode
+                            key={e.page}
+                            detail={e}
+                            isCurrent={current && current.bvid === detail.bvid && current.episode === e.page}
+                            onClick={async () => {
+                                await pushQueue({
+                                    author: detail.owner.name,
+                                    bvid: detail.bvid,
+                                    duration: e.duration,
+                                    episode: e.page,
+                                    id: Math.random() + "",
+                                    title: e.part,
+                                    url: `https://api.tuu.run/bilisound/resource?id=${detail.bvid}&episode=${e.page}`,
+                                });
+                                await play();
+                            }}
+                        />
+                    );
                 })}
             </ul>
         </section>

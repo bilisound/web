@@ -13,7 +13,7 @@ export default function Layout() {
             className={vstack({
                 alignItems: "stretch",
                 minH: "100dvh",
-                gap: [4, 4, 5],
+                gap: 0,
             })}
         >
             <Header />
@@ -21,6 +21,7 @@ export default function Layout() {
                 className={css({
                     flex: "auto",
                     px: 4,
+                    py: [4, 4, 5],
                     display: "flex",
                     alignItems: "stretch",
                     "& > *": {

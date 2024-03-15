@@ -32,6 +32,7 @@ let snapshotQueue = {
     current: queue[index] as AudioQueueData | undefined,
     index,
 };
+let preventAutoNext = false;
 
 function callAllQueueEventTriggers() {
     for (const entry of queueEventTriggers.entries()) {
@@ -59,6 +60,22 @@ export function pause() {
         return;
     }
     return instance.pause();
+}
+
+let seekPromiseCount = 0;
+
+export function seek(to: number) {
+    seekPromiseCount++;
+    console.log("seekPromiseCount " + seekPromiseCount + " start!");
+    return new Promise<void>(resolve => {
+        function handleSeekDone() {
+            resolve();
+            console.log("seekPromiseCount " + seekPromiseCount + " end!");
+            instance.removeEventListener("seeked", handleSeekDone);
+        }
+        instance.addEventListener("seeked", handleSeekDone);
+        instance.currentTime = to;
+    });
 }
 
 /**
@@ -96,6 +113,13 @@ export function prevTrack() {
 }
 
 /**
+ * 设置防止自动跳转到下一首
+ */
+export function setPreventAutoNext(to: boolean) {
+    preventAutoNext = to;
+}
+
+/**
  * 添加到播放列表
  */
 export async function pushQueue(data: AudioQueueData) {
@@ -113,7 +137,13 @@ export function findFromQueue(id: string, episode: number) {
     return queue.findIndex(e => e.bvid === id && e.episode === episode);
 }
 
+/**
+ * 播放完毕事件
+ */
 instance.addEventListener("ended", async () => {
+    if (preventAutoNext) {
+        return;
+    }
     jump(index >= queue.length - 1 ? 0 : index + 1);
     await play();
 });
@@ -136,34 +166,39 @@ function subscribeAudioPlayer(callback: () => void) {
 }
 
 // useAudioPlayer
-export function useAudioPlayer() {
-    const state = useSyncExternalStore(subscribeAudioPlayer, getSnapshotAudioPlayer);
-
-    return {
-        instance,
-        isPlaying: !state,
-    };
+export function useAudioPaused() {
+    return useSyncExternalStore(subscribeAudioPlayer, getSnapshotAudioPlayer);
 }
+
+let audioProgress = {
+    currentTime: 0,
+    duration: 0,
+    buffered: 0,
+};
 
 // useAudioProgress (订阅)
 function subscribeAudioProgress(callback: () => void) {
-    instance.addEventListener("timeupdate", callback);
-    instance.addEventListener("loadedmetadata", callback);
-    instance.addEventListener("progress", callback);
+    function update() {
+        audioProgress = {
+            currentTime: instance.currentTime, // 当前播放时间
+            duration: instance.duration, // 音频总长度
+            buffered: instance.buffered.length > 0 ? instance.buffered.end(instance.buffered.length - 1) : 0, // 已加载长度
+        };
+        callback();
+    }
+    instance.addEventListener("timeupdate", update);
+    instance.addEventListener("loadedmetadata", update);
+    instance.addEventListener("progress", update);
     return () => {
-        instance.removeEventListener("timeupdate", callback);
-        instance.removeEventListener("loadedmetadata", callback);
-        instance.removeEventListener("progress", callback);
+        instance.removeEventListener("timeupdate", update);
+        instance.removeEventListener("loadedmetadata", update);
+        instance.removeEventListener("progress", update);
     };
 }
 
 // useAudioProgress (获取状态)
 function getSnapshotAudioProgress() {
-    return {
-        currentTime: instance.currentTime, // 当前播放时间
-        duration: instance.duration, // 音频总长度
-        buffered: instance.buffered.length > 0 ? instance.buffered.end(instance.buffered.length - 1) : 0, // 已加载长度
-    };
+    return audioProgress;
 }
 
 // useAudioProgress

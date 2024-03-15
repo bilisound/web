@@ -1,12 +1,13 @@
 import { useParams } from "umi";
 import { getBilisoundMetadata, GetBilisoundMetadataResponse } from "@/api/online";
 import { css, cva } from "@/styled-system/css";
-import { circle, grid, hstack, vstack } from "@/styled-system/patterns";
+import { center, circle, grid, hstack, vstack } from "@/styled-system/patterns";
 import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
 import { memo } from "react";
 import { findFromQueue, jump, play, pushQueue, useQueue } from "@/utils/audio";
+import * as Avatar from "@radix-ui/react-avatar";
 
 const episode = cva({
     base: {
@@ -55,6 +56,7 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                     src={getImageProxyUrl(detail.pic, detail.bvid)}
                     alt={`${detail.title} 的封面图片`}
                     className={css({
+                        w: "full",
                         borderRadius: "xl",
                         boxShadow: "lg",
                         aspectRatio: "3/2",
@@ -66,17 +68,38 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
             <div className={vstack({ alignItems: "stretch", gap: 4 })}>
                 <h2 className={css({ fontSize: "lg", fontWeight: 600, lineHeight: 1.5 })}>{detail.title}</h2>
                 <div className={hstack({ gap: 3 })}>
-                    <img
-                        src={getImageProxyUrl(detail.owner.face, detail.bvid)}
-                        alt={`${detail.owner.name} 的头像`}
+                    <Avatar.Root
                         className={circle({
                             w: 8,
                             h: 8,
-                            objectFit: "cover",
-                            objectPosition: "center",
                             flex: "none",
+                            bg: "primary.500",
+                            overflow: "hidden",
                         })}
-                    />
+                    >
+                        <Avatar.Image
+                            className={css({
+                                w: "full",
+                                h: "full",
+                                objectFit: "cover",
+                                objectPosition: "center",
+                            })}
+                            src={getImageProxyUrl(detail.owner.face, detail.bvid)}
+                            alt={`${detail.owner.name} 的头像`}
+                        />
+                        <Avatar.Fallback
+                            className={center({
+                                w: "full",
+                                h: "full",
+                                fontSize: "md",
+                                fontWeight: 600,
+                                color: "white",
+                            })}
+                            delayMs={600}
+                        >
+                            {Array.from(detail.owner.name)[0]}
+                        </Avatar.Fallback>
+                    </Avatar.Root>
                     <div className={css({ flex: "auto", truncate: true, fontSize: "sm", fontWeight: 600 })}>
                         {detail.owner.name}
                     </div>
@@ -189,7 +212,7 @@ function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
     return (
         <section className={css({ w: "full", maxW: "container" })}>
             <h3 className={css({ fontSize: "lg", fontWeight: 600 })}>{`视频选集 (${detail.pages.length})`}</h3>
-            <ul className={grid({ columns: [1, 1, 2], gap: 3, mt: 4 })}>
+            <ul className={grid({ columns: [1, 1, 2], gap: [3, 3, detail.pages.length === 1 ? 5 : 3], mt: 4 })}>
                 {detail.pages.map(item => {
                     const isCurrent =
                         (current && current.bvid === detail.bvid && current.episode === item.page) || false;

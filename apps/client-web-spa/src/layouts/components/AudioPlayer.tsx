@@ -2,6 +2,7 @@ import { css } from "@/styled-system/css";
 import * as audio from "@/utils/audio";
 import { bsButton } from "@/components/recipes/button";
 import { hstack } from "@/styled-system/patterns";
+import { Link } from "umi";
 
 export default function AudioPlayer() {
     const { index, current } = audio.useQueue();
@@ -19,10 +20,14 @@ export default function AudioPlayer() {
                 p: 4,
             })}
         >
-            <p>{`正在播放第 ${index} 首歌曲，名称：${current?.title}`}</p>
+            <p>
+                {`正在播放第 ${index} 首歌曲，名称：`}
+                {current && <Link to={"/video/" + current.bvid}>{current.title}</Link>}
+            </p>
             <div className={hstack()}>
                 <button
                     type={"button"}
+                    disabled={!current}
                     className={bsButton()}
                     onClick={() => {
                         audio.prevTrack();
@@ -33,6 +38,7 @@ export default function AudioPlayer() {
                 </button>
                 <button
                     type={"button"}
+                    disabled={!current}
                     className={bsButton()}
                     onClick={() => {
                         if (isPlaying) {
@@ -46,6 +52,7 @@ export default function AudioPlayer() {
                 </button>
                 <button
                     type={"button"}
+                    disabled={!current}
                     className={bsButton()}
                     onClick={() => {
                         audio.nextTrack();

@@ -1,6 +1,8 @@
 import { useSyncExternalStore } from "react";
 import { v4 } from "uuid";
 
+const NO_SONG_WARNING_MESSAGE = "目前没有可以播放的音频";
+
 export interface AudioQueueData {
     id: string;
     bvid: string;
@@ -41,6 +43,10 @@ function callAllQueueEventTriggers() {
  * 播放
  */
 export function play() {
+    if (index < 0) {
+        console.warn(NO_SONG_WARNING_MESSAGE);
+        return Promise.resolve();
+    }
     return instance.play();
 }
 
@@ -48,6 +54,10 @@ export function play() {
  * 暂停
  */
 export function pause() {
+    if (index < 0) {
+        console.warn(NO_SONG_WARNING_MESSAGE);
+        return;
+    }
     return instance.pause();
 }
 
@@ -55,6 +65,9 @@ export function pause() {
  * 跳转到播放列表指定曲目
  */
 export function jump(to: number) {
+    if (to < 0 || to >= queue.length) {
+        throw new Error("非法的索引值");
+    }
     index = to;
     const obj = queue[to];
     instance.src = obj.url;
@@ -68,10 +81,16 @@ export function jump(to: number) {
     callAllQueueEventTriggers();
 }
 
+/**
+ * 下一首
+ */
 export function nextTrack() {
     jump(index >= queue.length - 1 ? 0 : index + 1);
 }
 
+/**
+ * 上一首
+ */
 export function prevTrack() {
     jump(index <= 0 ? queue.length - 1 : index - 1);
 }
@@ -83,6 +102,15 @@ export async function pushQueue(data: AudioQueueData) {
     queue.push(data);
     console.log(queue);
     jump(queue.length - 1);
+}
+
+/**
+ * 从播放列表中查找
+ * @param id
+ * @param episode
+ */
+export function findFromQueue(id: string, episode: number) {
+    return queue.findIndex(e => e.bvid === id && e.episode === episode);
 }
 
 instance.addEventListener("ended", async () => {

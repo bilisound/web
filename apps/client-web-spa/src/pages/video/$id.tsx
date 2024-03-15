@@ -6,7 +6,7 @@ import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
 import { memo } from "react";
-import { play, pushQueue, useQueue } from "@/utils/audio";
+import { findFromQueue, jump, play, pushQueue, useQueue } from "@/utils/audio";
 
 const episode = cva({
     base: {
@@ -20,6 +20,7 @@ const episode = cva({
         w: "full",
         fontSize: "sm",
         gap: 3,
+        cursor: "pointer",
         _focus: {
             outline: "0.125rem solid",
             outlineColor: "primary.500",
@@ -152,6 +153,36 @@ const Episode = memo(EpisodeRaw, (a, b) => {
     return a.isCurrent === b.isCurrent && a.detail === b.detail;
 });
 
+async function handleTrackClick({
+    detail,
+    item,
+    isCurrent,
+}: {
+    detail: GetBilisoundMetadataResponse;
+    item: GetBilisoundMetadataResponse["pages"][number];
+    isCurrent: boolean;
+}) {
+    if (isCurrent) {
+        return;
+    }
+    const found = findFromQueue(detail.bvid, item.page);
+    if (found >= 0) {
+        jump(found);
+        await play();
+        return;
+    }
+    await pushQueue({
+        author: detail.owner.name,
+        bvid: detail.bvid,
+        duration: item.duration,
+        episode: item.page,
+        id: Math.random() + "",
+        title: item.part,
+        url: `https://api.tuu.run/bilisound/resource?id=${detail.bvid}&episode=${item.page}`,
+    });
+    await play();
+}
+
 function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
     const { current } = useQueue();
 
@@ -159,23 +190,16 @@ function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
         <section className={css({ w: "full", maxW: "container" })}>
             <h3 className={css({ fontSize: "lg", fontWeight: 600 })}>{`视频选集 (${detail.pages.length})`}</h3>
             <ul className={grid({ columns: [1, 1, 2], gap: 3, mt: 4 })}>
-                {detail.pages.map(e => {
+                {detail.pages.map(item => {
+                    const isCurrent =
+                        (current && current.bvid === detail.bvid && current.episode === item.page) || false;
                     return (
                         <Episode
-                            key={e.page}
-                            detail={e}
-                            isCurrent={current && current.bvid === detail.bvid && current.episode === e.page}
+                            key={item.page}
+                            detail={item}
+                            isCurrent={isCurrent}
                             onClick={async () => {
-                                await pushQueue({
-                                    author: detail.owner.name,
-                                    bvid: detail.bvid,
-                                    duration: e.duration,
-                                    episode: e.page,
-                                    id: Math.random() + "",
-                                    title: e.part,
-                                    url: `https://api.tuu.run/bilisound/resource?id=${detail.bvid}&episode=${e.page}`,
-                                });
-                                await play();
+                                await handleTrackClick({ detail, item, isCurrent });
                             }}
                         />
                     );

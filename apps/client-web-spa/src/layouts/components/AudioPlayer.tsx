@@ -76,7 +76,7 @@ function AudioSlider() {
                     flexGrow: 1,
                     borderRadius: "full",
                     height: "0.18rem",
-                    overflow: "none",
+                    overflow: "hidden",
                 })}
             >
                 <Slider.Range
@@ -95,7 +95,7 @@ function AudioSlider() {
                         height: "100%",
                     })}
                     style={{
-                        width: `calc((100% - 1rem) * ${buffered / duration} + 1rem)`,
+                        width: `calc((100% - 1rem) * ${buffered / duration || 0} + 1rem)`,
                     }}
                 ></div>
             </Slider.Track>

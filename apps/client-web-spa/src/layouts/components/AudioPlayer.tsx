@@ -95,7 +95,7 @@ function AudioSlider() {
                         height: "100%",
                     })}
                     style={{
-                        width: (buffered / duration) * 100 + "%",
+                        width: `calc((100% - 1rem) * ${buffered / duration} + 1rem)`,
                     }}
                 ></div>
             </Slider.Track>

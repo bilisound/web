@@ -24,7 +24,10 @@ const episode = cva({
         cursor: "pointer",
         _focus: {
             outline: "0.125rem solid",
-            outlineColor: "primary.500",
+            outlineColor: {
+                base: "primary.500",
+                _dark: "primary.900",
+            },
         },
     },
     variants: {

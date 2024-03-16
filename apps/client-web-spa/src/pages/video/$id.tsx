@@ -8,6 +8,7 @@ import { secondToTimestamp } from "@bilisound2/utils";
 import { memo } from "react";
 import { findFromQueue, jump, play, pushQueue, useQueue } from "@/utils/audio";
 import * as Avatar from "@radix-ui/react-avatar";
+import { htmlDecode } from "@bilisound2/utils/dist/dom";
 
 const episode = cva({
     base: {
@@ -121,7 +122,7 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                         lineHeight: 1.5,
                     })}
                 >
-                    {detail.desc}
+                    {htmlDecode(detail.desc)}
                 </p>
             </div>
         </section>
@@ -157,6 +158,7 @@ function EpisodeRaw({
                         minW: 0,
                         px: 2,
                         textAlign: "left",
+                        fontWeight: isCurrent ? 600 : 400,
                     })}
                 >
                     {detail.part}
@@ -205,6 +207,7 @@ async function handleTrackClick({
         id: Math.random() + "",
         title: item.part,
         url: `https://api.tuu.run/bilisound/resource?id=${detail.bvid}&episode=${item.page}`,
+        imgUrl: detail.pic,
     });
     await play();
 }

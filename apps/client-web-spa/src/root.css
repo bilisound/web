@@ -15,6 +15,7 @@
     display: contents;
 }
 
+/* 加载动画 */
 .bs-loader {
     width: 50px;
     height: 12px;
@@ -28,6 +29,7 @@
     top: 50dvh;
     transform: translate(-50%, -50%) scale(1.5);
 }
+
 .bs-loader:before {
     content: "";
     position: absolute;
@@ -41,9 +43,11 @@
     animation-timing-function: cubic-bezier(.5,-900,.5,900);
     animation-iteration-count: infinite;
 }
+
 @keyframes l25-1 {
     100% {transform:translate(0.12px)}
 }
+
 @keyframes l25-2 {
     100% {inset:-0.15px 0 0;}
 }

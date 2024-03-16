@@ -11,6 +11,7 @@ export interface AudioQueueData {
     title: string;
     author: string;
     duration: number;
+    imgUrl: string;
 }
 
 // 实例初始化
@@ -74,7 +75,7 @@ export function seek(to: number) {
             instance.removeEventListener("seeked", handleSeekDone);
         }
         instance.addEventListener("seeked", handleSeekDone);
-        instance.currentTime = to;
+        instance.currentTime = to || 0;
     });
 }
 

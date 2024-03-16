@@ -9,7 +9,7 @@
     "dev": "umi dev",
     "postinstall": "umi setup",
     "prebuild": "pnpm run version-json && pnpm run prepare",
-    "predev": "pnpm run version-json",
+    "predev": "pnpm run version-json && pnpm run prepare",
     "setup": "umi setup",
     "preview": "serve -s -l 8001 dist",
     "version-json": "node ./scripts/generate-version.js",

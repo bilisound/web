@@ -327,6 +327,7 @@ export default function AudioPlayer() {
                     transition: "transform",
                     transitionDuration: "slow",
                     transform: open ? "none" : "translateY(100%)",
+                    h: ["6.5rem", "5.5rem"],
                 })}
             >
                 {/* 右侧按钮（有做多个按钮的预留） */}

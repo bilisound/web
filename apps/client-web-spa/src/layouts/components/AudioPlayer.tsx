@@ -190,7 +190,7 @@ export default function AudioPlayer() {
                             fontSize: "xs",
                             fontWeight: 500,
                             color: "white",
-                            mt: 1,
+                            mt: 0.5,
                             display: ["flex", "none"],
                         })}
                     >

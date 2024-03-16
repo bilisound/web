@@ -109,7 +109,12 @@ export function nextTrack() {
 /**
  * 上一首
  */
-export function prevTrack() {
+export function prevTrack({ alwaysJump = false }: { alwaysJump?: boolean } = {}) {
+    // https://ux.stackexchange.com/questions/80335/why-does-previous-button-in-music-player-apps-start-the-current-track-from-the-b
+    if (!alwaysJump && !instance.paused && instance.currentTime > 3) {
+        instance.currentTime = 0;
+        return;
+    }
     jump(index <= 0 ? queue.length - 1 : index - 1);
 }
 

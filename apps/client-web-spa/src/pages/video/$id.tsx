@@ -38,6 +38,7 @@ const episode = cva({
                     base: "primary.700",
                 },
                 color: "white",
+                boxShadow: "md",
             },
             false: {
                 bg: {

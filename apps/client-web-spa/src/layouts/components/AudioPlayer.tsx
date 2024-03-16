@@ -2,9 +2,9 @@ import { css } from "@/styled-system/css";
 import * as audio from "@/utils/audio";
 import * as Slider from "@radix-ui/react-slider";
 import { seek, setPreventAutoNext, useAudioProgress } from "@/utils/audio";
-import { useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { bsIconButton } from "@/components/recipes/button";
-import { center, flex, hstack } from "@/styled-system/patterns";
+import { center, flex, hstack, vstack } from "@/styled-system/patterns";
 import { ReactComponent as IconPlay } from "@/icons/fa-solid--play.svg";
 import { ReactComponent as IconPause } from "@/icons/fa-solid--pause.svg";
 import { ReactComponent as IconStepBackward } from "@/icons/fa-solid--step-backward.svg";
@@ -12,8 +12,13 @@ import { ReactComponent as IconStepForward } from "@/icons/fa-solid--step-forwar
 import { ReactComponent as IconTarget } from "@/icons/simple-icons--target.svg";
 import { ReactComponent as IconPlaylist } from "@/icons/flowbite--list-music-solid.svg";
 import { ReactComponent as IconDownload } from "@/icons/fa-solid--download.svg";
+import { ReactComponent as IconDisc } from "@/icons/fa-solid--compact-disc.svg";
 import { secondToTimestamp } from "@bilisound2/utils";
 import { Link } from "umi";
+import MusicPlayingIcon from "@/components/MusicPlayingIcon";
+import { useLocalStorageState } from "ahooks";
+import { BILISOUND_BOTTOM_PLAYER_OPEN } from "@/constants/local-storage";
+import { forwardRef } from "@chakra-ui/react";
 
 function AudioSlider({ disabled }: { disabled: boolean }) {
     const { currentTime, duration, buffered } = useAudioProgress();
@@ -135,173 +140,228 @@ function AudioTime() {
     return <>{secondToTimestamp(currentTime, { showMillisecond: false })}</>;
 }
 
-export default function AudioPlayer() {
+const AudioPlayerInner = forwardRef<React.JSX.IntrinsicElements["div"], "div">((props, ref) => {
     const { current } = audio.useQueue();
     const isPlaying = !audio.useAudioPaused();
 
     return (
         <div
-            className={center({
-                pos: "sticky",
-                bottom: 0,
-                bg: {
-                    base: "primary.500",
-                    _dark: "neutral.900/75",
-                },
-                _dark: {
-                    borderTop: "1px solid",
-                    borderTopColor: "neutral.700",
-                    backdropFilter: "auto",
-                    backdropBlur: "lg",
-                },
+            className={flex({
                 w: "full",
-                px: 4,
+                maxW: "container",
+                gap: 5,
+                alignItems: "center",
             })}
+            {...props}
+            ref={ref}
         >
-            <div
-                className={flex({
-                    w: "full",
-                    maxW: "container",
-                    gap: 5,
-                    alignItems: "center",
-                })}
-            >
-                {/*{current && (
-                    <div className={css({ flex: "none" })}>
-                        <img
-                            className={css({
-                                h: 14,
-                                aspectRatio: "3/2",
-                                objectFit: "cover",
-                                borderRadius: "lg",
-                            })}
-                            src={getImageProxyUrl(current.imgUrl, current.bvid)}
-                            alt={current.title}
-                        />
+            <div className={css({ flex: "auto", minW: 0, pt: 4, pb: 3 })}>
+                <AudioSlider disabled={!current} />
+                <div
+                    className={css({
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        fontFamily: "roboto",
+                        fontSize: "xs",
+                        fontWeight: 500,
+                        color: "white",
+                        mt: 1,
+                        display: ["flex", "none"],
+                    })}
+                >
+                    <div>
+                        <AudioTime />
                     </div>
-                )}*/}
-                <div className={css({ flex: "auto", minW: 0, pt: 4, pb: 3 })}>
-                    <AudioSlider disabled={!current} />
+                    <div>{secondToTimestamp(current?.duration ?? 0, { showMillisecond: false })}</div>
+                </div>
+                <div
+                    className={`dark ${hstack({
+                        gap: 0,
+                        mt: [1, 2, 2],
+                        justifyContent: ["center", "flex-start"],
+                        pos: "relative",
+                    })}`}
+                >
+                    <div className={hstack({ gap: 0 })}>
+                        <button
+                            type={"button"}
+                            disabled={!current}
+                            className={bsIconButton({ variant: "ghost" })}
+                            onClick={() => {
+                                audio.prevTrack();
+                                audio.play();
+                            }}
+                            aria-label={"上一首"}
+                        >
+                            <IconStepBackward className={css({ transform: "scaleX(1.25)" })} />
+                        </button>
+                        <button
+                            type={"button"}
+                            disabled={!current}
+                            className={bsIconButton({ variant: "ghost" })}
+                            onClick={() => {
+                                if (isPlaying) {
+                                    audio.pause();
+                                } else {
+                                    audio.play();
+                                }
+                            }}
+                            aria-label={isPlaying ? "暂停" : "播放"}
+                        >
+                            {isPlaying ? <IconPause /> : <IconPlay />}
+                        </button>
+                        <button
+                            type={"button"}
+                            disabled={!current}
+                            className={bsIconButton({ variant: "ghost" })}
+                            onClick={() => {
+                                audio.nextTrack();
+                                audio.play();
+                            }}
+                            aria-label={"下一首"}
+                        >
+                            <IconStepForward className={css({ transform: "scaleX(1.25)" })} />
+                        </button>
+                    </div>
+                    <Link
+                        to={current ? `/video/${current.bvid}` : ""}
+                        className={css(bsIconButton.raw({ variant: "ghost" }), {
+                            pos: ["absolute", "static"],
+                            left: 0,
+                            top: "50%",
+                            transform: ["translateY(-50%)", "none"],
+                        })}
+                        aria-label={"前往当前正在播放的曲目页面"}
+                    >
+                        <IconTarget />
+                    </Link>
                     <div
-                        className={css({
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            fontFamily: "roboto",
-                            fontSize: "xs",
-                            fontWeight: 500,
-                            color: "white",
-                            mt: 0.5,
-                            display: ["flex", "none"],
+                        className={hstack({
+                            gap: 0,
+                            pos: "absolute",
+                            right: 0,
+                            top: "50%",
+                            transform: "translateY(-50%)",
                         })}
                     >
-                        <div>
-                            <AudioTime />
-                        </div>
-                        <div>{secondToTimestamp(current?.duration ?? 0, { showMillisecond: false })}</div>
+                        <button
+                            type={"button"}
+                            disabled={!current}
+                            className={bsIconButton({ variant: "ghost" })}
+                            aria-label={"查看播放列表"}
+                        >
+                            <IconPlaylist />
+                        </button>
+                        <button
+                            type={"button"}
+                            disabled={!current}
+                            className={bsIconButton({ variant: "ghost" })}
+                            aria-label={`下载当前播放的曲目`}
+                        >
+                            <IconDownload />
+                        </button>
                     </div>
                     <div
-                        className={`dark ${hstack({
-                            gap: 0,
-                            mt: [1, 2, 2],
-                            justifyContent: ["center", "flex-start"],
-                            pos: "relative",
-                        })}`}
+                        className={css({
+                            fontFamily: "roboto",
+                            fontSize: "sm",
+                            fontWeight: 500,
+                            ms: 3,
+                            color: "white",
+                            display: ["none", "block"],
+                        })}
                     >
-                        <div className={hstack({ gap: 0 })}>
-                            <button
-                                type={"button"}
-                                disabled={!current}
-                                className={bsIconButton({ variant: "ghost" })}
-                                onClick={() => {
-                                    audio.prevTrack();
-                                    audio.play();
-                                }}
-                                aria-label={"上一首"}
-                            >
-                                <IconStepBackward className={css({ transform: "scaleX(1.25)" })} />
-                            </button>
-                            <button
-                                type={"button"}
-                                disabled={!current}
-                                className={bsIconButton({ variant: "ghost" })}
-                                onClick={() => {
-                                    if (isPlaying) {
-                                        audio.pause();
-                                    } else {
-                                        audio.play();
-                                    }
-                                }}
-                                aria-label={isPlaying ? "暂停" : "播放"}
-                            >
-                                {isPlaying ? <IconPause /> : <IconPlay />}
-                            </button>
-                            <button
-                                type={"button"}
-                                disabled={!current}
-                                className={bsIconButton({ variant: "ghost" })}
-                                onClick={() => {
-                                    audio.nextTrack();
-                                    audio.play();
-                                }}
-                                aria-label={"下一首"}
-                            >
-                                <IconStepForward className={css({ transform: "scaleX(1.25)" })} />
-                            </button>
-                        </div>
-                        <Link
-                            to={current ? `/video/${current.bvid}` : ""}
-                            className={css(bsIconButton.raw({ variant: "ghost" }), {
-                                pos: ["absolute", "static"],
-                                left: 0,
-                                top: "50%",
-                                transform: ["translateY(-50%)", "none"],
-                            })}
-                            aria-label={"前往当前正在播放的曲目页面"}
-                        >
-                            <IconTarget />
-                        </Link>
-                        <div
-                            className={hstack({
-                                gap: 0,
-                                pos: "absolute",
-                                right: 0,
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                            })}
-                        >
-                            <button
-                                type={"button"}
-                                disabled={!current}
-                                className={bsIconButton({ variant: "ghost" })}
-                                aria-label={"查看播放列表"}
-                            >
-                                <IconPlaylist />
-                            </button>
-                            <button
-                                type={"button"}
-                                disabled={!current}
-                                className={bsIconButton({ variant: "ghost" })}
-                                aria-label={`下载当前播放的曲目`}
-                            >
-                                <IconDownload />
-                            </button>
-                        </div>
-                        <div
-                            className={css({
-                                fontFamily: "roboto",
-                                fontSize: "sm",
-                                fontWeight: 500,
-                                ms: 3,
-                                color: "white",
-                                display: ["none", "block"],
-                            })}
-                        >
-                            <AudioTime />
-                            {` / ${secondToTimestamp(current?.duration ?? 0, { showMillisecond: false })}`}
-                        </div>
+                        <AudioTime />
+                        {` / ${secondToTimestamp(current?.duration ?? 0, { showMillisecond: false })}`}
                     </div>
                 </div>
             </div>
         </div>
+    );
+});
+
+export default function AudioPlayer() {
+    // 播放器展开控制
+    const [open, setOpen] = useLocalStorageState(BILISOUND_BOTTOM_PLAYER_OPEN, {
+        defaultValue: true,
+    });
+    const [actualOpen, setActualOpen] = useState(false);
+    const timer = useRef<any>();
+    const playerId = useId();
+
+    useEffect(() => {
+        if (open) {
+            setActualOpen(true);
+        } else {
+            timer.current = setTimeout(() => {
+                setActualOpen(false);
+            }, 300);
+        }
+        return () => {
+            clearTimeout(timer.current);
+        };
+    }, [open]);
+
+    // 播放状态
+    const isPlaying = !audio.useAudioPaused();
+
+    return (
+        <>
+            {/* 播放器 */}
+            <div
+                className={center({
+                    pos: "fixed",
+                    bottom: 0,
+                    bg: {
+                        base: "primary.500",
+                        _dark: "neutral.900/75",
+                    },
+                    _dark: {
+                        borderTop: "1px solid",
+                        borderTopColor: "neutral.700",
+                        backdropFilter: "auto",
+                        backdropBlur: "lg",
+                    },
+                    w: "full",
+                    px: 4,
+                    transition: "transform",
+                    transitionDuration: "slow",
+                    transform: open ? "none" : "translateY(100%)",
+                })}
+            >
+                {/* 右侧按钮（有做多个按钮的预留） */}
+                <div
+                    className={vstack({
+                        gap: 4,
+                        pos: "absolute",
+                        right: 4,
+                        top: -4,
+                        transform: "translate(0, -100%)",
+                    })}
+                >
+                    <button
+                        type={"button"}
+                        className={center({
+                            w: 12,
+                            h: 12,
+                            bg: { base: "primary.500", _dark: "neutral.700" },
+                            rounded: "lg",
+                            color: "white",
+                            cursor: "pointer",
+                        })}
+                        onClick={() => setOpen(prevState => !prevState)}
+                        aria-label={open ? "收起播放器" : "展开播放器"}
+                        aria-expanded={open}
+                        aria-controls={playerId}
+                    >
+                        {isPlaying ? <MusicPlayingIcon /> : <IconDisc className={css({ w: 4, h: 4 })} />}
+                    </button>
+                </div>
+                {/* 播放器本体 */}
+                {actualOpen && <AudioPlayerInner id={playerId} />}
+            </div>
+            {/* 用来把页面底部撑起来的东西 */}
+            {open && <div aria-hidden={"true"} className={css({ h: ["6.5rem", "5.5rem"] })}></div>}
+        </>
     );
 }

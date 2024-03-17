@@ -20,6 +20,7 @@ import { useLocalStorageState } from "ahooks";
 import { BILISOUND_BOTTOM_PLAYER_OPEN } from "@/constants/local-storage";
 import { forwardRef } from "@chakra-ui/react";
 
+// 播放器滑块
 function AudioSlider({ disabled }: { disabled: boolean }) {
     const { currentTime, duration, buffered } = useAudioProgress();
     const [dragInfo, setDragInfo] = useState({
@@ -135,11 +136,13 @@ function AudioSlider({ disabled }: { disabled: boolean }) {
     );
 }
 
+// 当前播放进度
 function AudioTime() {
     const { currentTime } = useAudioProgress();
     return <>{secondToTimestamp(currentTime, { showMillisecond: false })}</>;
 }
 
+// 播放器本体
 const AudioPlayerInner = forwardRef<React.JSX.IntrinsicElements["div"], "div">((props, ref) => {
     const { current } = audio.useQueue();
     const isPlaying = !audio.useAudioPaused();
@@ -244,14 +247,9 @@ const AudioPlayerInner = forwardRef<React.JSX.IntrinsicElements["div"], "div">((
                             transform: "translateY(-50%)",
                         })}
                     >
-                        <button
-                            type={"button"}
-                            disabled={!current}
-                            className={bsIconButton({ variant: "ghost" })}
-                            aria-label={"查看播放列表"}
-                        >
+                        <Link className={bsIconButton({ variant: "ghost" })} aria-label={"查看播放列表"} to={"/queue"}>
                             <IconPlaylist />
-                        </button>
+                        </Link>
                         <button
                             type={"button"}
                             disabled={!current}

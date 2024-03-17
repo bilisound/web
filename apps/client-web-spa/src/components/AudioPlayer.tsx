@@ -20,7 +20,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faBackwardStep,
     faDownload,
-    faFloppyDisk, faForwardStep,
+    faFloppyDisk,
+    faForwardStep,
     faPause,
     faPlay,
     faVolumeHigh,
@@ -41,35 +42,30 @@ const AudioPlayer: React.FC = () => {
     const toast = useToast();
 
     // 内容
-    const {
-        detail,
-        setDownloadRequest,
-        downloadList,
-        playingEpisode,
-        setPlayingEpisode,
-        setPlayingState,
-    } = useBilisoundStore((state) => ({
-        detail: state.detail,
-        downloadList: state.downloadList,
-        setDownloadRequest: state.setDownloadRequest,
-        playingEpisode: state.playingEpisode,
-        setPlayingEpisode: state.setPlayingEpisode,
-        setPlayingState: state.setPlayingState,
-    }), shallow);
+    const { detail, setDownloadRequest, downloadList, playingEpisode, setPlayingEpisode, setPlayingState } =
+        useBilisoundStore(
+            state => ({
+                detail: state.detail,
+                downloadList: state.downloadList,
+                setDownloadRequest: state.setDownloadRequest,
+                playingEpisode: state.playingEpisode,
+                setPlayingEpisode: state.setPlayingEpisode,
+                setPlayingState: state.setPlayingState,
+            }),
+            shallow,
+        );
 
     // 暂停状态
     // const [value, setValue] = useLocalStorage(LOCAL_STORAGE_MUTED, true);
-    const {
-        muted,
-        autoPlay,
-        setItem,
-        getItem,
-    } = useConfigStore((state) => ({
-        muted: state.muted,
-        autoPlay: state.autoPlay,
-        setItem: state.setItem,
-        getItem: state.getItem,
-    }), shallow);
+    const { muted, autoPlay, setItem, getItem } = useConfigStore(
+        state => ({
+            muted: state.muted,
+            autoPlay: state.autoPlay,
+            setItem: state.setItem,
+            getItem: state.getItem,
+        }),
+        shallow,
+    );
 
     // 播放器
     const [audio, state, controls, ref] = useAudio(<audio muted={muted} crossOrigin="anonymous" />);
@@ -146,11 +142,14 @@ const AudioPlayer: React.FC = () => {
 
     const handleSave = () => {
         const episode = downloadList[playingEpisode];
-        const detailTarget = detail?.pages.find((e) => e.page === playingEpisode);
+        const detailTarget = detail?.pages.find(e => e.page === playingEpisode);
         if (!episode) {
             return;
         }
-        downloadUrl(`[${getItem("useAv") ? `av${detail?.aid}` : detail?.bvid}] [P${playingEpisode}] ${detailTarget?.part}.m4a`, episode.url);
+        downloadUrl(
+            `[${getItem("useAv") ? `av${detail?.aid}` : detail?.bvid}] [P${playingEpisode}] ${detailTarget?.part}.m4a`,
+            episode.url,
+        );
     };
 
     // 进度管理
@@ -198,7 +197,7 @@ const AudioPlayer: React.FC = () => {
             return;
         }
         const downloadListTarget = Object.entries(downloadList).find(([k]) => k === String(playingEpisode));
-        const detailTargetIndex = detail.pages.findIndex((e) => e.page === playingEpisode);
+        const detailTargetIndex = detail.pages.findIndex(e => e.page === playingEpisode);
         const detailTarget = detail.pages[detailTargetIndex];
 
         const prev = detail.pages[detailTargetIndex <= 0 ? detail.pages.length - 1 : detailTargetIndex - 1];
@@ -213,7 +212,7 @@ const AudioPlayer: React.FC = () => {
             if (downloadListTarget && downloadListTarget[1].progress === 1) {
                 player.src = downloadListTarget[1].url;
             } else {
-                player.src = `https://api.tuu.run/bilisound/resource?id=${detail.bvid}&episode=${playingEpisode}`;
+                player.src = `https://bilisound.tuu.run/api/internal/resource?id=${detail.bvid}&episode=${playingEpisode}`;
             }
             currentPlayKey.current = newPlayKey;
         }
@@ -252,7 +251,9 @@ const AudioPlayer: React.FC = () => {
         getBilisoundResourceMetadata({
             id: detail.bvid,
             episode: playingEpisode,
-        }).then(() => {}).catch((e) => console.error);
+        })
+            .then(() => {})
+            .catch(e => console.error);
     }, [playingEpisode]);
 
     // 缓冲结束
@@ -341,14 +342,19 @@ const AudioPlayer: React.FC = () => {
                             zIndex: -1,
                             background: "bilisound.600",
                             opacity: 0.8,
-                            content: "\"\"",
+                            content: '""',
                         }}
                     >
                         <Wrapper>
                             <DarkMode>
                                 {buffering ? (
                                     <Box py="5px">
-                                        <Progress colorScheme="bilisound" size="xs" isIndeterminate borderRadius="2px" />
+                                        <Progress
+                                            colorScheme="bilisound"
+                                            size="xs"
+                                            isIndeterminate
+                                            borderRadius="2px"
+                                        />
                                     </Box>
                                 ) : (
                                     <Slider
@@ -360,10 +366,10 @@ const AudioPlayer: React.FC = () => {
                                         onChangeStart={() => {
                                             dragging.current = true;
                                         }}
-                                        onChange={(e) => {
+                                        onChange={e => {
                                             setProgress(e);
                                         }}
-                                        onChangeEnd={(e) => {
+                                        onChangeEnd={e => {
                                             dragging.current = false;
                                             controls.seek(e);
                                         }}
@@ -372,11 +378,13 @@ const AudioPlayer: React.FC = () => {
                                         focusThumbOnChange={false}
                                     >
                                         <SliderTrack
-                                            style={{
-                                                "--buffer-progress": farthestDuration / state.duration,
-                                            } as React.CSSProperties}
+                                            style={
+                                                {
+                                                    "--buffer-progress": farthestDuration / state.duration,
+                                                } as React.CSSProperties
+                                            }
                                             _before={{
-                                                content: "\"\"",
+                                                content: '""',
                                                 position: "absolute",
                                                 left: 0,
                                                 top: 0,
@@ -447,7 +455,9 @@ const AudioPlayer: React.FC = () => {
                                         />
                                     </HStack>
                                     <Flex alignItems="center" fontWeight="500" fontFamily="'Roboto', sans-serif">
-                                        {buffering ? "--:--" : secondToTimestamp(state.time, { showMillisecond: false })}
+                                        {buffering
+                                            ? "--:--"
+                                            : secondToTimestamp(state.time, { showMillisecond: false })}
                                     </Flex>
                                     {(() => {
                                         switch (true) {
@@ -482,7 +492,9 @@ const AudioPlayer: React.FC = () => {
                                                         variant="ghost"
                                                         icon={<FontAwesomeIcon icon={faDownload} />}
                                                         fontSize="1.2rem"
-                                                        onClick={() => { setDownloadRequest(playingEpisode); }}
+                                                        onClick={() => {
+                                                            setDownloadRequest(playingEpisode);
+                                                        }}
                                                         isDisabled={buffering}
                                                     />
                                                 );

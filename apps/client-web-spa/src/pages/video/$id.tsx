@@ -207,7 +207,7 @@ async function handleTrackClick({
         episode: item.page,
         id: Math.random() + "",
         title: item.part,
-        url: `https://api.tuu.run/bilisound/resource?id=${detail.bvid}&episode=${item.page}`,
+        url: `https://bilisound.tuu.run/api/internal/resource?id=${detail.bvid}&episode=${item.page}`,
         imgUrl: detail.pic,
     });
     await play();

@@ -8,6 +8,14 @@ function normalizedDict() {
     return localStorage.theme;
 }
 
+function normalizedDictActual() {
+    const raw = normalizedDict();
+    if (raw === "system") {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return raw;
+}
+
 export type ActualColorMode = "dark" | "light";
 export type ColorMode = "dark" | "light" | "system";
 
@@ -46,7 +54,7 @@ const useColorModeStore = create<ColorModeStoreProps & ColorModeStoreMethods>()(
         localStorage.theme = colorMode;
         setState(() => ({ colorMode }));
     },
-    actualColorMode: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+    actualColorMode: normalizedDictActual(),
     setActualColorMode: actualColorMode => {
         setState(() => ({ actualColorMode }));
     },

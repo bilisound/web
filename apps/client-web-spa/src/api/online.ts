@@ -44,6 +44,12 @@ export async function getBilisoundMetadata(data: { id: string }, removeCache = f
             searchParams: data,
         })
         .json<Wrap<GetBilisoundMetadataResponse>>();
+
+    // 只有一个选集时，将该选集的名称更改为与视频标题相同的名称
+    if (res.data.pages.length === 1) {
+        res.data.pages[0].part = res.data.title;
+    }
+
     infoCache.set(data.id, res);
     return res;
 }

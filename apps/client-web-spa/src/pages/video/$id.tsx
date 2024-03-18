@@ -1,14 +1,15 @@
 import { useParams } from "umi";
 import { getBilisoundMetadata, GetBilisoundMetadataResponse } from "@/api/online";
 import { css, cva } from "@/styled-system/css";
-import { center, circle, grid, hstack, vstack } from "@/styled-system/patterns";
+import { center, circle, flex, grid, hstack, vstack } from "@/styled-system/patterns";
 import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
-import { memo } from "react";
-import { findFromQueue, jump, play, pushQueue, useQueue } from "@/utils/audio";
+import { memo, useState } from "react";
+import { findFromQueue, jump, play, pushQueue, toggle, useQueue } from "@/utils/audio";
 import * as Avatar from "@radix-ui/react-avatar";
 import { htmlDecode } from "@bilisound2/utils/dist/dom";
+import { ReactComponent as IconDown } from "@/icons/mingcute--down-fill.svg";
 
 const episode = cva({
     base: {
@@ -54,6 +55,8 @@ const episode = cva({
 });
 
 function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
+    const [showDetail, setShowDetail] = useState(false);
+
     return (
         <section className={grid({ columns: [1, 1, 2], gap: [4, 4, 5], w: "full", maxW: "container" })}>
             <div>
@@ -115,16 +118,64 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                         {new Date(detail.pubDate).toLocaleDateString("zh-hans-CN")}
                     </time>
                 </div>
-                <p
-                    className={css({
-                        whiteSpace: "pre-wrap",
-                        wordBreak: "break-all",
-                        fontSize: "sm",
-                        lineHeight: 1.5,
-                    })}
-                >
-                    {htmlDecode(detail.desc)}
-                </p>
+                <div className={css({ pos: "relative" })}>
+                    <p
+                        className={css({
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-all",
+                            fontSize: "sm",
+                            lineHeight: 1.5,
+                            overflow: "hidden",
+                            h: showDetail ? "inherit" : 56,
+                        })}
+                    >
+                        {htmlDecode(detail.desc)}
+                    </p>
+                    <button
+                        type={"button"}
+                        className={css({
+                            display: showDetail ? "none" : "flex",
+                            w: "full",
+                            h: "full",
+                            pos: "absolute",
+                            left: 0,
+                            top: 0,
+                            flexDirection: "column",
+                            alignItems: "stretch",
+                            cursor: "pointer",
+                        })}
+                        onClick={() => setShowDetail(true)}
+                    >
+                        <span
+                            className={css({
+                                display: "block",
+                                flex: "auto",
+                            })}
+                        ></span>
+                        <span
+                            className={center({
+                                // bg: "blue.500/50",
+                                flex: "none",
+                                fontSize: "sm",
+                                fontWeight: 600,
+                                color: {
+                                    base: "blue.600",
+                                    _dark: "blue.500",
+                                },
+                                h: 16,
+                                gradientTo: {
+                                    base: "white",
+                                    _dark: "neutral.900",
+                                },
+                                gradientFrom: "transparent",
+                                bgGradient: "to-b",
+                            })}
+                        >
+                            查看详情
+                            <IconDown className={css({ w: 3, h: 3, ms: 1 })} />
+                        </span>
+                    </button>
+                </div>
             </div>
         </section>
     );
@@ -192,6 +243,7 @@ async function handleTrackClick({
     isCurrent: boolean;
 }) {
     if (isCurrent) {
+        toggle();
         return;
     }
     const found = findFromQueue(detail.bvid, item.page);

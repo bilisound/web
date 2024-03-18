@@ -14,7 +14,7 @@ export const bsButton = cva({
         },
         _disabled: {
             cursor: "not-allowed",
-            opacity: 0.6,
+            opacity: 0.5,
         },
     },
     variants: {

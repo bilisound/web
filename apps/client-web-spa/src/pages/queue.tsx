@@ -174,8 +174,12 @@ export default function Page() {
                     >
                         <div className={css({ pos: "sticky", top: [18, "4.75rem"] })}>
                             <Title />
-                            <div className={vstack({ w: "full", alignItems: "stretch", gap: 1, mt: [4, 5] })}>
-                                <button type={"button"} className={bsButton({ variant: "ghost", color: "plain" })}>
+                            <div className={vstack({ w: "full", alignItems: "stretch", gap: 0, mt: [4, 5] })}>
+                                <button
+                                    type={"button"}
+                                    className={bsButton({ variant: "ghost", color: "plain" })}
+                                    disabled
+                                >
                                     <IconMobile />
                                     导出到 Bilisound 客户端
                                 </button>

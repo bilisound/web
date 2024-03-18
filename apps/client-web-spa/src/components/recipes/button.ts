@@ -56,29 +56,29 @@ export const bsButton = cva({
                 fontWeight: "600",
                 bg: {
                     base: "transparent",
-                    _hover: "colorPalette.950/10",
-                    _active: "colorPalette.950/20",
+                    _hover: "colorPalette.950/5",
+                    _active: "colorPalette.950/15",
                 },
                 _dark: {
                     color: "colorPalette.500",
                     bg: {
                         base: "transparent",
-                        _hover: "colorPalette.50/10",
-                        _active: "colorPalette.50/20",
+                        _hover: "colorPalette.50/5",
+                        _active: "colorPalette.50/15",
                     },
                 },
                 _active: {
                     outline: "0.25rem solid",
                     outlineColor: {
-                        base: "colorPalette.950/10",
-                        _dark: "colorPalette.50/10",
+                        base: "colorPalette.950/5",
+                        _dark: "colorPalette.50/15",
                     },
                 },
                 _focus: {
                     outline: "0.25rem solid",
                     outlineColor: {
-                        base: "colorPalette.950/10",
-                        _dark: "colorPalette.50/10",
+                        base: "colorPalette.950/5",
+                        _dark: "colorPalette.50/5",
                     },
                 },
             },

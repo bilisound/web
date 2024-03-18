@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { v4 } from "uuid";
 import * as process from "process";
+import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/local-storage";
 
 const NO_SONG_WARNING_MESSAGE = "目前没有可以播放的音频";
 
@@ -26,89 +27,19 @@ const instance = document.createElement("audio");
 instance.dataset.managedByBilisound = "🥺";
 
 // 队列
-const queue: AudioQueueData[] =
-    process.env.NODE_ENV === "development"
-        ? [
-              {
-                  author: "丨逍_遥丨",
-                  bvid: "BV1hS4y1x77h",
-                  duration: 290,
-                  episode: 2,
-                  id: "0.27697598951563807",
-                  title: "02.White Canvas (feat. 藍月なくる) - rejection",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1hS4y1x77h&episode=2",
-                  imgUrl: "http://i2.hdslb.com/bfs/archive/0515f17ae74f1a18e3ea46d10d6985cff9593be2.jpg",
-              },
-              {
-                  author: "丨逍_遥丨",
-                  bvid: "BV1hS4y1x77h",
-                  duration: 183,
-                  episode: 4,
-                  id: "0.30648341521343925",
-                  title: "04.DROPS (feat. Such) - Zekk_&_poplavor",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1hS4y1x77h&episode=4",
-                  imgUrl: "http://i2.hdslb.com/bfs/archive/0515f17ae74f1a18e3ea46d10d6985cff9593be2.jpg",
-              },
-              {
-                  author: "丨逍_遥丨",
-                  bvid: "BV1hS4y1x77h",
-                  duration: 191,
-                  episode: 6,
-                  id: "0.8535214448678625",
-                  title: "06.マドネス (feat. りんたる) - Kakeru",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1hS4y1x77h&episode=6",
-                  imgUrl: "http://i2.hdslb.com/bfs/archive/0515f17ae74f1a18e3ea46d10d6985cff9593be2.jpg",
-              },
-              {
-                  author: "王道然",
-                  bvid: "BV1Ab411g7qQ",
-                  duration: 268,
-                  episode: 1,
-                  id: "0.8178759900032173",
-                  title: "ネオンライト【霓虹灯】 星宮とと×TEMPLIME",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1Ab411g7qQ&episode=1",
-                  imgUrl: "http://i0.hdslb.com/bfs/archive/8137a6871c5b20afc9b6538a4621558cf4d0c54a.jpg",
-              },
-              {
-                  author: "KiraraMagic",
-                  bvid: "BV1AK421x7rU",
-                  duration: 176,
-                  episode: 1,
-                  id: "0.19105768644985055",
-                  title: "清新可爱的海底大冒险单曲《Aquatic》",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1AK421x7rU&episode=1",
-                  imgUrl: "http://i0.hdslb.com/bfs/archive/10d849b8f5584c32b281199fc6d388e8cda597c7.jpg",
-              },
-              {
-                  author: "東雪蓮Official",
-                  bvid: "BV1ZC4y1n7kb",
-                  duration: 219,
-                  episode: 1,
-                  id: "0.948302209375957",
-                  title: "砂時計の魔法(沙漏的魔法) - 東 雪蓮",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1ZC4y1n7kb&episode=1",
-                  imgUrl: "http://i2.hdslb.com/bfs/archive/8f1e43f273c57a4e88ad80dd6f6091b886d47c1a.jpg",
-              },
-              {
-                  author: "媛二媛二",
-                  bvid: "BV1U841167fJ",
-                  duration: 197,
-                  episode: 1,
-                  id: "0.5584388689188164",
-                  title: "“请与我共同 陷入”【Limbo】",
-                  url: "https://bilisound.tuu.run/api/internal/resource?id=BV1U841167fJ&episode=1",
-                  imgUrl: "http://i2.hdslb.com/bfs/archive/3ac8d283f59a54bedc0440e8f76287a15ed7d83c.jpg",
-              },
-          ]
-        : [];
+const queue: AudioQueueData[] = JSON.parse(localStorage.getItem(BILISOUND_DEFAULT_PLAYLIST) || "[]");
 const queueEventTriggers = new Map<string, () => void>();
-let index = -1;
+let index = Number(localStorage.getItem(BILISOUND_QUEUE_INDEX) || "-1") || -1;
 let snapshotQueue = {
     queue,
     current: queue[index] as AudioQueueData | undefined,
     index,
 };
 let preventAutoNext = false;
+
+if (index >= 0) {
+    instance.src = queue[index].url;
+}
 
 function callAllQueueEventTriggers() {
     for (const entry of queueEventTriggers.entries()) {
@@ -138,12 +69,23 @@ export function pause() {
     return instance.pause();
 }
 
+/**
+ * 切换播放/暂停状态
+ */
 export function toggle() {
     if (instance.paused) {
         play();
     } else {
         pause();
     }
+}
+
+function commitQueue() {
+    localStorage.setItem(BILISOUND_DEFAULT_PLAYLIST, JSON.stringify(queue));
+}
+
+function commitIndex() {
+    localStorage.setItem(BILISOUND_QUEUE_INDEX, String(index));
 }
 
 let seekPromiseCount = 0;
@@ -170,6 +112,7 @@ export function jump(to: number, { restorePlayState }: { restorePlayState?: bool
         throw new Error("非法的索引值");
     }
     index = to;
+    commitIndex();
     const prevPlayState = !instance.paused;
     const obj = queue[to];
     instance.src = obj.url;
@@ -218,7 +161,7 @@ export function setPreventAutoNext(to: boolean) {
  */
 export async function pushQueue(data: AudioQueueData) {
     queue.push(data);
-    console.log(queue);
+    commitQueue();
     jump(queue.length - 1);
 }
 

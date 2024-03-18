@@ -1,9 +1,41 @@
-import { css } from "@/styled-system/css";
-import { center, flex } from "@/styled-system/patterns";
+import { css, cva } from "@/styled-system/css";
+import { center, flex, vstack } from "@/styled-system/patterns";
 import { AudioQueueData, jump, toggle, useAudioPaused, useQueue } from "@/utils/audio";
 import { memo, useCallback } from "react";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { ReactComponent as IconPause } from "@/icons/fa-solid--pause.svg";
+import { ReactComponent as IconMobile } from "@/icons/fa-solid--mobile-alt.svg";
+import { ReactComponent as IconEdit } from "@/icons/fa-solid--edit.svg";
+import { ReactComponent as IconTrash } from "@/icons/fa-solid--trash-alt.svg";
+import { bsButton } from "@/components/recipes/button";
+
+const playListItemRoot = cva({
+    base: {
+        rounded: "lg",
+        transitionProperty: "background-color, box-shadow",
+        transitionDuration: "fast",
+        _hover: {
+            bg: {
+                base: "primary.900/5",
+                _dark: "primary.100/5",
+            },
+        },
+        _active: {
+            fontWeight: 600,
+            bg: {
+                base: "primary.700",
+            },
+            color: "white",
+            boxShadow: "md",
+            _hover: {
+                bg: {
+                    base: "primary.600",
+                    _dark: "primary.600",
+                },
+            },
+        },
+    },
+});
 
 function Title() {
     const { queue } = useQueue();
@@ -13,10 +45,7 @@ function Title() {
                 fontSize: "xl",
                 fontWeight: 600,
                 lineHeight: 1.5,
-                borderBottom: "2px dashed",
-                borderColor: "bs-border",
-                mb: 4,
-                pb: 4,
+                ps: 4,
             })}
         >{`播放队列 (${queue.length})`}</h2>
     );
@@ -36,34 +65,7 @@ function PlaylistItemRaw({
     onJump: (index: number) => void;
 }) {
     return (
-        <li
-            data-active={isActive ? true : undefined}
-            className={css({
-                rounded: "lg",
-                transitionProperty: "background-color, box-shadow",
-                transitionDuration: "fast",
-                _hover: {
-                    bg: {
-                        base: "primary.900/5",
-                        _dark: "primary.100/5",
-                    },
-                },
-                _active: {
-                    fontWeight: 600,
-                    bg: {
-                        base: "primary.700",
-                    },
-                    color: "white",
-                    boxShadow: "md",
-                    _hover: {
-                        bg: {
-                            base: "primary.600",
-                            _dark: "primary.600",
-                        },
-                    },
-                },
-            })}
-        >
+        <li data-active={isActive ? true : undefined} className={playListItemRoot()}>
             <button
                 type={"button"}
                 className={css({
@@ -71,17 +73,40 @@ function PlaylistItemRaw({
                     alignItems: "center",
                     gap: 4,
                     w: "full",
-                    py: 4,
-                    ps: isActive ? 4 : 12,
-                    pe: 4,
+                    py: 3,
                     fontSize: "sm",
+                    px: 4,
                     textAlign: "start",
                     cursor: "pointer",
+                    minW: 0,
                 })}
                 onClick={() => onJump(index)}
             >
-                {isActive && (isPlaying ? <MusicPlayingIcon /> : <IconPause className={css({ w: 4, h: 4 })} />)}
-                {data.title}
+                {isActive ? (
+                    isPlaying ? (
+                        <MusicPlayingIcon />
+                    ) : (
+                        <IconPause className={css({ w: 4, h: 4 })} />
+                    )
+                ) : (
+                    <div className={css({ w: 4, h: 4, pos: "relative" })}>
+                        <div
+                            className={css({
+                                fontSize: "sm",
+                                fontFamily: "roboto",
+                                fontWeight: 600,
+                                pos: "absolute",
+                                left: "50%",
+                                top: "50%",
+                                transform: "translate(-50%, -50%)",
+                                opacity: 0.5,
+                            })}
+                        >
+                            {index + 1}
+                        </div>
+                    </div>
+                )}
+                <span className={css({ truncate: true })}>{data.title}</span>
             </button>
         </li>
     );
@@ -117,7 +142,7 @@ function Playlist() {
     );
 
     return (
-        <ul>
+        <ul className={vstack({ gap: 1, alignItems: "stretch" })}>
             {queue.map((e, i) => {
                 return (
                     <PlaylistItem
@@ -136,11 +161,31 @@ function Playlist() {
 
 export default function Page() {
     return (
-        <div className={center({ alignItems: "flex-start" })}>
+        <div className={center({ flexDirection: "column", justifyContent: "flex-start" })}>
             <div className={css({ w: "full", maxW: "container" })}>
-                <Title />
-                <div className={flex()}>
-                    <div className={css({ w: 72, flex: "none" })}>左侧</div>
+                <div className={flex({ flexDirection: ["column", "row"], gap: [3, 5] })}>
+                    <div className={css({ w: ["full", 64], flex: "none" })}>
+                        <div className={css({ pos: "sticky", top: [18, "4.75rem"] })}>
+                            <Title />
+                            <div className={vstack({ w: "full", alignItems: "stretch", gap: 1, mt: [4, 5] })}>
+                                <button type={"button"} className={bsButton({ variant: "ghost", color: "plain" })}>
+                                    <IconMobile />
+                                    导出到 Bilisound 客户端
+                                </button>
+                                <button type={"button"} className={bsButton({ variant: "ghost", color: "plain" })}>
+                                    <IconEdit />
+                                    管理模式
+                                </button>
+                                <button type={"button"} className={bsButton({ variant: "ghost", color: "danger" })}>
+                                    <IconTrash />
+                                    清空列表
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr
+                        className={css({ border: 0, w: "full", h: "1px", bg: "bs-border", display: ["block", "none"] })}
+                    />
                     <div className={css({ w: "full", flex: "auto", minW: 0 })}>
                         <Playlist />
                     </div>

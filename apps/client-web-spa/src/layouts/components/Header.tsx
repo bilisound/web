@@ -11,6 +11,7 @@ export default function Header() {
                 top: 0,
                 justifyContent: "center",
                 px: 4,
+                zIndex: 1,
                 bg: {
                     base: "primary.500",
                     _dark: "neutral.900/75",

@@ -68,6 +68,7 @@ export default function ColorModeButton() {
             <Popover.Portal>
                 <Popover.Content
                     className={flex({
+                        zIndex: 1,
                         p: 1,
                         bg: "white",
                         _dark: {

@@ -2,7 +2,6 @@ import { cva } from "@/styled-system/css";
 
 export const bsButton = cva({
     base: {
-        colorPalette: "primary",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
@@ -10,8 +9,8 @@ export const bsButton = cva({
         transitionDuration: "fast",
         gap: 2,
         "& > svg": {
-            w: 5,
-            h: 5,
+            w: 4,
+            h: 4,
         },
         _disabled: {
             cursor: "not-allowed",
@@ -53,7 +52,7 @@ export const bsButton = cva({
                 px: 4,
                 rounded: "lg",
                 fontSize: "sm",
-                color: "black",
+                color: "colorPalette.600",
                 fontWeight: "600",
                 bg: {
                     base: "transparent",
@@ -61,7 +60,7 @@ export const bsButton = cva({
                     _active: "colorPalette.950/20",
                 },
                 _dark: {
-                    color: "white",
+                    color: "colorPalette.500",
                     bg: {
                         base: "transparent",
                         _hover: "colorPalette.50/10",
@@ -84,9 +83,33 @@ export const bsButton = cva({
                 },
             },
         },
+        color: {
+            plain: {
+                colorPalette: "neutral",
+            },
+            primary: {
+                colorPalette: "primary",
+            },
+            danger: {
+                colorPalette: "danger",
+            },
+        },
     },
+    compoundVariants: [
+        {
+            color: "plain",
+            variant: "ghost",
+            css: {
+                color: {
+                    base: "neutral.900",
+                    _dark: "neutral.50",
+                },
+            },
+        },
+    ],
     defaultVariants: {
         variant: "primary",
+        color: "primary",
     },
 });
 
@@ -143,7 +166,7 @@ export const bsIconButton = cva({
                 w: 10,
                 rounded: "lg",
                 fontSize: "sm",
-                color: "black",
+                color: "neutral.800",
                 fontWeight: "600",
                 bg: {
                     base: "transparent",
@@ -151,7 +174,7 @@ export const bsIconButton = cva({
                     _active: "colorPalette.950/20",
                 },
                 _dark: {
-                    color: "white",
+                    color: "neutral.100",
                     bg: {
                         base: "transparent",
                         _hover: "colorPalette.50/10",

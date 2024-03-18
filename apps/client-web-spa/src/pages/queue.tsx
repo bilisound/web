@@ -163,8 +163,15 @@ export default function Page() {
     return (
         <div className={center({ flexDirection: "column", justifyContent: "flex-start" })}>
             <div className={css({ w: "full", maxW: "container" })}>
-                <div className={flex({ flexDirection: ["column", "row"], gap: [3, 5] })}>
-                    <div className={css({ w: ["full", 60], flex: "none" })}>
+                <div className={flex({ flexDirection: ["column", "row"], gap: [3, 3] })}>
+                    <div
+                        className={css({
+                            w: ["full", 60],
+                            flex: "none",
+                            borderRight: ["none", "1px solid token(colors.bs-border)"],
+                            pe: [0, 3],
+                        })}
+                    >
                         <div className={css({ pos: "sticky", top: [18, "4.75rem"] })}>
                             <Title />
                             <div className={vstack({ w: "full", alignItems: "stretch", gap: 1, mt: [4, 5] })}>

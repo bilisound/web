@@ -68,14 +68,14 @@ export const bsButton = cva({
                     },
                 },
                 _active: {
-                    outline: "3px solid",
+                    outline: "0.25rem solid",
                     outlineColor: {
                         base: "colorPalette.950/10",
                         _dark: "colorPalette.50/10",
                     },
                 },
                 _focus: {
-                    outline: "3px solid",
+                    outline: "0.25rem solid",
                     outlineColor: {
                         base: "colorPalette.950/10",
                         _dark: "colorPalette.50/10",

@@ -70,6 +70,8 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                         aspectRatio: "3/2",
                         objectPosition: "center",
                         objectFit: "cover",
+                        pos: ["static", "sticky"],
+                        top: "4.75rem",
                     })}
                 />
             </div>

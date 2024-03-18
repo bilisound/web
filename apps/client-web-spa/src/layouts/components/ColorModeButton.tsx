@@ -42,7 +42,7 @@ export default function ColorModeButton() {
             <Popover.Trigger asChild>
                 <button
                     type={"button"}
-                    aria-label={"Dark mode"}
+                    aria-label={"界面主题切换"}
                     className={center({
                         w: 10,
                         h: 10,

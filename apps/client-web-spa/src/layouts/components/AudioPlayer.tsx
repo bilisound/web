@@ -247,7 +247,13 @@ const AudioPlayerInner = forwardRef<React.JSX.IntrinsicElements["div"], "div">((
                             transform: "translateY(-50%)",
                         })}
                     >
-                        <Link className={bsIconButton({ variant: "ghost" })} aria-label={"查看播放列表"} to={"/queue"}>
+                        <Link
+                            className={css(bsIconButton.raw({ variant: "ghost" }), {
+                                display: ["none", "flex"],
+                            })}
+                            aria-label={"查看播放列表"}
+                            to={"/queue"}
+                        >
                             <IconPlaylist />
                         </Link>
                         <button

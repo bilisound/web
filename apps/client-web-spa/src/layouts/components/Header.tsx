@@ -1,7 +1,9 @@
 import { css } from "@/styled-system/css";
-import { flex } from "@/styled-system/patterns";
+import { center, flex, hstack } from "@/styled-system/patterns";
 import ColorModeButton from "@/layouts/components/ColorModeButton";
 import { Link } from "umi";
+import { bsIconButton } from "@/components/recipes/button";
+import { ReactComponent as IconPlaylist } from "@/icons/flowbite--list-music-solid.svg";
 
 export default function Header() {
     return (
@@ -45,7 +47,28 @@ export default function Header() {
                         Bilisound
                     </Link>
                 </h1>
-                <div className={css({ me: -2 })}>
+                <div className={hstack({ me: -2, gap: 0 })}>
+                    <Link
+                        className={center({
+                            w: 10,
+                            h: 10,
+                            borderRadius: "full",
+                            color: "white",
+                            transitionDuration: "fast",
+                            cursor: "pointer",
+                            _hover: {
+                                bg: "primary.50/10",
+                            },
+                            _active: {
+                                bg: "primary.50/10",
+                            },
+                            display: ["flex", "none"],
+                        })}
+                        aria-label={"查看播放列表"}
+                        to={"/queue"}
+                    >
+                        <IconPlaylist />
+                    </Link>
                     <ColorModeButton />
                 </div>
             </div>

@@ -20,12 +20,12 @@ export const bsInput = cva({
             _dark: "white",
         },
         _active: {
-            borderColor: "colorPalette.500",
+            borderColor: "colorPalette.500/40",
             outline: "3px solid",
             outlineColor: "colorPalette.500/40",
         },
         _focus: {
-            borderColor: "colorPalette.500",
+            borderColor: "colorPalette.500/40",
             outline: "3px solid",
             outlineColor: "colorPalette.500/40",
         },

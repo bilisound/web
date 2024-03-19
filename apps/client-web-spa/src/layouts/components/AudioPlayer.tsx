@@ -190,7 +190,6 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             className={bsIconButton({ variant: "ghost" })}
                             onClick={() => {
                                 audio.prevTrack();
-                                audio.play();
                             }}
                             aria-label={"上一首"}
                         >
@@ -217,7 +216,6 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             className={bsIconButton({ variant: "ghost" })}
                             onClick={() => {
                                 audio.nextTrack();
-                                audio.play();
                             }}
                             aria-label={"下一首"}
                         >

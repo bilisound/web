@@ -2,6 +2,7 @@ import { useSyncExternalStore } from "react";
 import { v4 } from "uuid";
 import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/local-storage";
 import { BASE_URL } from "@/constants";
+import { getImageProxyUrl } from "@/utils/misc";
 
 const NO_SONG_WARNING_MESSAGE = "目前没有可以播放的音频";
 
@@ -46,8 +47,24 @@ let snapshotQueue = {
 let preventAutoNext = false;
 
 if (index >= 0) {
+    if (index > queue.length - 1) {
+        index = 0;
+    }
     instance.src = queue[index].url;
 }
+
+function updateMediaSession() {
+    if (!snapshotQueue.current) {
+        navigator.mediaSession.metadata = null;
+        return;
+    }
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: snapshotQueue.current.title,
+        artist: snapshotQueue.current.author,
+        artwork: [{ src: getImageProxyUrl(snapshotQueue.current.imgUrl, snapshotQueue.current.bvid) }],
+    });
+}
+updateMediaSession();
 
 // 内部函数：触发全部事件钩子
 function callAllQueueEventTriggers() {
@@ -147,6 +164,7 @@ export function jump(to: number, { restorePlayState }: { restorePlayState?: bool
         current: queue[index],
         index,
     };
+    updateMediaSession();
     callAllQueueEventTriggers();
 }
 
@@ -154,7 +172,7 @@ export function jump(to: number, { restorePlayState }: { restorePlayState?: bool
  * 下一首
  */
 export function nextTrack() {
-    jump(index >= queue.length - 1 ? 0 : index + 1);
+    jump(index >= queue.length - 1 ? 0 : index + 1, { restorePlayState: true });
 }
 
 /**
@@ -166,7 +184,7 @@ export function prevTrack({ alwaysJump = false }: { alwaysJump?: boolean } = {})
         instance.currentTime = 0;
         return;
     }
-    jump(index <= 0 ? queue.length - 1 : index - 1);
+    jump(index <= 0 ? queue.length - 1 : index - 1, { restorePlayState: true });
 }
 
 /**
@@ -215,15 +233,21 @@ export function replaceQueue(newQueue: AudioQueueData[]) {
 /**
  * 播放完毕事件
  */
-instance.addEventListener("ended", async () => {
+async function handleEnded() {
     if (preventAutoNext) {
         return;
     }
     jump(index >= queue.length - 1 ? 0 : index + 1);
     await play();
-});
+}
+
+instance.addEventListener("ended", handleEnded);
+navigator.mediaSession.setActionHandler("previoustrack", () => prevTrack());
+navigator.mediaSession.setActionHandler("nexttrack", () => nextTrack());
 
 document.body.appendChild(instance);
+
+// ========== React Hooks 部分 ==========
 
 // useAudioPlayer (订阅)
 function getSnapshotAudioPlayer() {

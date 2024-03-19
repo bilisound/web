@@ -47,6 +47,7 @@
     "@types/howler": "^2.2.11",
     "@types/qrcode": "^1.5.5",
     "@types/uuid": "^9.0.8",
+    "@types/webpack-env": "^1.18.4",
     "@umijs/lint": "^4.1.2",
     "autoprefixer": "^10.4.18",
     "eslint-config-bilisound2": "workspace:*",

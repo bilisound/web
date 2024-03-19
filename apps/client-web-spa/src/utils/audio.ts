@@ -26,11 +26,11 @@ existed.forEach(e => {
 const instance = document.createElement("audio");
 instance.dataset.managedByBilisound = "🥺";
 
-// 队列
-const queue: AudioQueueData[] = JSON.parse(localStorage.getItem(BILISOUND_DEFAULT_PLAYLIST) || "[]");
+// 播放列表
+let queue: AudioQueueData[] = JSON.parse(localStorage.getItem(BILISOUND_DEFAULT_PLAYLIST) || "[]");
 const queueEventTriggers = new Map<string, () => void>();
 
-// 队列初始化
+// 播放列表初始化
 queue.forEach((e, i) => {
     e.key = `__${i}`;
     e.url = `${BASE_URL}/api/internal/resource?id=${e.bvid}&episode=${e.episode}`;
@@ -49,11 +49,33 @@ if (index >= 0) {
     instance.src = queue[index].url;
 }
 
+// 内部函数：触发全部事件钩子
 function callAllQueueEventTriggers() {
     for (const entry of queueEventTriggers.entries()) {
         entry[1]();
     }
 }
+
+// 内部函数：提交当前列表
+function commitQueue() {
+    localStorage.setItem(
+        BILISOUND_DEFAULT_PLAYLIST,
+        JSON.stringify(queue, (key, value) => {
+            if (key === "key" || key === "url") {
+                return undefined;
+            }
+            return value;
+        }),
+    );
+}
+
+// 内部函数：提交当前播放进度
+function commitIndex() {
+    localStorage.setItem(BILISOUND_QUEUE_INDEX, String(index));
+}
+
+// 进度调整 Promise ID 计数器
+let seekPromiseCount = 0;
 
 /**
  * 播放
@@ -87,24 +109,6 @@ export function toggle() {
         pause();
     }
 }
-
-function commitQueue() {
-    localStorage.setItem(
-        BILISOUND_DEFAULT_PLAYLIST,
-        JSON.stringify(queue, (key, value) => {
-            if (key === "key" || key === "url") {
-                return undefined;
-            }
-            return value;
-        }),
-    );
-}
-
-function commitIndex() {
-    localStorage.setItem(BILISOUND_QUEUE_INDEX, String(index));
-}
-
-let seekPromiseCount = 0;
 
 export function seek(to: number) {
     seekPromiseCount++;
@@ -188,6 +192,24 @@ export async function pushQueue(data: Omit<AudioQueueData, "key">) {
  */
 export function findFromQueue(id: string, episode: number) {
     return queue.findIndex(e => e.bvid === id && e.episode === episode);
+}
+
+/**
+ * 替换当前的播放列表
+ * @param newQueue
+ */
+export function replaceQueue(newQueue: AudioQueueData[]) {
+    queue = newQueue;
+    index = queue.length > 0 ? 0 : -1;
+    instance.src = queue[index]?.url ?? "";
+
+    // 更新 snapshot
+    snapshotQueue = {
+        queue,
+        current: queue[index],
+        index,
+    };
+    callAllQueueEventTriggers();
 }
 
 /**

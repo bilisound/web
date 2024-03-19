@@ -1,6 +1,6 @@
 import { css, cva } from "@/styled-system/css";
 import { center, flex, vstack } from "@/styled-system/patterns";
-import { AudioQueueData, jump, toggle, useAudioPaused, useQueue } from "@/utils/audio";
+import { AudioQueueData, jump, replaceQueue, toggle, useAudioPaused, useQueue } from "@/utils/audio";
 import { memo, useCallback, useEffect, useState } from "react";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { ReactComponent as IconPause } from "@/icons/fa-solid--pause.svg";
@@ -278,12 +278,17 @@ function ExportListButton() {
 }
 
 function ClearListButton() {
+    const handleClear = useCallback(() => {
+        replaceQueue([]);
+        sendToast("播放队列清空成功", { type: "success" });
+    }, []);
+
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
                 <button type={"button"} className={bsButton({ variant: "ghost", color: "danger" })}>
                     <IconTrash />
-                    清空列表
+                    清空队列
                 </button>
             </Dialog.Trigger>
             <Dialog.Portal>
@@ -300,7 +305,12 @@ function ClearListButton() {
                             </button>
                         </Dialog.Close>
                         <Dialog.Close asChild>
-                            <button className={bsButton({ color: "danger" })} aria-label="Close" type={"button"}>
+                            <button
+                                className={bsButton({ color: "danger" })}
+                                aria-label="Close"
+                                type={"button"}
+                                onClick={handleClear}
+                            >
                                 确定
                             </button>
                         </Dialog.Close>

@@ -1,7 +1,7 @@
 import { css, cva } from "@/styled-system/css";
 import { center, flex, hstack, vstack } from "@/styled-system/patterns";
 import { AudioQueueData, jump, toggle, useAudioPaused, useQueue } from "@/utils/audio";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { ReactComponent as IconPause } from "@/icons/fa-solid--pause.svg";
 import { ReactComponent as IconMobile } from "@/icons/fa-solid--mobile-alt.svg";
@@ -9,6 +9,8 @@ import { ReactComponent as IconEdit } from "@/icons/fa-solid--edit.svg";
 import { ReactComponent as IconTrash } from "@/icons/fa-solid--trash-alt.svg";
 import { bsButton } from "@/components/recipes/button";
 import * as Dialog from "@radix-ui/react-dialog";
+import { ReactComponent as IconLoading } from "@/icons/loading.svg";
+import sleep from "sleep-promise";
 
 const playListItemRoot = cva({
     base: {
@@ -126,7 +128,7 @@ function Playlist() {
 
     const handleJump = useCallback(
         async (i: number) => {
-            if (queue[i].id === current?.id) {
+            if (queue[i].key === current?.key) {
                 toggle();
                 return;
             }
@@ -139,10 +141,38 @@ function Playlist() {
         <ul className={vstack({ gap: 1, alignItems: "stretch" })}>
             {queue.map((e, i) => {
                 return (
-                    <PlaylistItem isActive={current?.id === e.id} data={e} key={e.id} index={i} onJump={handleJump} />
+                    <PlaylistItem
+                        isActive={current?.key === e.key}
+                        data={e}
+                        key={e.key}
+                        index={i}
+                        onJump={handleJump}
+                    />
                 );
             })}
         </ul>
+    );
+}
+
+function ExportListButton() {
+    const [exporting, setExporting] = useState(false);
+
+    const handleExport = useCallback(async () => {
+        setExporting(true);
+        await sleep(5000);
+        setExporting(false);
+    }, []);
+
+    return (
+        <button
+            type={"button"}
+            className={bsButton({ variant: "ghost", color: "plain" })}
+            disabled={exporting}
+            onClick={handleExport}
+        >
+            {exporting ? <IconLoading /> : <IconMobile />}
+            导出到 Bilisound 客户端
+        </button>
     );
 }
 
@@ -236,14 +266,7 @@ export default function Page() {
                         <div className={css({ pos: "sticky", top: [18, "4.75rem"] })}>
                             <Title />
                             <div className={vstack({ w: "full", alignItems: "stretch", gap: 0, mt: [4, 5] })}>
-                                <button
-                                    type={"button"}
-                                    className={bsButton({ variant: "ghost", color: "plain" })}
-                                    disabled
-                                >
-                                    <IconMobile />
-                                    导出到 Bilisound 客户端
-                                </button>
+                                <ExportListButton />
                                 <button type={"button"} className={bsButton({ variant: "ghost", color: "plain" })}>
                                     <IconEdit />
                                     管理模式

@@ -5,7 +5,7 @@ import { KVNamespace } from '@cloudflare/workers-types';
 import { getVideo } from '../api/bilibili';
 import { v4 } from "uuid";
 
-const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36';
+const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 
 export default function bilisound(router: RouterType) {
 	router.get('/api/internal/resolve-b23', async (request) => {
@@ -228,7 +228,12 @@ export default function bilisound(router: RouterType) {
 				return AjaxError("Unsupported data type", 400);
 			}
 
-			await cache.put(`transfer_list_${keySuffix}`, JSON.stringify(userInput), { expirationTtl: 300 }); // 5 分钟
+			await cache.put(`transfer_list_${keySuffix}`, JSON.stringify(userInput, (key, value) => {
+				if (key === "key") {
+					return undefined;
+				}
+				return value;
+			}), { expirationTtl: 300 }); // 5 分钟
 			return AjaxSuccess(keySuffix);
 		} catch (e) {
 			return AjaxError(e);

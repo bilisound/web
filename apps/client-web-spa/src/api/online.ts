@@ -91,3 +91,12 @@ export async function getBilisoundResourceMetadata(data: { id: string; episode: 
     metadataCache.set(key, res.data);
     return res;
 }
+
+export async function postInternalTransferList(data: any) {
+    const res = await request
+        .post("api/internal/transfer-list", {
+            json: data,
+        })
+        .json<Wrap<string>>();
+    return res;
+}

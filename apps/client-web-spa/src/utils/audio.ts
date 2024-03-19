@@ -1,12 +1,11 @@
 import { useSyncExternalStore } from "react";
 import { v4 } from "uuid";
-import * as process from "process";
 import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/local-storage";
 
 const NO_SONG_WARNING_MESSAGE = "目前没有可以播放的音频";
 
 export interface AudioQueueData {
-    id: string;
+    key: string;
     bvid: string;
     episode: number;
     url: string;
@@ -29,6 +28,13 @@ instance.dataset.managedByBilisound = "🥺";
 // 队列
 const queue: AudioQueueData[] = JSON.parse(localStorage.getItem(BILISOUND_DEFAULT_PLAYLIST) || "[]");
 const queueEventTriggers = new Map<string, () => void>();
+
+// 队列初始化
+queue.forEach((e, i) => {
+    e.key = `__${i}`;
+});
+
+// 其它参数初始化
 let index = Number(localStorage.getItem(BILISOUND_QUEUE_INDEX) || "-1") || -1;
 let snapshotQueue = {
     queue,
@@ -81,7 +87,15 @@ export function toggle() {
 }
 
 function commitQueue() {
-    localStorage.setItem(BILISOUND_DEFAULT_PLAYLIST, JSON.stringify(queue));
+    localStorage.setItem(
+        BILISOUND_DEFAULT_PLAYLIST,
+        JSON.stringify(queue, (key, value) => {
+            if (key === "key") {
+                return undefined;
+            }
+            return value;
+        }),
+    );
 }
 
 function commitIndex() {
@@ -92,11 +106,11 @@ let seekPromiseCount = 0;
 
 export function seek(to: number) {
     seekPromiseCount++;
-    console.log("seekPromiseCount " + seekPromiseCount + " start!");
+    if (process.env.NODE_ENV === "development") console.log("seekPromiseCount " + seekPromiseCount + " start!");
     return new Promise<void>(resolve => {
         function handleSeekDone() {
             resolve();
-            console.log("seekPromiseCount " + seekPromiseCount + " end!");
+            if (process.env.NODE_ENV === "development") console.log("seekPromiseCount " + seekPromiseCount + " end!");
             instance.removeEventListener("seeked", handleSeekDone);
         }
         instance.addEventListener("seeked", handleSeekDone);
@@ -159,8 +173,8 @@ export function setPreventAutoNext(to: boolean) {
 /**
  * 添加到播放列表
  */
-export async function pushQueue(data: AudioQueueData) {
-    queue.push(data);
+export async function pushQueue(data: Omit<AudioQueueData, "key">) {
+    queue.push({ ...data, key: v4() });
     commitQueue();
     jump(queue.length - 1);
 }

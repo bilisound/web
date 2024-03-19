@@ -1,7 +1,7 @@
 import { useParams } from "umi";
 import { getBilisoundMetadata, GetBilisoundMetadataResponse } from "@/api/online";
 import { css, cva } from "@/styled-system/css";
-import { center, circle, flex, grid, hstack, vstack } from "@/styled-system/patterns";
+import { center, circle, grid, hstack, vstack } from "@/styled-system/patterns";
 import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
@@ -259,9 +259,8 @@ async function handleTrackClick({
         bvid: detail.bvid,
         duration: item.duration,
         episode: item.page,
-        id: Math.random() + "",
         title: item.part,
-        url: `https://bilisound.tuu.run/api/internal/resource?id=${detail.bvid}&episode=${item.page}`,
+        url: `${process.env.UMI_APP_BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${item.page}`,
         imgUrl: detail.pic,
     });
     await play();

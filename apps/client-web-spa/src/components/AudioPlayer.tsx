@@ -212,7 +212,7 @@ const AudioPlayer: React.FC = () => {
             if (downloadListTarget && downloadListTarget[1].progress === 1) {
                 player.src = downloadListTarget[1].url;
             } else {
-                player.src = `https://bilisound.tuu.run/api/internal/resource?id=${detail.bvid}&episode=${playingEpisode}`;
+                player.src = `${process.env.UMI_APP_BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${playingEpisode}`;
             }
             currentPlayKey.current = newPlayKey;
         }

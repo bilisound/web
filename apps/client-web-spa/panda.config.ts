@@ -42,6 +42,22 @@ export default defineConfig({
     theme: {
         extend: {
             keyframes: {
+                bsFadein: {
+                    "0%": { opacity: "0" },
+                    "100%": { opacity: "1" },
+                },
+                bsFadeout: {
+                    "0%": { opacity: "1" },
+                    "100%": { opacity: "0" },
+                },
+                bsFadeinDialog: {
+                    "0%": { opacity: "0", transform: "translate(-50%, -50%) scale(0.95)" },
+                    "100%": { opacity: "1", transform: "translate(-50%, -50%)" },
+                },
+                bsFadeoutDialog: {
+                    "0%": { opacity: "1", transform: "translate(-50%, -50%)" },
+                    "100%": { opacity: "0", transform: "translate(-50%, -50%) scale(0.95)" },
+                },
                 bsFadeinLeft: {
                     "0%": { opacity: "0", transform: "translateX(-2px)" },
                     "100%": { opacity: "1" },

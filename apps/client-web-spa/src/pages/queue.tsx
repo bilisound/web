@@ -1,5 +1,5 @@
 import { css, cva } from "@/styled-system/css";
-import { center, flex, vstack } from "@/styled-system/patterns";
+import { center, flex, hstack, vstack } from "@/styled-system/patterns";
 import { AudioQueueData, jump, toggle, useAudioPaused, useQueue } from "@/utils/audio";
 import { memo, useCallback } from "react";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
@@ -8,6 +8,7 @@ import { ReactComponent as IconMobile } from "@/icons/fa-solid--mobile-alt.svg";
 import { ReactComponent as IconEdit } from "@/icons/fa-solid--edit.svg";
 import { ReactComponent as IconTrash } from "@/icons/fa-solid--trash-alt.svg";
 import { bsButton } from "@/components/recipes/button";
+import * as Dialog from "@radix-ui/react-dialog";
 
 const playListItemRoot = cva({
     base: {
@@ -51,15 +52,23 @@ function Title() {
     );
 }
 
+function PlaylistItemCurrentIcon() {
+    const isPlaying = !useAudioPaused();
+
+    if (isPlaying) {
+        return <MusicPlayingIcon />;
+    } else {
+        return <IconPause className={css({ w: 4, h: 4 })} />;
+    }
+}
+
 function PlaylistItemRaw({
     isActive,
-    isPlaying,
     data,
     index,
     onJump,
 }: {
     isActive: boolean;
-    isPlaying: boolean;
     data: AudioQueueData;
     index: number;
     onJump: (index: number) => void;
@@ -83,11 +92,7 @@ function PlaylistItemRaw({
                 onClick={() => onJump(index)}
             >
                 {isActive ? (
-                    isPlaying ? (
-                        <MusicPlayingIcon />
-                    ) : (
-                        <IconPause className={css({ w: 4, h: 4 })} />
-                    )
+                    <PlaylistItemCurrentIcon />
                 ) : (
                     <div className={css({ w: 4, h: 4, pos: "relative" })}>
                         <div
@@ -113,22 +118,11 @@ function PlaylistItemRaw({
 }
 
 const PlaylistItem = memo(PlaylistItemRaw, (prevProps, nextProps) => {
-    // 如果 isActive 不为 true，则无视 isPlaying 的更新
-    if (!nextProps.isActive) {
-        // console.log("无视 isPlaying 的更新");
-        return prevProps.isActive === nextProps.isActive && prevProps.data === nextProps.data;
-    }
-    // console.log("正常更新");
-    return (
-        prevProps.isActive === nextProps.isActive &&
-        prevProps.data === nextProps.data &&
-        prevProps.isPlaying === nextProps.isPlaying
-    );
+    return prevProps.isActive === nextProps.isActive && prevProps.data === nextProps.data;
 });
 
 function Playlist() {
     const { queue, current } = useQueue();
-    const isPlaying = !useAudioPaused();
 
     const handleJump = useCallback(
         async (i: number) => {
@@ -145,17 +139,84 @@ function Playlist() {
         <ul className={vstack({ gap: 1, alignItems: "stretch" })}>
             {queue.map((e, i) => {
                 return (
-                    <PlaylistItem
-                        isActive={current?.id === e.id}
-                        isPlaying={isPlaying}
-                        data={e}
-                        key={e.id}
-                        index={i}
-                        onJump={handleJump}
-                    />
+                    <PlaylistItem isActive={current?.id === e.id} data={e} key={e.id} index={i} onJump={handleJump} />
                 );
             })}
         </ul>
+    );
+}
+
+function ClearListButton() {
+    return (
+        <Dialog.Root>
+            <Dialog.Trigger asChild>
+                <button type={"button"} className={bsButton({ variant: "ghost", color: "danger" })}>
+                    <IconTrash />
+                    清空列表
+                </button>
+            </Dialog.Trigger>
+            <Dialog.Portal>
+                <Dialog.Overlay
+                    className={css({
+                        bg: "black/60",
+                        pos: "fixed",
+                        inset: 0,
+                        animationDuration: "300ms",
+                        zIndex: 1,
+                        '&[data-state="open"]': {
+                            animationName: "bsFadein",
+                        },
+                        '&[data-state="closed"]': {
+                            animationName: "bsFadeout",
+                        },
+                    })}
+                />
+                <Dialog.Content
+                    className={css({
+                        bg: {
+                            base: "white",
+                            _dark: "neutral.900",
+                        },
+                        p: 6,
+                        rounded: "2xl",
+                        animationDuration: "300ms",
+                        pos: "fixed",
+                        left: "50%",
+                        top: "50%",
+                        w: "calc(100% - 2rem)",
+                        maxW: "sm",
+                        transform: "translate(-50%, -50%)",
+                        zIndex: 1,
+                        shadow: "2xl",
+                        '&[data-state="open"]': {
+                            animationName: "bsFadeinDialog",
+                        },
+                        '&[data-state="closed"]': {
+                            animationName: "bsFadeoutDialog",
+                        },
+                    })}
+                >
+                    <Dialog.Title className={css({ fontSize: "lg", lineHeight: 1.5, fontWeight: 600 })}>
+                        清空列表
+                    </Dialog.Title>
+                    <Dialog.Description className={css({ mt: 2, fontSize: "sm", lineHeight: 1.5 })}>
+                        确定要清空整个播放队列吗？此操作不可撤销。
+                    </Dialog.Description>
+                    <div className={hstack({ justifyContent: "flex-end", gap: 2, mt: 6 })}>
+                        <Dialog.Close asChild>
+                            <button className={bsButton({ variant: "ghost", color: "plain" })} type={"button"}>
+                                取消
+                            </button>
+                        </Dialog.Close>
+                        <Dialog.Close asChild>
+                            <button className={bsButton({ color: "danger" })} aria-label="Close" type={"button"}>
+                                确定
+                            </button>
+                        </Dialog.Close>
+                    </div>
+                </Dialog.Content>
+            </Dialog.Portal>
+        </Dialog.Root>
     );
 }
 
@@ -187,10 +248,7 @@ export default function Page() {
                                     <IconEdit />
                                     管理模式
                                 </button>
-                                <button type={"button"} className={bsButton({ variant: "ghost", color: "danger" })}>
-                                    <IconTrash />
-                                    清空列表
-                                </button>
+                                <ClearListButton />
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,7 @@ import { css } from "@/styled-system/css";
 import * as audio from "@/utils/audio";
 import * as Slider from "@radix-ui/react-slider";
 import { seek, setPreventAutoNext, useAudioProgress } from "@/utils/audio";
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState, forwardRef } from "react";
 import { bsIconButton } from "@/components/recipes/button";
 import { center, flex, hstack, vstack } from "@/styled-system/patterns";
 import { ReactComponent as IconPlay } from "@/icons/fa-solid--play.svg";
@@ -16,9 +16,7 @@ import { ReactComponent as IconDisc } from "@/icons/fa-solid--compact-disc.svg";
 import { secondToTimestamp } from "@bilisound2/utils";
 import { Link } from "umi";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
-import { useLocalStorageState } from "ahooks";
-import { BILISOUND_BOTTOM_PLAYER_OPEN } from "@/constants/local-storage";
-import { forwardRef } from "@chakra-ui/react";
+import { useConfigStore } from "@/store/config";
 
 // 播放器滑块
 function AudioSlider({ disabled }: { disabled: boolean }) {
@@ -143,7 +141,7 @@ function AudioTime() {
 }
 
 // 播放器本体
-const AudioPlayerInner = forwardRef<React.JSX.IntrinsicElements["div"], "div">((props, ref) => {
+const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props, ref) => {
     const { current } = audio.useQueue();
     const isPlaying = !audio.useAudioPaused();
 
@@ -286,15 +284,17 @@ const AudioPlayerInner = forwardRef<React.JSX.IntrinsicElements["div"], "div">((
 
 export default function AudioPlayer() {
     // 播放器展开控制
-    const [open, setOpen] = useLocalStorageState(BILISOUND_BOTTOM_PLAYER_OPEN, {
-        defaultValue: true,
-    });
+    const { showPlayer, setShowPlayer } = useConfigStore(state => ({
+        showPlayer: state.showPlayer,
+        setShowPlayer: state.setShowPlayer,
+    }));
+
     const [actualOpen, setActualOpen] = useState(false);
     const timer = useRef<any>();
     const playerId = useId();
 
     useEffect(() => {
-        if (open) {
+        if (showPlayer) {
             setActualOpen(true);
         } else {
             timer.current = setTimeout(() => {
@@ -304,7 +304,7 @@ export default function AudioPlayer() {
         return () => {
             clearTimeout(timer.current);
         };
-    }, [open]);
+    }, [showPlayer]);
 
     // 播放状态
     const isPlaying = !audio.useAudioPaused();
@@ -330,7 +330,7 @@ export default function AudioPlayer() {
                     px: 4,
                     transition: "transform",
                     transitionDuration: "slow",
-                    transform: open ? "none" : "translateY(100%)",
+                    transform: showPlayer ? "none" : "translateY(100%)",
                     h: ["6.5rem", "5.5rem"],
                 })}
             >
@@ -354,9 +354,9 @@ export default function AudioPlayer() {
                             color: "white",
                             cursor: "pointer",
                         })}
-                        onClick={() => setOpen(prevState => !prevState)}
-                        aria-label={open ? "收起播放器" : "展开播放器"}
-                        aria-expanded={open}
+                        onClick={() => setShowPlayer(!showPlayer)}
+                        aria-label={showPlayer ? "收起播放器" : "展开播放器"}
+                        aria-expanded={showPlayer}
                         aria-controls={playerId}
                     >
                         {isPlaying ? <MusicPlayingIcon /> : <IconDisc className={css({ w: 4, h: 4 })} />}
@@ -366,7 +366,7 @@ export default function AudioPlayer() {
                 {actualOpen && <AudioPlayerInner id={playerId} />}
             </div>
             {/* 用来把页面底部撑起来的东西 */}
-            {open && <div aria-hidden={"true"} className={css({ h: ["6.5rem", "5.5rem"] })}></div>}
+            {showPlayer && <div aria-hidden={"true"} className={css({ h: ["6.5rem", "5.5rem"] })}></div>}
         </>
     );
 }

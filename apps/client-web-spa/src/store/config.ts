@@ -12,6 +12,8 @@ export interface ConfigStoreProps {
     useAv: boolean;
     // 显示看板娘
     showYuruChara: boolean;
+    // 显示播放器
+    showPlayer: boolean;
 }
 
 export interface ConfigStoreMethods {
@@ -20,6 +22,7 @@ export interface ConfigStoreMethods {
     setInstantSave: (instantSave: boolean) => void;
     setUseAv: (useAv: boolean) => void;
     setShowYuruChara: (showYuruChara: boolean) => void;
+    setShowPlayer: (showPlayer: boolean) => void;
 }
 
 export const useConfigStore = create<ConfigStoreProps & ConfigStoreMethods>()(
@@ -35,6 +38,8 @@ export const useConfigStore = create<ConfigStoreProps & ConfigStoreMethods>()(
             setUseAv: useAv => set(() => ({ useAv })),
             showYuruChara: true,
             setShowYuruChara: showYuruChara => set(() => ({ showYuruChara })),
+            showPlayer: true,
+            setShowPlayer: showPlayer => set(() => ({ showPlayer })),
         }),
         {
             name: "bilisound-config", // name of the item in the storage (must be unique)

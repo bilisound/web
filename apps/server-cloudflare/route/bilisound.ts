@@ -233,7 +233,7 @@ export default function bilisound(router: RouterType) {
 					return undefined;
 				}
 				return value;
-			}), { expirationTtl: 300 }); // 5 分钟
+			}), { expirationTtl: 330 }); // 5 分钟 30 秒
 			return AjaxSuccess(keySuffix);
 		} catch (e) {
 			return AjaxError(e);

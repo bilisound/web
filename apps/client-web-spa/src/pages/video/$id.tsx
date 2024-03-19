@@ -10,6 +10,7 @@ import { findFromQueue, jump, play, pushQueue, toggle, useQueue } from "@/utils/
 import * as Avatar from "@radix-ui/react-avatar";
 import { htmlDecode } from "@bilisound2/utils/dist/dom";
 import { ReactComponent as IconDown } from "@/icons/mingcute--down-fill.svg";
+import { BASE_URL } from "@/constants";
 
 const episode = cva({
     base: {
@@ -260,7 +261,7 @@ async function handleTrackClick({
         duration: item.duration,
         episode: item.page,
         title: item.part,
-        url: `${process.env.UMI_APP_BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${item.page}`,
+        url: `${BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${item.page}`,
         imgUrl: detail.pic,
     });
     await play();

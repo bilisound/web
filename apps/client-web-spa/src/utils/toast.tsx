@@ -72,7 +72,6 @@ export function sendToast(message: React.ReactNode | Error, options: SendToastOp
                 <div
                     className={css(kinds[type].bg, {
                         mr: "3",
-                        bgColor: "green.500",
                         color: "white",
                         w: "6",
                         h: "6",

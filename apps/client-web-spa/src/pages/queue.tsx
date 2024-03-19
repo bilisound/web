@@ -1,7 +1,7 @@
 import { css, cva } from "@/styled-system/css";
-import { center, flex, hstack, vstack } from "@/styled-system/patterns";
+import { center, flex, vstack } from "@/styled-system/patterns";
 import { AudioQueueData, jump, toggle, useAudioPaused, useQueue } from "@/utils/audio";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { ReactComponent as IconPause } from "@/icons/fa-solid--pause.svg";
 import { ReactComponent as IconMobile } from "@/icons/fa-solid--mobile-alt.svg";
@@ -10,7 +10,19 @@ import { ReactComponent as IconTrash } from "@/icons/fa-solid--trash-alt.svg";
 import { bsButton } from "@/components/recipes/button";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ReactComponent as IconLoading } from "@/icons/loading.svg";
-import sleep from "sleep-promise";
+import {
+    bsDialogActionGroup,
+    bsDialogContent,
+    bsDialogDescription,
+    bsDialogOverlay,
+    bsDialogTitle,
+} from "@/components/recipes/dialog";
+import { postInternalTransferList } from "@/api/online";
+import { PLAYLIST_EXPORT_PREFIX } from "@/constants/qr-code";
+import { sendToast } from "@/utils/toast";
+import QRCode from "qrcode";
+import { useCountdown } from "usehooks-ts";
+import { secondToTimestamp } from "@bilisound2/utils";
 
 const playListItemRoot = cva({
     base: {
@@ -155,24 +167,113 @@ function Playlist() {
 }
 
 function ExportListButton() {
+    const [open, setOpen] = useState(false);
     const [exporting, setExporting] = useState(false);
+    const [result, setResult] = useState("");
+    const { queue } = useQueue();
+    const [count, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({
+        countStart: 300,
+        intervalMs: 1000,
+    });
+
+    const canvasRef = useCallback(
+        (el: HTMLCanvasElement) => {
+            if (!el) {
+                return;
+            }
+            QRCode.toCanvas(
+                el,
+                result,
+                {
+                    margin: 3,
+                },
+                function (error) {
+                    if (error) console.error(error);
+                    console.log("success!");
+                },
+            );
+        },
+        [result],
+    );
 
     const handleExport = useCallback(async () => {
         setExporting(true);
-        await sleep(5000);
-        setExporting(false);
-    }, []);
+        try {
+            const { data: result } = await postInternalTransferList(queue);
+            setResult(PLAYLIST_EXPORT_PREFIX + result);
+            setOpen(true);
+            resetCountdown();
+            startCountdown();
+        } catch (e) {
+            sendToast("操作失败：" + (e as any).message, {
+                type: "error",
+            });
+            throw e;
+        } finally {
+            setExporting(false);
+        }
+    }, [queue]);
+
+    useEffect(() => {
+        if (!open) {
+            stopCountdown();
+        }
+    }, [open]);
+
+    useEffect(() => {
+        if (count <= 0) {
+            setOpen(false);
+        }
+    }, [count]);
 
     return (
-        <button
-            type={"button"}
-            className={bsButton({ variant: "ghost", color: "plain" })}
-            disabled={exporting}
-            onClick={handleExport}
-        >
-            {exporting ? <IconLoading /> : <IconMobile />}
-            导出到 Bilisound 客户端
-        </button>
+        <>
+            <button
+                type={"button"}
+                className={bsButton({ variant: "ghost", color: "plain" })}
+                disabled={exporting}
+                onClick={handleExport}
+            >
+                {exporting ? <IconLoading /> : <IconMobile />}
+                导出到 Bilisound 客户端
+            </button>
+            <Dialog.Root open={open} onOpenChange={setOpen}>
+                <Dialog.Portal>
+                    <Dialog.Overlay className={bsDialogOverlay()} />
+                    <Dialog.Content className={css(bsDialogContent.raw(), { maxW: "md" })}>
+                        <Dialog.Title className={bsDialogTitle()}>导出到 Bilisound 客户端</Dialog.Title>
+                        <Dialog.Description className={bsDialogDescription()}>
+                            <b>请使用 Bilisound 客户端</b>扫描以下二维码，以完成导入操作。
+                        </Dialog.Description>
+                        <div className={center({ pt: 6, flexDirection: "column", gap: 2 })}>
+                            <canvas ref={canvasRef} className={css({ rounded: "xl", boxShadow: "lg" })}></canvas>
+                            <p
+                                className={css({
+                                    fontSize: "sm",
+                                    color: {
+                                        base: "neutral.800",
+                                        _dark: "neutral.200",
+                                    },
+                                })}
+                            >
+                                二维码将在{" "}
+                                <span className={css({ color: "red.500", fontWeight: "bold", fontFamily: "roboto" })}>
+                                    {secondToTimestamp(count, { showMillisecond: false })}
+                                </span>{" "}
+                                后失效
+                            </p>
+                        </div>
+                        <div className={bsDialogActionGroup()}>
+                            <Dialog.Close asChild>
+                                <button className={bsButton({ color: "primary" })} aria-label="Close" type={"button"}>
+                                    关闭
+                                </button>
+                            </Dialog.Close>
+                        </div>
+                    </Dialog.Content>
+                </Dialog.Portal>
+            </Dialog.Root>
+        </>
     );
 }
 
@@ -186,53 +287,13 @@ function ClearListButton() {
                 </button>
             </Dialog.Trigger>
             <Dialog.Portal>
-                <Dialog.Overlay
-                    className={css({
-                        bg: "black/60",
-                        pos: "fixed",
-                        inset: 0,
-                        animationDuration: "300ms",
-                        zIndex: 1,
-                        '&[data-state="open"]': {
-                            animationName: "bsFadein",
-                        },
-                        '&[data-state="closed"]': {
-                            animationName: "bsFadeout",
-                        },
-                    })}
-                />
-                <Dialog.Content
-                    className={css({
-                        bg: {
-                            base: "white",
-                            _dark: "neutral.900",
-                        },
-                        p: 6,
-                        rounded: "2xl",
-                        animationDuration: "300ms",
-                        pos: "fixed",
-                        left: "50%",
-                        top: "50%",
-                        w: "calc(100% - 2rem)",
-                        maxW: "sm",
-                        transform: "translate(-50%, -50%)",
-                        zIndex: 1,
-                        shadow: "2xl",
-                        '&[data-state="open"]': {
-                            animationName: "bsFadeinDialog",
-                        },
-                        '&[data-state="closed"]': {
-                            animationName: "bsFadeoutDialog",
-                        },
-                    })}
-                >
-                    <Dialog.Title className={css({ fontSize: "lg", lineHeight: 1.5, fontWeight: 600 })}>
-                        清空列表
-                    </Dialog.Title>
-                    <Dialog.Description className={css({ mt: 2, fontSize: "sm", lineHeight: 1.5 })}>
+                <Dialog.Overlay className={bsDialogOverlay()} />
+                <Dialog.Content className={bsDialogContent()}>
+                    <Dialog.Title className={bsDialogTitle()}>清空列表</Dialog.Title>
+                    <Dialog.Description className={bsDialogDescription()}>
                         确定要清空整个播放队列吗？此操作不可撤销。
                     </Dialog.Description>
-                    <div className={hstack({ justifyContent: "flex-end", gap: 2, mt: 6 })}>
+                    <div className={bsDialogActionGroup()}>
                         <Dialog.Close asChild>
                             <button className={bsButton({ variant: "ghost", color: "plain" })} type={"button"}>
                                 取消

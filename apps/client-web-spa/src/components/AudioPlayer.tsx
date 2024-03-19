@@ -35,7 +35,7 @@ import Wrapper from "@/components/Wrapper";
 import { getBilisoundResourceMetadata } from "@/api/online";
 import { downloadUrl } from "@/utils/file";
 import { useConfigStore } from "@/store/configStore";
-import { BOTTOM_HEIGHT } from "@/constants";
+import { BASE_URL, BOTTOM_HEIGHT } from "@/constants";
 import { secondToTimestamp } from "@bilisound2/utils";
 
 const AudioPlayer: React.FC = () => {
@@ -212,7 +212,7 @@ const AudioPlayer: React.FC = () => {
             if (downloadListTarget && downloadListTarget[1].progress === 1) {
                 player.src = downloadListTarget[1].url;
             } else {
-                player.src = `${process.env.UMI_APP_BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${playingEpisode}`;
+                player.src = `${BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${playingEpisode}`;
             }
             currentPlayKey.current = newPlayKey;
         }

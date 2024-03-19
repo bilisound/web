@@ -1,4 +1,20 @@
-@layer reset, base, tokens, recipes, utilities;
+@layer reset, base, tokens, recipes, utilities, extra;
+
+@layer extra {
+    [data-theme="red"] {
+        --colors-primary-50: #fef2f2;
+        --colors-primary-100: #fde6e7;
+        --colors-primary-200: #fad1d4;
+        --colors-primary-300: #f6abb1;
+        --colors-primary-400: #f07c88;
+        --colors-primary-500: #e64f62;
+        --colors-primary-600: #d22c49;
+        --colors-primary-700: #b0203c;
+        --colors-primary-800: #941d39;
+        --colors-primary-900: #7f1c37;
+        --colors-primary-950: #460b18;
+    }
+}
 
 /* Loading Animation by https://css-loaders.com/dots/ */
 /* HTML: <div class="loader"></div> */

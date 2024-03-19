@@ -2,10 +2,14 @@
 import { create } from "zustand";
 
 function normalizedDict() {
-    if (localStorage.theme !== "dark" && localStorage.theme !== "light" && localStorage.theme !== "system") {
-        localStorage.theme = "system";
+    if (
+        localStorage.colorMode !== "dark" &&
+        localStorage.colorMode !== "light" &&
+        localStorage.colorMode !== "system"
+    ) {
+        localStorage.colorMode = "system";
     }
-    return localStorage.theme;
+    return localStorage.colorMode;
 }
 
 function normalizedDictActual() {
@@ -51,7 +55,7 @@ const useColorModeStore = create<ColorModeStoreProps & ColorModeStoreMethods>()(
                 }
                 break;
         }
-        localStorage.theme = colorMode;
+        localStorage.colorMode = colorMode;
         setState(() => ({ colorMode }));
     },
     actualColorMode: normalizedDictActual(),

@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { v4 } from "uuid";
 import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/local-storage";
+import { BASE_URL } from "@/constants";
 
 const NO_SONG_WARNING_MESSAGE = "目前没有可以播放的音频";
 
@@ -32,6 +33,7 @@ const queueEventTriggers = new Map<string, () => void>();
 // 队列初始化
 queue.forEach((e, i) => {
     e.key = `__${i}`;
+    e.url = `${BASE_URL}/api/internal/resource?id=${e.bvid}&episode=${e.episode}`;
 });
 
 // 其它参数初始化
@@ -90,7 +92,7 @@ function commitQueue() {
     localStorage.setItem(
         BILISOUND_DEFAULT_PLAYLIST,
         JSON.stringify(queue, (key, value) => {
-            if (key === "key") {
+            if (key === "key" || key === "url") {
                 return undefined;
             }
             return value;

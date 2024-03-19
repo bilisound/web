@@ -229,7 +229,7 @@ export default function bilisound(router: RouterType) {
 			}
 
 			await cache.put(`transfer_list_${keySuffix}`, JSON.stringify(userInput, (key, value) => {
-				if (key === "key") {
+				if (key === "key" || key === "url") {
 					return undefined;
 				}
 				return value;

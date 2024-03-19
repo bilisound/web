@@ -8,10 +8,12 @@
 		"start-stackblitz": "WRANGLER_SEND_METRICS=false wrangler dev index.ts --local"
 	},
 	"dependencies": {
-		"itty-router": "^4.0.9"
+		"itty-router": "^4.2.2",
+		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230518.0",
-		"wrangler": "^3.1.0"
+		"@cloudflare/workers-types": "^4.20240314.0",
+		"@types/uuid": "^9.0.8",
+		"wrangler": "^3.34.2"
 	}
 }

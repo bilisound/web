@@ -3,6 +3,7 @@ import { AjaxError, AjaxSuccess } from '../utils/misc';
 import CORS_HEADERS from '../constants/cors';
 import { KVNamespace } from '@cloudflare/workers-types';
 import { getVideo } from '../api/bilibili';
+import { v4 } from "uuid";
 
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36';
 
@@ -210,5 +211,37 @@ export default function bilisound(router: RouterType) {
 		} catch (e) {
 			return AjaxError(e);
 		}
+	});
+
+	router.post("/api/internal/transfer-list", async (request, env) => {
+		const cache = env.bilisound as KVNamespace;
+		const keySuffix = v4();
+		try {
+			// 请求预检
+			if (request.headers.get("content-type") !== "application/json") {
+				return AjaxError("Unsupported data type", 400);
+			}
+
+			// 读取用户传输的数据
+			const userInput = await request.json();
+			if (!Array.isArray(userInput)) {
+				return AjaxError("Unsupported data type", 400);
+			}
+
+			await cache.put(`transfer_list_${keySuffix}`, JSON.stringify(userInput), { expirationTtl: 300 }); // 5 分钟
+			return AjaxSuccess(keySuffix);
+		} catch (e) {
+			return AjaxError(e);
+		}
+	});
+
+	router.get("/api/internal/transfer-list/:id", async (request, env) => {
+		const cache = env.bilisound as KVNamespace;
+		const { params } = request;
+		const keySuffix = params.id;
+
+		const got = await cache.get(`transfer_list_${keySuffix}`);
+
+		return AjaxSuccess(JSON.parse(got));
 	});
 }

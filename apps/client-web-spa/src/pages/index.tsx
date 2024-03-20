@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { center } from "@/styled-system/patterns";
 import { Formik, Field, Form } from "formik";
 import { bsInput } from "@/components/recipes/input";
@@ -13,18 +13,28 @@ import { resolveVideo } from "@/utils/format";
 import { getBilisoundMetadata } from "@/api/online";
 import { sendToast } from "@/utils/toast";
 import { useNavigate } from "umi";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Values {
     query: string;
 }
 
-async function handleRequest(req: Values) {
-    const resolvedInput = await resolveVideo(req.query);
-    return getBilisoundMetadata({ id: resolvedInput });
-}
-
 export default function Page() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const handleRequest = useCallback(
+        async (req: Values) => {
+            const resolvedInput = await resolveVideo(req.query);
+            return queryClient.fetchQuery({
+                queryKey: [resolvedInput],
+                queryFn: () => {
+                    return getBilisoundMetadata({ id: resolvedInput });
+                },
+            });
+        },
+        [queryClient],
+    );
 
     return (
         <div className={center()}>
@@ -35,9 +45,6 @@ export default function Page() {
                 onSubmit={async values => {
                     try {
                         const value = await handleRequest(values);
-                        sendToast("操作成功：" + value.data.bvid, {
-                            type: "success",
-                        });
                         navigate("/video/" + value.data.bvid);
                     } catch (e) {
                         sendToast(e as any, {

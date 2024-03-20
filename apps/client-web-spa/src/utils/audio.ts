@@ -197,8 +197,12 @@ export function setPreventAutoNext(to: boolean) {
 /**
  * 添加到播放列表
  */
-export async function pushQueue(data: Omit<AudioQueueData, "key">) {
-    queue.push({ ...data, key: v4() });
+export async function pushQueue(data: Omit<AudioQueueData, "key" | "url">) {
+    queue.push({
+        ...data,
+        key: v4(),
+        url: `${BASE_URL}/api/internal/resource?id=${data.bvid}&episode=${data.episode}`,
+    });
     commitQueue();
     jump(queue.length - 1);
 }

@@ -10,7 +10,8 @@ import { findFromQueue, jump, play, pushQueue, toggle, useQueue } from "@/utils/
 import * as Avatar from "@radix-ui/react-avatar";
 import { htmlDecode } from "@bilisound2/utils/dist/dom";
 import { ReactComponent as IconDown } from "@/icons/mingcute--down-fill.svg";
-import { BASE_URL } from "@/constants";
+import { ReactComponent as IconExternal } from "@/icons/fa-solid--external-link-alt.svg";
+import { bsButton } from "@/components/recipes/button";
 
 const episode = cva({
     base: {
@@ -77,7 +78,10 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                 />
             </div>
             <div className={vstack({ alignItems: "stretch", gap: 4 })}>
+                {/* 标题 */}
                 <h2 className={css({ fontSize: "lg", fontWeight: 600, lineHeight: 1.5 })}>{detail.title}</h2>
+
+                {/* 作者信息、上传时间 */}
                 <div className={hstack({ gap: 3 })}>
                     <Avatar.Root
                         className={circle({
@@ -121,6 +125,8 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                         {new Date(detail.pubDate).toLocaleDateString("zh-hans-CN")}
                     </time>
                 </div>
+
+                {/* 详情 */}
                 <div className={css({ pos: "relative" })}>
                     <p
                         className={css({
@@ -178,6 +184,19 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                             <IconDown className={css({ w: 3, h: 3, ms: 1 })} />
                         </span>
                     </button>
+                </div>
+
+                {/* 操作 */}
+                <div className={hstack({ gap: 2 })}>
+                    <a
+                        className={bsButton()}
+                        href={`https://www.bilibili.com/video/${detail.bvid}`}
+                        target={"_blank"}
+                        rel="noreferrer"
+                    >
+                        <IconExternal />
+                        查看源视频
+                    </a>
                 </div>
             </div>
         </section>
@@ -261,7 +280,6 @@ async function handleTrackClick({
         duration: item.duration,
         episode: item.page,
         title: item.part,
-        url: `${BASE_URL}/api/internal/resource?id=${detail.bvid}&episode=${item.page}`,
         imgUrl: detail.pic,
     });
     await play();
@@ -299,11 +317,11 @@ export default function Page() {
     }>();
     const { data, isLoading } = useQuery({
         queryKey: [id ?? ""],
-        queryFn: async () => {
+        queryFn: () => {
             if (!id) {
                 return;
             }
-            return getBilisoundMetadata({ id }, true);
+            return getBilisoundMetadata({ id });
         },
     });
 

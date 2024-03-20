@@ -29,16 +29,7 @@ export type GetBilisoundMetadataResponse = {
     }>;
 };
 
-const infoCache = new Map<string, Wrap<GetBilisoundMetadataResponse>>();
-
-export async function getBilisoundMetadata(data: { id: string }, removeCache = false) {
-    const got = infoCache.get(data.id);
-    if (got) {
-        if (removeCache) {
-            infoCache.delete(data.id);
-        }
-        return got;
-    }
+export async function getBilisoundMetadata(data: { id: string }) {
     const res = await request
         .get("api/internal/metadata", {
             searchParams: data,
@@ -49,8 +40,6 @@ export async function getBilisoundMetadata(data: { id: string }, removeCache = f
     if (res.data.pages.length === 1) {
         res.data.pages[0].part = res.data.title;
     }
-
-    infoCache.set(data.id, res);
     return res;
 }
 

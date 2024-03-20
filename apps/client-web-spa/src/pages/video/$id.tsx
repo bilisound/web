@@ -413,6 +413,7 @@ export default function Page() {
     if (isLoading) {
         return (
             <div className={vstack({ gap: 6, pos: "relative" })}>
+                <div className={css({ srOnly: true })}>页面正在加载，请稍候……</div>
                 <DataSkeleton />
             </div>
         );

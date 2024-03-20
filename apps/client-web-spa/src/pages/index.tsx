@@ -74,7 +74,7 @@ export default function Page() {
                                     name="query"
                                     placeholder="粘贴完整 URL、客户端分享短链接或带前缀 ID 至此"
                                     validate={validateUserQuery}
-                                    className={bsInput()}
+                                    className={bsInput({ color: touched.query && errors.query ? "danger" : "plain" })}
                                 />
                             </FormItem>
                         </FormProvider>

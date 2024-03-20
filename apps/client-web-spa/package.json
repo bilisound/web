@@ -19,7 +19,6 @@
     "prepare": "panda codegen"
   },
   "dependencies": {
-    "@bilisound2/theme": "workspace:*",
     "@bilisound2/utils": "workspace:*",
     "@ffmpeg/core": "^0.12.6",
     "@ffmpeg/ffmpeg": "^0.12.10",
@@ -31,7 +30,6 @@
     "@radix-ui/react-slider": "^1.1.2",
     "@tanstack/react-query": "^5.28.0",
     "formik": "^2.4.5",
-    "howler": "^2.2.4",
     "mediainfo.js": "^0.2.2",
     "qrcode": "^1.5.3",
     "react-hot-toast": "^2.4.1",
@@ -50,7 +48,6 @@
     "@types/webpack-env": "^1.18.4",
     "@umijs/lint": "^4.1.2",
     "autoprefixer": "^10.4.18",
-    "eslint-config-bilisound2": "workspace:*",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "netlify-cli": "^17.18.1",

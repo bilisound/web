@@ -17,6 +17,7 @@ import { secondToTimestamp } from "@bilisound2/utils";
 import { Link } from "umi";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { useConfigStore } from "@/store/config";
+import { BASE_URL } from "@/constants";
 
 // 播放器滑块
 function AudioSlider({ disabled }: { disabled: boolean }) {
@@ -144,6 +145,7 @@ function AudioTime() {
 const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props, ref) => {
     const { current } = audio.useQueue();
     const isPlaying = !audio.useAudioPaused();
+    const { useAv } = useConfigStore(state => ({ useAv: state.useAv }));
 
     return (
         <div
@@ -252,14 +254,19 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                         >
                             <IconPlaylist />
                         </Link>
-                        <button
-                            type={"button"}
-                            disabled={!current}
-                            className={bsIconButton({ variant: "ghost" })}
-                            aria-label={`下载当前播放的曲目`}
-                        >
-                            <IconDownload />
-                        </button>
+                        {current && (
+                            <a
+                                href={`${BASE_URL}/api/internal/resource?id=${current.bvid}&episode=${
+                                    current.episode
+                                }&dl=${useAv ? "av" : "bv"}`}
+                                target={"_blank"}
+                                className={bsIconButton({ variant: "ghost" })}
+                                aria-label={`下载当前播放的曲目`}
+                                rel="noreferrer"
+                            >
+                                <IconDownload />
+                            </a>
+                        )}
                     </div>
                     <div
                         className={css({

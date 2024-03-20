@@ -226,7 +226,7 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                         to={current ? `/video/${current.bvid}` : ""}
                         className={css(bsIconButton.raw({ variant: "ghost" }), {
                             pos: ["absolute", "static"],
-                            left: 0,
+                            insetInlineStart: 0,
                             top: "50%",
                             transform: ["translateY(-50%)", "none"],
                         })}
@@ -238,7 +238,7 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                         className={hstack({
                             gap: 0,
                             pos: "absolute",
-                            right: 0,
+                            insetInlineEnd: 0,
                             top: "50%",
                             transform: "translateY(-50%)",
                         })}
@@ -337,7 +337,7 @@ export default function AudioPlayer() {
                     className={vstack({
                         gap: 4,
                         pos: "absolute",
-                        right: 4,
+                        insetInlineEnd: 4,
                         top: -4,
                         transform: "translate(0, -100%)",
                     })}

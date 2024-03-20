@@ -330,7 +330,7 @@ export default function Page() {
                         className={css({
                             w: ["full", 60],
                             flex: "none",
-                            borderRight: ["none", "1px solid token(colors.bs-border)"],
+                            borderInlineEnd: ["none", "1px solid token(colors.bs-border)"],
                             pe: [0, 3],
                         })}
                     >

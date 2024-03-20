@@ -184,6 +184,9 @@ importers:
       pandacss-preset-typography:
         specifier: ^0.1.5
         version: 0.1.5(@pandacss/dev@0.34.1)
+      pform-reset:
+        specifier: ^0.0.2
+        version: 0.0.2
       postcss:
         specifier: ^8.4.35
         version: 8.4.35
@@ -13510,6 +13513,11 @@ packages:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
 
+  /mini-svg-data-uri@1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
+    dev: true
+
   /miniflare@3.20240304.2:
     resolution: {integrity: sha512-yQ5TBKv7TlvF8khFvvH+1WWk8cBnaLgNzcbJ5DLQOdecxdDxUCVlN38HThd6Nhcz6EY+ckDkww8FkugUbSSpIQ==}
     engines: {node: '>=16.13'}
@@ -14779,6 +14787,12 @@ packages:
 
   /perfect-debounce@1.0.0:
     resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
+    dev: true
+
+  /pform-reset@0.0.2:
+    resolution: {integrity: sha512-pfGdezCUcJf8YCchYZlAEkPtyOT3K3QRgJQafeKTgzQpKZZd0XsmV84XUyFgH/GyzKimPoPZ6KwTf5YWOC7VDA==}
+    dependencies:
+      mini-svg-data-uri: 1.4.4
     dev: true
 
   /picocolors@1.0.0:

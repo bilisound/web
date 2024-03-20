@@ -24,6 +24,13 @@ export default defineConfig({
         ]
     },
     clientLoader: {},
+    proxy: {
+        '/api': {
+            'target': 'http://localhost:8787',
+            'changeOrigin': true,
+            // 'pathRewrite': { '^/api' : '' },
+        }
+    },
     metas: [
         {
             "name": "renderer",

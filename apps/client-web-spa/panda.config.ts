@@ -6,6 +6,8 @@ export default defineConfig({
     preflight: true,
 
     presets: [
+        "@pandacss/dev/presets",
+        "pform-reset",
         typographyPreset({
             recipe: {
                 semanticTokens: {
@@ -13,10 +15,6 @@ export default defineConfig({
                 },
             },
         }),
-        // Re-add the panda presets if you want to keep
-        // the default keyframes, breakpoints, tokens
-        // and textStyles provided by PandaCSS
-        "@pandacss/dev/presets",
     ],
 
     // Where to look for your css declarations

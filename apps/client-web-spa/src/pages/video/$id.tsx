@@ -12,6 +12,12 @@ import { htmlDecode } from "@bilisound2/utils/dist/dom";
 import { ReactComponent as IconDown } from "@/icons/mingcute--down-fill.svg";
 import { ReactComponent as IconExternal } from "@/icons/fa-solid--external-link-alt.svg";
 import { bsButton } from "@/components/recipes/button";
+import { bsSkeleton } from "@/components/recipes/skeleton";
+
+const skeletonLength = [
+    0.3484095619198131, 0.5274406037172059, 0.5640563137468972, 0.9519480340267148, 0.23511593039367695,
+    0.49321600131466314, 0.9896558221259788, 0.9373028785524258, 0.3650075569024289, 0.5108529554075676,
+];
 
 const episode = cva({
     base: {
@@ -311,6 +317,85 @@ function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
     );
 }
 
+function DataSkeleton() {
+    return (
+        <div className={css({ display: "contents" })} aria-hidden={true}>
+            {/* 视频信息 */}
+            <div className={grid({ columns: [1, 1, 2], gap: [4, 4, 5], w: "full", maxW: "container" })}>
+                <div>
+                    <div className={css(bsSkeleton.raw(), { aspectRatio: "3/2", w: "full", borderRadius: "xl" })}></div>
+                </div>
+                <div className={vstack({ alignItems: "stretch", gap: 4 })}>
+                    <div className={center({ h: "calc(1.125rem * 1.5)" })}>
+                        <div
+                            className={css(bsSkeleton.raw({ variant: "circle" }), {
+                                h: "1.125rem",
+                                w: "full",
+                            })}
+                        ></div>
+                    </div>
+                    <div className={hstack({ gap: 3 })}>
+                        <div className={css(bsSkeleton.raw({ variant: "circle" }), { w: 8, h: 8, flex: "none" })}></div>
+                        <div className={css({ flex: "auto" })}>
+                            <div
+                                className={css(bsSkeleton.raw({ variant: "circle" }), {
+                                    w: 24,
+                                    h: "1.125rem",
+                                })}
+                            ></div>
+                        </div>
+                        <div
+                            className={css(bsSkeleton.raw({ variant: "circle" }), {
+                                w: 20,
+                                h: "1.125rem",
+                                flex: "none",
+                            })}
+                        ></div>
+                    </div>
+                    <div>
+                        {skeletonLength.map((e, i) => {
+                            return (
+                                <div
+                                    className={center({ h: "calc(0.875rem * 1.5)", justifyContent: "flex-start" })}
+                                    key={i}
+                                >
+                                    <div
+                                        className={css(bsSkeleton.raw({ variant: "circle" }), {
+                                            h: "0.875rem",
+                                        })}
+                                        style={{ width: `${e * 100}%` }}
+                                    ></div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className={css(bsSkeleton.raw(), { w: 32, h: 10, rounded: "md" })}></div>
+                </div>
+            </div>
+            {/* 选集 */}
+            <div className={css({ w: "full", maxW: "container" })}>
+                {/* 1.125rem */}
+                <div className={center({ h: "calc(1.125rem * 1.5)", justifyContent: "flex-start" })}>
+                    <div
+                        className={css(bsSkeleton.raw({ variant: "circle" }), {
+                            w: 24,
+                            h: "1.125rem",
+                        })}
+                    ></div>
+                </div>
+                <div className={grid({ columns: [1, 1, 2], gap: [3, 3, 5], mt: 4 })}>
+                    <div
+                        className={css(bsSkeleton.raw(), {
+                            h: 12,
+                            rounded: "lg",
+                        })}
+                    ></div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Page() {
     const { id } = useParams<{
         id: string;
@@ -326,7 +411,11 @@ export default function Page() {
     });
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div className={vstack({ gap: 6, pos: "relative" })}>
+                <DataSkeleton />
+            </div>
+        );
     }
 
     if (!data) {
@@ -336,7 +425,7 @@ export default function Page() {
     const detail = data.data;
 
     return (
-        <div className={vstack({ gap: 6 })}>
+        <div className={vstack({ gap: 6, pos: "relative" })}>
             <Information detail={detail} />
             <EpisodeList detail={detail} />
         </div>

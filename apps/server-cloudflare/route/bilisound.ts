@@ -70,13 +70,14 @@ export default function bilisound(router: RouterType) {
 		const cache = env.bilisound as KVNamespace;
 		const id = request.query.id;
 		const episode = Number(request.query.episode);
+		const dl = request.query.dl;
 		if (typeof id !== 'string' || !Number.isInteger(episode) || episode < 1) {
 			return AjaxError('api usage error', 400);
 		}
 
 		try {
 			// 获取视频
-			const { playInfo } = await getVideo(id, episode, cache);
+			const { playInfo, initialState } = await getVideo(id, episode, cache);
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
 			if (!dashAudio) {
@@ -101,11 +102,16 @@ export default function bilisound(router: RouterType) {
 				},
 			});
 
+			const fileName = `[${dl === "av" ? `av${initialState.aid}` : initialState.bvid}] [P${episode}] ${initialState.videoData.title}.m4a`;
+
 			return new Response(await res.arrayBuffer(), {
 				status: range ? 206 : 200,
 				headers: {
 					...CORS_HEADERS,
-					'Content-Type': 'audio/mp4',
+					...(dl ? {
+						'Content-Disposition': `filename*=utf-8''${encodeURIComponent(fileName)}`
+					} : {}),
+					'Content-Type': dl ? "application/octet-stream": 'audio/mp4',
 					'Accept-Ranges': 'bytes',
 					'Cache-Control': 'max-age=604800',
 					...(range ? {

@@ -21,27 +21,31 @@ export const bsInput = cva({
             _dark: "white",
         },
         _active: {
-            border: "1px solid token(colors.colorPalette.300)",
-            outline: "0.25rem solid token(colors.colorPalette.300)",
+            border: {
+                base: "1px solid token(colors.colorPalette.300)",
+                _dark: "1px solid token(colors.colorPalette.700)",
+            },
+            boxShadow: {
+                base: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.300)",
+                _dark: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.700)",
+            },
+            outline: 0,
         },
         _focus: {
-            border: "1px solid token(colors.colorPalette.300)",
-            outline: "0.25rem solid token(colors.colorPalette.300)",
+            border: {
+                base: "1px solid token(colors.colorPalette.300)",
+                _dark: "1px solid token(colors.colorPalette.700)",
+            },
+            boxShadow: {
+                base: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.300)",
+                _dark: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.700)",
+            },
+            outline: 0,
         },
         _placeholder: {
             color: {
                 base: "neutral.500",
                 _dark: "neutral.700",
-            },
-        },
-        _dark: {
-            _active: {
-                border: "1px solid token(colors.colorPalette.700)",
-                outline: "0.25rem solid token(colors.colorPalette.700)",
-            },
-            _focus: {
-                border: "1px solid token(colors.colorPalette.700)",
-                outline: "0.25rem solid token(colors.colorPalette.700)",
             },
         },
     },

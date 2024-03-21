@@ -2,8 +2,8 @@ import { css } from "@/styled-system/css";
 import { center, flex, hstack } from "@/styled-system/patterns";
 import ColorModeButton from "@/layouts/components/ColorModeButton";
 import { Link } from "umi";
-import { bsIconButton } from "@/components/recipes/button";
 import { ReactComponent as IconPlaylist } from "@/icons/flowbite--list-music-solid.svg";
+import { ReactComponent as IconSettings } from "@/icons/mingcute--settings-6-line.svg";
 
 export default function Header() {
     return (
@@ -68,6 +68,27 @@ export default function Header() {
                         to={"/queue"}
                     >
                         <IconPlaylist />
+                    </Link>
+                    <Link
+                        className={center({
+                            w: 10,
+                            h: 10,
+                            borderRadius: "full",
+                            color: "white",
+                            transitionDuration: "fast",
+                            cursor: "pointer",
+                            _hover: {
+                                bg: "primary.50/10",
+                            },
+                            _active: {
+                                bg: "primary.50/10",
+                            },
+                            display: "flex",
+                        })}
+                        aria-label={"设置"}
+                        to={"/settings"}
+                    >
+                        <IconSettings />
                     </Link>
                     <ColorModeButton />
                 </div>

@@ -22,23 +22,23 @@ export const bsInput = cva({
         },
         _active: {
             border: {
-                base: "1px solid token(colors.colorPalette.300)",
-                _dark: "1px solid token(colors.colorPalette.700)",
+                base: "1px solid token(colors.colorPalette.500)",
+                _dark: "1px solid token(colors.colorPalette.500)",
             },
             boxShadow: {
-                base: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.300)",
-                _dark: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.700)",
+                base: "0 0 0 1px token(colors.colorPalette.500)",
+                _dark: "0 0 0 1px token(colors.colorPalette.500)",
             },
             outline: 0,
         },
         _focus: {
             border: {
-                base: "1px solid token(colors.colorPalette.300)",
-                _dark: "1px solid token(colors.colorPalette.700)",
+                base: "1px solid token(colors.colorPalette.500)",
+                _dark: "1px solid token(colors.colorPalette.500)",
             },
             boxShadow: {
-                base: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.300)",
-                _dark: "0 0 0 calc(0.25rem - 1px) token(colors.colorPalette.700)",
+                base: "0 0 0 1px token(colors.colorPalette.500)",
+                _dark: "0 0 0 1px token(colors.colorPalette.500)",
             },
             outline: 0,
         },

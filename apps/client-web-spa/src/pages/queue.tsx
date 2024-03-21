@@ -10,19 +10,13 @@ import { ReactComponent as IconTrash } from "@/icons/fa-solid--trash-alt.svg";
 import { bsButton } from "@/components/recipes/button";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ReactComponent as IconLoading } from "@/icons/loading.svg";
-import {
-    bsDialogActionGroup,
-    bsDialogContent,
-    bsDialogDescription,
-    bsDialogOverlay,
-    bsDialogTitle,
-} from "@/components/recipes/dialog";
 import { postInternalTransferList } from "@/api/online";
 import { PLAYLIST_EXPORT_PREFIX } from "@/constants/qr-code";
 import { sendToast } from "@/utils/toast";
 import QRCode from "qrcode";
 import { useCountdown } from "usehooks-ts";
 import { secondToTimestamp } from "@bilisound2/utils";
+import { bsDialog } from "@/components/recipes/dialog";
 
 const playListItemRoot = cva({
     base: {
@@ -239,10 +233,10 @@ function ExportListButton() {
             </button>
             <Dialog.Root open={open} onOpenChange={setOpen}>
                 <Dialog.Portal>
-                    <Dialog.Overlay className={bsDialogOverlay()} />
-                    <Dialog.Content className={css(bsDialogContent.raw(), { maxW: "md" })}>
-                        <Dialog.Title className={bsDialogTitle()}>导出到 Bilisound 客户端</Dialog.Title>
-                        <Dialog.Description className={bsDialogDescription()}>
+                    <Dialog.Overlay className={bsDialog().overlay} />
+                    <Dialog.Content className={css(bsDialog.raw().content, { maxW: "md" })}>
+                        <Dialog.Title className={bsDialog().title}>导出到 Bilisound 客户端</Dialog.Title>
+                        <Dialog.Description className={bsDialog().description}>
                             <b>请使用 Bilisound 客户端</b>扫描以下二维码，以完成导入操作。
                         </Dialog.Description>
                         <div className={center({ pt: 6, flexDirection: "column", gap: 2 })}>
@@ -263,7 +257,7 @@ function ExportListButton() {
                                 后失效
                             </p>
                         </div>
-                        <div className={bsDialogActionGroup()}>
+                        <div className={bsDialog().actionGroup}>
                             <Dialog.Close asChild>
                                 <button className={bsButton({ color: "primary" })} aria-label="Close" type={"button"}>
                                     关闭
@@ -292,13 +286,13 @@ function ClearListButton() {
                 </button>
             </Dialog.Trigger>
             <Dialog.Portal>
-                <Dialog.Overlay className={bsDialogOverlay()} />
-                <Dialog.Content className={bsDialogContent()}>
-                    <Dialog.Title className={bsDialogTitle()}>清空列表</Dialog.Title>
-                    <Dialog.Description className={bsDialogDescription()}>
+                <Dialog.Overlay className={bsDialog().overlay} />
+                <Dialog.Content className={bsDialog().content}>
+                    <Dialog.Title className={bsDialog().title}>清空列表</Dialog.Title>
+                    <Dialog.Description className={bsDialog().description}>
                         确定要清空整个播放队列吗？此操作不可撤销。
                     </Dialog.Description>
-                    <div className={bsDialogActionGroup()}>
+                    <div className={bsDialog().actionGroup}>
                         <Dialog.Close asChild>
                             <button className={bsButton({ variant: "ghost", color: "plain" })} type={"button"}>
                                 取消

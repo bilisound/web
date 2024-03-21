@@ -56,7 +56,7 @@ export default function Page() {
             >
                 {({ errors, touched, isSubmitting }) => (
                     <Form
-                        className={css(bsForm.raw(), {
+                        className={css(bsForm.raw().root, {
                             w: "full",
                             maxW: "xl",
                         })}

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { bsFormError, bsFormItem, bsFormLabel, bsFormValue } from "@/components/recipes/form";
+import { bsForm } from "@/components/recipes/form";
 import { FormContext, formContextDefaultOption, FormContextOption } from "@/components/ui/FormProvider";
 import { SystemStyleObject } from "@/styled-system/types";
 import { css } from "@/styled-system/css";
@@ -34,23 +34,17 @@ const FormItem: React.FC<React.PropsWithChildren<FormItemProps>> = ({
         ...formContextDefaultOption,
         ...useContext(FormContext),
     };
+    const classes = bsForm.raw({ direction: options.direction, align: options.labelAlign, required });
 
     return (
-        <div className={css(bsFormItem.raw({ direction: options.direction }), formItemCSS)}>
-            <label
-                className={css(bsFormLabel.raw({ align: options.labelAlign, required }), formLabelCSS)}
-                htmlFor={htmlFor}
-                style={{ width: options.labelWidth }}
-            >
+        <div className={css(classes.item, formItemCSS)}>
+            <label className={css(classes.label, formLabelCSS)} htmlFor={htmlFor} style={{ width: options.labelWidth }}>
                 {label}
             </label>
-            <div className={css(bsFormValue.raw({ direction: options.direction }), formValueCSS)}>
+            <div className={css(classes.value, formValueCSS)}>
                 {children}
                 {error ? (
-                    <div
-                        data-error={true}
-                        className={css(bsFormError.raw({ direction: options.direction }), formErrorCSS)}
-                    >
+                    <div data-error={true} className={css(classes.error, formErrorCSS)}>
                         {error}
                     </div>
                 ) : null}

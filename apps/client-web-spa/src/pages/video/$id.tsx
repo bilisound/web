@@ -13,6 +13,7 @@ import { ReactComponent as IconDown } from "@/icons/mingcute--down-fill.svg";
 import { ReactComponent as IconExternal } from "@/icons/fa-solid--external-link-alt.svg";
 import { bsButton } from "@/components/recipes/button";
 import { bsSkeleton } from "@/components/recipes/skeleton";
+import { measureNumberWidth } from "@/utils/vendors/dom";
 
 const skeletonLength = [
     0.3484095619198131, 0.5274406037172059, 0.5640563137468972, 0.9519480340267148, 0.23511593039367695,
@@ -213,10 +214,12 @@ function EpisodeRaw({
     detail,
     isCurrent = false,
     onClick,
+    numberWidth = 0,
 }: {
     detail: GetBilisoundMetadataResponse["pages"][number];
     isCurrent?: boolean;
     onClick?: () => void;
+    numberWidth?: number;
 }) {
     return (
         <li>
@@ -227,7 +230,10 @@ function EpisodeRaw({
                         fontWeight: "bold",
                         flex: "none",
                         fontFamily: "roboto",
+                        textAlign: "center",
+                        display: "block",
                     })}
+                    style={{ width: numberWidth + "px" }}
                 >
                     {detail.page}
                 </span>
@@ -293,6 +299,14 @@ async function handleTrackClick({
 
 function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
     const { current } = useQueue();
+    const numberWidth = measureNumberWidth(String(detail.pages.length).length, {
+        className: css({
+            fontSize: "md",
+            fontWeight: "bold",
+            flex: "none",
+            fontFamily: "roboto",
+        }),
+    });
 
     return (
         <section className={css({ w: "full", maxW: "container" })}>
@@ -306,6 +320,7 @@ function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
                             key={item.page}
                             detail={item}
                             isCurrent={isCurrent}
+                            numberWidth={numberWidth}
                             onClick={async () => {
                                 await handleTrackClick({ detail, item, isCurrent });
                             }}

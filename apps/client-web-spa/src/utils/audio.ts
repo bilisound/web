@@ -38,7 +38,7 @@ queue.forEach((e, i) => {
 });
 
 // 其它参数初始化
-let index = Number(localStorage.getItem(BILISOUND_QUEUE_INDEX) || "-1") || -1;
+let index = Number(localStorage.getItem(BILISOUND_QUEUE_INDEX) ?? "-1") ?? -1;
 let snapshotQueue = {
     queue,
     current: queue[index] as AudioQueueData | undefined,

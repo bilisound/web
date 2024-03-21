@@ -1,9 +1,12 @@
 import { Router } from 'itty-router';
 import CORS_HEADERS from './constants/cors';
 import bilisound from './route/bilisound';
+import withRefererCheck from "./middleware/withRefererCheck";
 
 // Create a new router
 const router = Router();
+
+router.all("*", withRefererCheck);
 
 router.get('/', () => {
 	return new Response('', {

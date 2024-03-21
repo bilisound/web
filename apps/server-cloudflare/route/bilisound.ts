@@ -1,5 +1,5 @@
 import { RouterType } from 'itty-router';
-import { AjaxError, AjaxSuccess } from '../utils/misc';
+import { AjaxError, AjaxSuccess, fineBestAudio } from "../utils/misc";
 import CORS_HEADERS from '../constants/cors';
 import { KVNamespace } from '@cloudflare/workers-types';
 import { getVideo } from '../api/bilibili';
@@ -80,17 +80,12 @@ export default function bilisound(router: RouterType) {
 			const { playInfo, initialState } = await getVideo(id, episode, cache);
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
-			if (!dashAudio) {
+			if (dashAudio.length < 1) {
 				return AjaxError('no dash data found');
 			}
 
 			// 遍历获取最佳音质视频
-			let maxQualityIndex = 0;
-			dashAudio.forEach((value, index, array) => {
-				if (array[maxQualityIndex].codecid < maxQualityIndex) {
-					maxQualityIndex = index;
-				}
-			});
+			const maxQualityIndex = fineBestAudio(dashAudio);
 
 			// 将音频字节流进行转发
 			const range = request.headers.get('Range');
@@ -138,17 +133,12 @@ export default function bilisound(router: RouterType) {
 			const { playInfo, initialState } = await getVideo(id, episode, cache);
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
-			if (!dashAudio) {
+			if (dashAudio.length < 1) {
 				return AjaxError('no dash data found');
 			}
 
 			// 遍历获取最佳音质视频
-			let maxQualityIndex = 0;
-			dashAudio.forEach((value, index, array) => {
-				if (array[maxQualityIndex].codecid < maxQualityIndex) {
-					maxQualityIndex = index;
-				}
-			});
+			const maxQualityIndex = fineBestAudio(dashAudio);
 
 			const item = dashAudio[maxQualityIndex];
 			const res = await fetch(item.baseUrl, {

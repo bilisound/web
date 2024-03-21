@@ -29,6 +29,9 @@ export default defineConfig({
             'target': 'http://localhost:8787',
             'changeOrigin': true,
             // 'pathRewrite': { '^/api' : '' },
+            headers: {
+                "referer": "https://bilisound.moe"
+            }
         }
     },
     metas: [

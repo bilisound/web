@@ -1,9 +1,7 @@
 import { css, cva } from "@/styled-system/css";
 import { center, flex, vstack } from "@/styled-system/patterns";
-import { AudioQueueData, jump, replaceQueue, toggle, useAudioPaused, useQueue } from "@/utils/audio";
+import { AudioQueueData, jump, replaceQueue, toggle, useQueue } from "@/utils/audio";
 import { memo, useCallback, useEffect, useState } from "react";
-import MusicPlayingIcon from "@/components/MusicPlayingIcon";
-import { ReactComponent as IconPause } from "@/icons/fa-solid--pause.svg";
 import { ReactComponent as IconMobile } from "@/icons/fa-solid--mobile-alt.svg";
 import { ReactComponent as IconEdit } from "@/icons/fa-solid--edit.svg";
 import { ReactComponent as IconTrash } from "@/icons/fa-solid--trash-alt.svg";
@@ -17,6 +15,8 @@ import QRCode from "qrcode";
 import { useCountdown } from "usehooks-ts";
 import { secondToTimestamp } from "@bilisound2/utils";
 import { bsDialog } from "@/components/recipes/dialog";
+import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
+import { measureNumberWidth } from "@/utils/vendors/dom";
 
 const playListItemRoot = cva({
     base: {
@@ -60,26 +60,18 @@ function Title() {
     );
 }
 
-function PlaylistItemCurrentIcon() {
-    const isPlaying = !useAudioPaused();
-
-    if (isPlaying) {
-        return <MusicPlayingIcon />;
-    } else {
-        return <IconPause className={css({ w: 4, h: 4 })} />;
-    }
-}
-
 function PlaylistItemRaw({
     isActive,
     data,
     index,
     onJump,
+    numberWidth = 0,
 }: {
     isActive: boolean;
     data: AudioQueueData;
     index: number;
     onJump: (index: number) => void;
+    numberWidth?: number;
 }) {
     return (
         <li data-active={isActive ? true : undefined} className={playListItemRoot()}>
@@ -100,24 +92,24 @@ function PlaylistItemRaw({
                 onClick={() => onJump(index)}
             >
                 {isActive ? (
-                    <PlaylistItemCurrentIcon />
+                    <span className={center()} style={{ width: `max(1rem, ${numberWidth}px)` }}>
+                        <CurrentPlayingIcon />
+                    </span>
                 ) : (
-                    <div className={css({ w: 4, h: 4, pos: "relative" })}>
-                        <div
-                            className={css({
-                                fontSize: "sm",
-                                fontFamily: "roboto",
-                                fontWeight: 600,
-                                pos: "absolute",
-                                left: "50%",
-                                top: "50%",
-                                transform: "translate(-50%, -50%)",
-                                opacity: 0.5,
-                            })}
-                        >
-                            {index + 1}
-                        </div>
-                    </div>
+                    <span
+                        className={css({
+                            h: 4,
+                            fontSize: "sm",
+                            fontFamily: "roboto",
+                            fontWeight: 600,
+                            opacity: 0.5,
+                            display: "block",
+                            textAlign: "center",
+                        })}
+                        style={{ width: `max(1rem, ${numberWidth}px)` }}
+                    >
+                        {index + 1}
+                    </span>
                 )}
                 <span className={css({ truncate: true })}>{data.title}</span>
             </button>
@@ -126,11 +118,22 @@ function PlaylistItemRaw({
 }
 
 const PlaylistItem = memo(PlaylistItemRaw, (prevProps, nextProps) => {
-    return prevProps.isActive === nextProps.isActive && prevProps.data === nextProps.data;
+    return (
+        prevProps.isActive === nextProps.isActive &&
+        prevProps.data === nextProps.data &&
+        prevProps.numberWidth === nextProps.numberWidth
+    );
 });
 
 function Playlist() {
     const { queue, current } = useQueue();
+    const numberWidth = measureNumberWidth(String(queue.length).length, {
+        className: css({
+            fontSize: "sm",
+            fontFamily: "roboto",
+            fontWeight: 600,
+        }),
+    });
 
     const handleJump = useCallback(
         async (i: number) => {
@@ -153,6 +156,7 @@ function Playlist() {
                         key={e.key}
                         index={i}
                         onJump={handleJump}
+                        numberWidth={numberWidth}
                     />
                 );
             })}

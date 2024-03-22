@@ -5,9 +5,9 @@ export function measureNumberWidth(
     maxDigits: number,
     { className = "", overrideCache = false }: { className?: string; overrideCache?: boolean } = {},
 ) {
-    const got = calculateCache.get(digits + "__" + className);
+    const got = calculateCache.get(maxDigits + "__" + className);
     if (!overrideCache && typeof got === "number") {
-        return got;
+        return Math.ceil(got);
     }
 
     // 创建不可见的临时元素
@@ -15,6 +15,7 @@ export function measureNumberWidth(
     el.className = className;
     el.style.position = "absolute";
     el.style.left = "-9999px";
+    el.style.top = "-9999px";
     document.body.appendChild(el);
 
     // 测试 0-9 的所有可能性，并记录最宽的长度
@@ -32,5 +33,5 @@ export function measureNumberWidth(
 
     // 记录缓存，返回长度（像素）
     calculateCache.set(digits + "__" + className, max);
-    return max;
+    return Math.ceil(max);
 }

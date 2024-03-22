@@ -14,6 +14,7 @@ import { ReactComponent as IconExternal } from "@/icons/fa-solid--external-link-
 import { bsButton } from "@/components/recipes/button";
 import { bsSkeleton } from "@/components/recipes/skeleton";
 import { measureNumberWidth } from "@/utils/vendors/dom";
+import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
 
 const skeletonLength = [
     0.3484095619198131, 0.5274406037172059, 0.5640563137468972, 0.9519480340267148, 0.23511593039367695,
@@ -30,6 +31,7 @@ const episode = cva({
         px: 4,
         borderRadius: "lg",
         w: "full",
+        h: "full",
         fontSize: "sm",
         gap: 3,
         cursor: "pointer",
@@ -224,19 +226,25 @@ function EpisodeRaw({
     return (
         <li>
             <button type="button" className={`group ${episode({ active: isCurrent })}`} onClick={onClick}>
-                <span
-                    className={css({
-                        fontSize: "md",
-                        fontWeight: "bold",
-                        flex: "none",
-                        fontFamily: "roboto",
-                        textAlign: "center",
-                        display: "block",
-                    })}
-                    style={{ width: numberWidth + "px" }}
-                >
-                    {detail.page}
-                </span>
+                {isCurrent ? (
+                    <span className={center()} style={{ width: `max(1rem, ${numberWidth}px)` }}>
+                        <CurrentPlayingIcon />
+                    </span>
+                ) : (
+                    <span
+                        className={css({
+                            fontSize: "md",
+                            fontWeight: "bold",
+                            flex: "none",
+                            fontFamily: "roboto",
+                            textAlign: "center",
+                            display: "block",
+                        })}
+                        style={{ width: `max(1rem, ${numberWidth}px)` }}
+                    >
+                        {detail.page}
+                    </span>
+                )}
                 <span
                     className={css({
                         truncate: true,

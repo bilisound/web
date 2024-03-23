@@ -14,6 +14,7 @@ import { getBilisoundMetadata } from "@/api/online";
 import { sendToast } from "@/utils/toast";
 import { useNavigate } from "umi";
 import { useQueryClient } from "@tanstack/react-query";
+import { HTTPError, TimeoutError } from "ky";
 
 interface Values {
     query: string;
@@ -47,6 +48,18 @@ export default function Page() {
                         const value = await handleRequest(values);
                         navigate("/video/" + value.data.bvid);
                     } catch (e) {
+                        if (e instanceof TimeoutError) {
+                            sendToast("网络请求失败，请稍候再试", {
+                                type: "error",
+                            });
+                            throw e;
+                        }
+                        if (e instanceof HTTPError) {
+                            sendToast(`解析视频失败，可能是视频不存在或已被删除 (${e.response.status})`, {
+                                type: "error",
+                            });
+                            throw e;
+                        }
                         sendToast(e as any, {
                             type: "error",
                         });

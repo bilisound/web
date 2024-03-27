@@ -1,8 +1,11 @@
+// noinspection HtmlUnknownAttribute,HtmlRequiredTitleElement
+
 import { Links, Meta, Scripts, ScrollRestoration } from "@remix-run/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import "./root.css";
 import WebLayout from "@/layouts";
+import React from "react";
 
 const queryClient = new QueryClient();
 
@@ -189,7 +192,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <link
                     href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
                     rel="stylesheet"
-                    // eslint-disable-next-line react/no-unknown-property
                     fetchpriority="low"
                 />
                 <script

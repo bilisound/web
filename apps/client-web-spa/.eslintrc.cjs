@@ -4,4 +4,7 @@ module.exports = {
         require.resolve('umi/eslint'),
         "plugin:prettier/recommended"
     ],
+    rules: {
+        "react/no-unknown-property": ['error', { ignore: ['fetchpriority'] }]
+    }
 };

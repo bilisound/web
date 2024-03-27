@@ -5,9 +5,8 @@
   "author": "tcdw <tcdw2011@gmail.com>",
   "type": "module",
   "scripts": {
-    "prebuild": "pnpm run version-json && pnpm run prepare",
-    "predev": "pnpm run version-json",
-    "build": "remix vite:build",
+    "build": "pnpm run version-json && pnpm run prepare && pnpm run build-only",
+    "build-only": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "preview": "vite preview",

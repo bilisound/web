@@ -336,10 +336,10 @@ export default function Page() {
                             <Title />
                             <div className={vstack({ w: "full", alignItems: "stretch", gap: 0, mt: [4, 5] })}>
                                 <ExportListButton />
-                                <button type={"button"} className={bsButton({ variant: "ghost", color: "plain" })}>
+                                {/*<button type={"button"} className={bsButton({ variant: "ghost", color: "plain" })}>
                                     <IconEdit />
                                     管理模式
-                                </button>
+                                </button>*/}
                                 <ClearListButton />
                             </div>
                         </div>

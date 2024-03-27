@@ -8,6 +8,9 @@ import WebLayout from "@/layouts";
 import React from "react";
 import { BilisoundAudioServiceProvider } from "@/utils/audio/react";
 import BilisoundAudioService from "@/utils/audio/instance";
+import { AudioQueueData } from "@/utils/audio/types";
+import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/local-storage";
+import { BASE_URL } from "@/constants";
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -222,8 +225,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
     );
 }
 
+// 从浏览器的 localStorage 读取数据
+const index = JSON.parse(globalThis?.localStorage?.[BILISOUND_QUEUE_INDEX] ?? "-1");
+const queue = JSON.parse(globalThis?.localStorage?.[BILISOUND_DEFAULT_PLAYLIST] ?? "[]") as AudioQueueData[];
+queue.forEach((e, i) => {
+    e.key = `__initial_key_${i}`;
+    e.url = `${BASE_URL}/api/internal/resource?id=${e.bvid}&episode=${e.episode}`;
+});
+
 const queryClient = new QueryClient();
-const audioInstance = new BilisoundAudioService();
+const audioInstance = new BilisoundAudioService({
+    queue,
+    index,
+});
+
+audioInstance.addEventListener("queueUpdate", evt => {
+    localStorage[BILISOUND_DEFAULT_PLAYLIST] = JSON.stringify((evt as CustomEvent<AudioQueueData[]>).detail);
+});
+
+audioInstance.addEventListener("indexUpdate", evt => {
+    localStorage[BILISOUND_QUEUE_INDEX] = JSON.stringify((evt as CustomEvent<number>).detail);
+});
 
 export default function App() {
     return (

@@ -5,9 +5,10 @@ import { BASE_URL } from "@/constants";
 
 export interface BilisoundAudioServiceOptions {
     queue?: AudioQueueData[];
+    index?: number;
 }
 
-export default class BilisoundAudioService {
+export default class BilisoundAudioService extends EventTarget {
     /**
      * HTMLAudioElement 本体
      */
@@ -15,7 +16,7 @@ export default class BilisoundAudioService {
     /**
      * 播放队列
      */
-    public queue: AudioQueueData[] = [];
+    public queue: AudioQueueData[];
     /**
      * 实例 ID
      */
@@ -23,15 +24,11 @@ export default class BilisoundAudioService {
     /**
      * 当前播放内容在队列中的位置
      */
-    public index = -1;
+    public index: number;
     /**
      * 播放状态
      */
-    public status: BilisoundAudioServiceStatus = {
-        queue: this.queue,
-        current: undefined,
-        index: -1,
-    };
+    public status: BilisoundAudioServiceStatus;
     /**
      * 播放状态变化钩子
      * @private
@@ -64,11 +61,16 @@ export default class BilisoundAudioService {
      */
     private seekPromiseCount = 0;
 
-    constructor(options: BilisoundAudioServiceOptions = {}) {
+    constructor({ queue = [], index = -1 }: BilisoundAudioServiceOptions = {}) {
+        super();
         this.id = v4();
-        if (options.queue) {
-            this.queue = options.queue;
-        }
+        this.queue = queue;
+        this.index = index;
+        this.status = {
+            queue,
+            current: undefined,
+            index,
+        };
         // 这段代码可能会在服务端被执行，所以……
         if (typeof document !== "undefined") {
             const el = document.createElement("audio");
@@ -189,6 +191,7 @@ export default class BilisoundAudioService {
         };
         this.updateMediaSession();
         this.emitStatusEvents();
+        this.handleIndexUpdate();
     }
 
     /**
@@ -230,6 +233,7 @@ export default class BilisoundAudioService {
             key: v4(),
             url: `${BASE_URL}/api/internal/resource?id=${data.bvid}&episode=${data.episode}`,
         });
+        this.handleQueueUpdate();
         this.jump(this.queue.length - 1);
     }
 
@@ -252,6 +256,7 @@ export default class BilisoundAudioService {
             return;
         }
         this.queue = newQueue;
+        this.handleQueueUpdate();
         this.index = this.queue.length > 0 ? 0 : -1;
         audioElement.src = this.queue[this.index]?.url ?? "";
 
@@ -379,5 +384,19 @@ export default class BilisoundAudioService {
         return () => {
             this.audioProgressEventTriggers.delete(id);
         };
+    }
+
+    handleQueueUpdate() {
+        const event = new CustomEvent("queueUpdate", {
+            detail: this.queue,
+        });
+        this.dispatchEvent(event);
+    }
+
+    handleIndexUpdate() {
+        const event = new CustomEvent("indexUpdate", {
+            detail: this.index,
+        });
+        this.dispatchEvent(event);
     }
 }

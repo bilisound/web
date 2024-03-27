@@ -7,7 +7,7 @@
       ],
       "outputs": [
         "dist/*",
-        "out/*"
+        "build/*"
       ]
     },
     "lint": {},

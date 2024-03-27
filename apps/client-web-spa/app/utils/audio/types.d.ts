@@ -8,3 +8,9 @@ export interface AudioQueueData {
     duration: number;
     imgUrl: string;
 }
+
+export interface BilisoundAudioServiceStatus {
+    queue: AudioQueueData[];
+    current?: AudioQueueData;
+    index: number;
+}

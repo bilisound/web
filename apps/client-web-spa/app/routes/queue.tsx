@@ -1,9 +1,7 @@
 import { css, cva } from "@styled-system/css";
 import { center, flex, vstack } from "@styled-system/patterns";
-import { AudioQueueData, jump, replaceQueue, toggle, useQueue } from "@/utils/audio.client";
 import { memo, useCallback, useEffect, useState } from "react";
 import IconMobile from "@/icons/fa-solid--mobile-alt.svg?react";
-import IconEdit from "@/icons/fa-solid--edit.svg?react";
 import IconTrash from "@/icons/fa-solid--trash-alt.svg?react";
 import { bsButton } from "@/components/recipes/button";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -17,6 +15,8 @@ import { secondToTimestamp } from "@bilisound2/utils";
 import { bsDialog } from "@/components/recipes/dialog";
 import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
 import { measureNumberWidth } from "@/utils/vendors/dom";
+import { useInstance, useStatus } from "@/utils/audio/react";
+import { AudioQueueData } from "@/utils/audio/types";
 
 const playListItemRoot = cva({
     base: {
@@ -47,7 +47,7 @@ const playListItemRoot = cva({
 });
 
 function Title() {
-    const { queue } = useQueue();
+    const { queue } = useStatus();
     return (
         <h2
             className={css({
@@ -126,7 +126,8 @@ const PlaylistItem = memo(PlaylistItemRaw, (prevProps, nextProps) => {
 });
 
 function Playlist() {
-    const { queue, current } = useQueue();
+    const { queue, current } = useStatus();
+    const instance = useInstance();
     const numberWidth = measureNumberWidth(String(queue.length).length, {
         className: css({
             fontSize: "sm",
@@ -138,10 +139,10 @@ function Playlist() {
     const handleJump = useCallback(
         async (i: number) => {
             if (queue[i].key === current?.key) {
-                toggle();
+                instance.toggle();
                 return;
             }
-            jump(i, { restorePlayState: true });
+            instance.jump(i, { restorePlayState: true });
         },
         [queue, current],
     );
@@ -168,7 +169,7 @@ function ExportListButton() {
     const [open, setOpen] = useState(false);
     const [exporting, setExporting] = useState(false);
     const [result, setResult] = useState("");
-    const { queue } = useQueue();
+    const { queue } = useStatus();
     const [count, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({
         countStart: 300,
         intervalMs: 1000,
@@ -276,8 +277,10 @@ function ExportListButton() {
 }
 
 function ClearListButton() {
+    const instance = useInstance();
+
     const handleClear = useCallback(() => {
-        replaceQueue([]);
+        instance.replaceQueue([]);
         sendToast("播放队列清空成功", { type: "success" });
     }, []);
 

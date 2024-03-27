@@ -1,10 +1,10 @@
-import { useAudioPaused } from "@/utils/audio.client";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { css } from "@styled-system/css";
 import IconPause from "@/icons/fa-solid--pause.svg?react";
+import { useIsPlaying } from "@/utils/audio/react";
 
 export default function CurrentPlayingIcon() {
-    const isPlaying = !useAudioPaused();
+    const isPlaying = useIsPlaying();
 
     if (isPlaying) {
         return <MusicPlayingIcon />;

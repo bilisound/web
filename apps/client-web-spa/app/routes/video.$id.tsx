@@ -6,7 +6,6 @@ import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
 import { memo, useState } from "react";
-import { findFromQueue, jump, play, pushQueue, toggle, useQueue } from "@/utils/audio.client";
 import * as Avatar from "@radix-ui/react-avatar";
 import { htmlDecode } from "@bilisound2/utils/dist/dom";
 import IconDown from "@/icons/mingcute--down-fill.svg?react";
@@ -15,6 +14,8 @@ import { bsButton } from "@/components/recipes/button";
 import { bsSkeleton } from "@/components/recipes/skeleton";
 import { measureNumberWidth } from "@/utils/vendors/dom";
 import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
+import { useInstance, useStatus } from "@/utils/audio/react";
+import BilisoundAudioService from "@/utils/audio/instance";
 
 const skeletonLength = [
     0.3484095619198131, 0.5274406037172059, 0.5640563137468972, 0.9519480340267148, 0.23511593039367695,
@@ -279,22 +280,24 @@ async function handleTrackClick({
     detail,
     item,
     isCurrent,
+    instance,
 }: {
     detail: GetBilisoundMetadataResponse;
     item: GetBilisoundMetadataResponse["pages"][number];
     isCurrent: boolean;
+    instance: BilisoundAudioService;
 }) {
     if (isCurrent) {
-        toggle();
+        instance.toggle();
         return;
     }
-    const found = findFromQueue(detail.bvid, item.page);
+    const found = instance.findFromQueue(detail.bvid, item.page);
     if (found >= 0) {
-        jump(found);
-        await play();
+        instance.jump(found);
+        await instance.play();
         return;
     }
-    await pushQueue({
+    instance.pushQueue({
         author: detail.owner.name,
         bvid: detail.bvid,
         duration: item.duration,
@@ -302,11 +305,12 @@ async function handleTrackClick({
         title: item.part,
         imgUrl: detail.pic,
     });
-    await play();
+    await instance.play();
 }
 
 function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
-    const { current } = useQueue();
+    const { current } = useStatus();
+    const instance = useInstance();
     const numberWidth = measureNumberWidth(String(detail.pages.length).length, {
         className: css({
             fontSize: "md",
@@ -330,7 +334,7 @@ function EpisodeList({ detail }: { detail: GetBilisoundMetadataResponse }) {
                             isCurrent={isCurrent}
                             numberWidth={numberWidth}
                             onClick={async () => {
-                                await handleTrackClick({ detail, item, isCurrent });
+                                await handleTrackClick({ detail, item, isCurrent, instance });
                             }}
                         />
                     );

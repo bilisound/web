@@ -1,7 +1,5 @@
 import { css } from "@styled-system/css";
-import * as audio from "@/utils/audio.client";
 import * as Slider from "@radix-ui/react-slider";
-import { seek, setPreventAutoNext, useAudioProgress } from "@/utils/audio.client";
 import React, { useEffect, useId, useRef, useState, forwardRef } from "react";
 import { bsIconButton } from "@/components/recipes/button";
 import { center, flex, hstack, vstack } from "@styled-system/patterns";
@@ -18,10 +16,12 @@ import { Link } from "@remix-run/react";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { useConfigStore } from "@/store/config.client";
 import { BASE_URL } from "@/constants";
+import { useAudioProgress, useInstance, useIsPlaying, useStatus } from "@/utils/audio/react";
 
 // 播放器滑块
 function AudioSlider({ disabled }: { disabled: boolean }) {
     const { currentTime, duration, buffered } = useAudioProgress();
+    const instance = useInstance();
     const [dragInfo, setDragInfo] = useState({
         dragging: false,
         position: 0,
@@ -47,7 +47,7 @@ function AudioSlider({ disabled }: { disabled: boolean }) {
             disabled={disabled}
             onValueChange={([value]) => {
                 if (process.env.NODE_ENV === "development") console.log("changing", value);
-                setPreventAutoNext(true);
+                instance.preventAutoNext = true;
                 setDragInfo({
                     dragging: true,
                     position: value,
@@ -56,13 +56,13 @@ function AudioSlider({ disabled }: { disabled: boolean }) {
             onValueCommit={async ([value]) => {
                 if (process.env.NODE_ENV === "development") console.log("committing", value);
                 // setDragLock(true);
-                await seek(value);
+                await instance.seek(value);
                 // setDragLock(false);
                 setDragInfo({
                     dragging: false,
                     position: value,
                 });
-                setPreventAutoNext(false);
+                instance.preventAutoNext = false;
             }}
             onPointerLeave={async () => {
                 // todo 此 workaround 依然无法可靠解决在 Chromium 浏览器下快速滑动滑块时，不能触发音频跳转到指定位置操作的问题
@@ -75,13 +75,13 @@ function AudioSlider({ disabled }: { disabled: boolean }) {
                 }
                 if (process.env.NODE_ENV === "development") console.log("committing via onPointerLeave");
                 // setDragLock(true);
-                await seek(dragInfo.position);
+                await instance.seek(dragInfo.position);
                 // setDragLock(false);
                 setDragInfo({
                     dragging: false,
                     position: dragInfo.position,
                 });
-                setPreventAutoNext(false);
+                instance.preventAutoNext = false;
             }}
         >
             <Slider.Track
@@ -143,8 +143,9 @@ function AudioTime() {
 
 // 播放器本体
 const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props, ref) => {
-    const { current } = audio.useQueue();
-    const isPlaying = !audio.useAudioPaused();
+    const { current } = useStatus();
+    const isPlaying = useIsPlaying();
+    const instance = useInstance();
     const { useAv } = useConfigStore(state => ({ useAv: state.useAv }));
 
     return (
@@ -191,7 +192,7 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             disabled={!current}
                             className={bsIconButton({ variant: "ghost" })}
                             onClick={() => {
-                                audio.prevTrack();
+                                instance.prevTrack();
                             }}
                             aria-label={"上一首"}
                         >
@@ -203,9 +204,9 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             className={bsIconButton({ variant: "ghost" })}
                             onClick={() => {
                                 if (isPlaying) {
-                                    audio.pause();
+                                    instance.pause();
                                 } else {
-                                    audio.play();
+                                    instance.play();
                                 }
                             }}
                             aria-label={isPlaying ? "暂停" : "播放"}
@@ -217,7 +218,7 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             disabled={!current}
                             className={bsIconButton({ variant: "ghost" })}
                             onClick={() => {
-                                audio.nextTrack();
+                                instance.nextTrack();
                             }}
                             aria-label={"下一首"}
                         >
@@ -312,7 +313,7 @@ export default function AudioPlayer() {
     }, [showPlayer]);
 
     // 播放状态
-    const isPlaying = !audio.useAudioPaused();
+    const isPlaying = useIsPlaying();
 
     return (
         <>

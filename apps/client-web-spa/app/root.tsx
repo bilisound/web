@@ -6,8 +6,8 @@ import { Toaster } from "react-hot-toast";
 import "./root.css";
 import WebLayout from "@/layouts";
 import React from "react";
-
-const queryClient = new QueryClient();
+import { BilisoundAudioServiceProvider } from "@/utils/audio/react";
+import BilisoundAudioService from "@/utils/audio/instance";
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -222,11 +222,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
     );
 }
 
+const queryClient = new QueryClient();
+const audioInstance = new BilisoundAudioService();
+
 export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <WebLayout />
-            <Toaster />
+            <BilisoundAudioServiceProvider instance={audioInstance}>
+                <WebLayout />
+                <Toaster />
+            </BilisoundAudioServiceProvider>
         </QueryClientProvider>
     );
 }

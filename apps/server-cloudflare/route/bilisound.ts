@@ -89,17 +89,19 @@ export default function bilisound(router: RouterType) {
 
 			// 将音频字节流进行转发
 			const range = request.headers.get('Range');
+			const headers = {
+				'user-agent': USER_AGENT,
+				'referer': 'https://www.bilibili.com/video/' + id + '/?p=' + episode,
+				'Range': range || "bytes=0-"
+			};
 			const res = await fetch(dashAudio[maxQualityIndex].baseUrl, {
-				headers: {
-					'user-agent': USER_AGENT,
-					'referer': 'https://www.bilibili.com/video/' + id + '/?p=' + episode,
-					'Range': range,
-				},
+				headers,
 			});
 
 			const fileName = `[${dl === "av" ? `av${initialState.aid}` : initialState.bvid}] [P${episode}] ${initialState.videoData.title}.m4a`;
+			const buf = await res.arrayBuffer();
 
-			return new Response(await res.arrayBuffer(), {
+			return new Response(buf, {
 				status: range ? 206 : 200,
 				headers: {
 					...CORS_HEADERS,

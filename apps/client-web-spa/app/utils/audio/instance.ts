@@ -2,13 +2,19 @@ import { AudioQueueData, BilisoundAudioServiceStatus } from "@/utils/audio/types
 import { v4 } from "uuid";
 import { getImageProxyUrl } from "@/utils/misc";
 import { BASE_URL } from "@/constants";
+import TypedEventTarget from "@/utils/audio/typed-event-target";
+
+export interface BilisoundAudioServiceEventMap {
+    queueUpdate: CustomEvent<AudioQueueData[]>;
+    indexUpdate: CustomEvent<number>;
+}
 
 export interface BilisoundAudioServiceOptions {
     queue?: AudioQueueData[];
     index?: number;
 }
 
-export default class BilisoundAudioService extends EventTarget {
+export default class BilisoundAudioService extends TypedEventTarget<BilisoundAudioServiceEventMap> {
     /**
      * HTMLAudioElement 本体
      */

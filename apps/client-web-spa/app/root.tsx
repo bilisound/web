@@ -240,11 +240,11 @@ const audioInstance = new BilisoundAudioService({
 });
 
 audioInstance.addEventListener("queueUpdate", evt => {
-    localStorage[BILISOUND_DEFAULT_PLAYLIST] = JSON.stringify((evt as CustomEvent<AudioQueueData[]>).detail);
+    localStorage[BILISOUND_DEFAULT_PLAYLIST] = JSON.stringify(evt.detail);
 });
 
 audioInstance.addEventListener("indexUpdate", evt => {
-    localStorage[BILISOUND_QUEUE_INDEX] = JSON.stringify((evt as CustomEvent<number>).detail);
+    localStorage[BILISOUND_QUEUE_INDEX] = JSON.stringify(evt.detail);
 });
 
 export default function App() {

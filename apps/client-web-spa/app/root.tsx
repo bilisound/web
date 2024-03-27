@@ -190,7 +190,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
                     rel="stylesheet"
                     // eslint-disable-next-line react/no-unknown-property
-                    fetchPriority="low"
+                    fetchpriority="low"
+                />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            // On page load or when changing themes, best to add inline in \`head\` to avoid FOUC
+                            if (localStorage.colorMode === 'dark' || ((!localStorage.colorMode || localStorage.colorMode === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                                document.documentElement.classList.add('dark')
+                            } else {
+                                document.documentElement.classList.remove('dark')
+                            }
+        
+                            if (localStorage.theme === "red") {
+                                document.documentElement.dataset.theme = "red";
+                            }
+                    `,
+                    }}
                 />
                 <Meta />
                 <Links />

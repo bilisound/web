@@ -87,8 +87,8 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
             el.addEventListener("loadedmetadata", this.emitAudioProgressEvents.bind(this));
             el.addEventListener("progress", this.emitAudioProgressEvents.bind(this));
             el.addEventListener("ended", this.handleEnded.bind(this));
-            navigator.mediaSession.setActionHandler("previoustrack", () => this.prevTrack.bind(this));
-            navigator.mediaSession.setActionHandler("nexttrack", () => this.nextTrack.bind(this));
+            navigator.mediaSession.setActionHandler("previoustrack", () => this.prevTrack());
+            navigator.mediaSession.setActionHandler("nexttrack", () => this.nextTrack());
             document.body.appendChild(el);
             this.audioElement = el;
         }
@@ -392,14 +392,16 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
         };
     }
 
-    handleQueueUpdate() {
+    // =========================================================================
+
+    private handleQueueUpdate() {
         const event = new CustomEvent("queueUpdate", {
             detail: this.queue,
         });
         this.dispatchEvent(event);
     }
 
-    handleIndexUpdate() {
+    private handleIndexUpdate() {
         const event = new CustomEvent("indexUpdate", {
             detail: this.index,
         });

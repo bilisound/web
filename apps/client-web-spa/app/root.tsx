@@ -197,6 +197,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     rel="stylesheet"
                     fetchpriority="low"
                 />
+                <title>Bilisound</title>
+                <meta name="description" content="一起来听歌吧w" />
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `

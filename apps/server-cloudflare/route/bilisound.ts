@@ -98,7 +98,11 @@ export default function bilisound(router: RouterType) {
 				headers,
 			});
 
-			const fileName = `[${dl === "av" ? `av${initialState.aid}` : initialState.bvid}] [P${episode}] ${initialState.videoData.title}.m4a`;
+			let episodeName = initialState.videoData.title;
+			if (initialState.videoData.pages.length > 1) {
+				episodeName = initialState.videoData.pages.find(e => e.page === episode)?.part;
+			}
+			const fileName = `[${dl === "av" ? `av${initialState.aid}` : initialState.bvid}] [P${episode}] ${episodeName}.m4a`;
 			const buf = await res.arrayBuffer();
 
 			return new Response(buf, {

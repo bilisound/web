@@ -5,7 +5,7 @@ import { center, circle, grid, hstack, vstack } from "@styled-system/patterns";
 import { getImageProxyUrl } from "@/utils/misc";
 import { useQuery } from "@tanstack/react-query";
 import { secondToTimestamp } from "@bilisound2/utils";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import * as Avatar from "@radix-ui/react-avatar";
 import { htmlDecode } from "@bilisound2/utils/dist/dom";
 import IconDown from "@/icons/mingcute--down-fill.svg?react";
@@ -73,6 +73,16 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
     const { pauseWhenOpenExternal } = useConfigStore(state => ({
         pauseWhenOpenExternal: state.pauseWhenOpenExternal,
     }));
+
+    const detailParaRef = useCallback(
+        (el: HTMLDivElement) => {
+            if (el && !showDetail && el.getBoundingClientRect().height <= 224) {
+                console.log(el.getBoundingClientRect());
+                setShowDetail(true);
+            }
+        },
+        [showDetail],
+    );
 
     return (
         <section className={grid({ columns: [1, 1, 2], gap: [4, 4, 5], w: "full", maxW: "container" })}>
@@ -142,16 +152,15 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                 </div>
 
                 {/* 详情 */}
-                <div className={css({ pos: "relative" })}>
+                <div className={css({ pos: "relative", overflow: "hidden", maxH: showDetail ? "inherit" : 56 })}>
                     <p
                         className={css({
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-all",
                             fontSize: "sm",
                             lineHeight: 1.5,
-                            overflow: "hidden",
-                            h: showDetail ? "inherit" : 56,
                         })}
+                        ref={detailParaRef}
                     >
                         {htmlDecode(detail.desc)}
                     </p>

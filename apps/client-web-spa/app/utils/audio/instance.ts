@@ -74,7 +74,7 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
         this.index = index;
         this.status = {
             queue,
-            current: undefined,
+            current: index < 0 ? undefined : queue[index],
             index,
         };
         // 这段代码可能会在服务端被执行，所以……
@@ -89,6 +89,13 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
             el.addEventListener("ended", this.handleEnded.bind(this));
             navigator.mediaSession.setActionHandler("previoustrack", () => this.prevTrack());
             navigator.mediaSession.setActionHandler("nexttrack", () => this.nextTrack());
+
+            // 如果 index 是合法值，初始化 <audio> 的 src 值
+            if (index >= 0) {
+                el.src = queue[index].url;
+            }
+
+            // 挂载元素
             document.body.appendChild(el);
             this.audioElement = el;
         }
@@ -306,6 +313,13 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
     }
 
     /**
+     * [React SSR 用] 获取 isPlaying 的当前状态
+     */
+    getServerSnapshotIsPlaying() {
+        return !this.audioElement?.paused;
+    }
+
+    /**
      * [React 用] 订阅 isPlaying
      * @param callback
      */
@@ -333,6 +347,13 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
      * [React 用] 获取 status 的当前状态
      */
     getSnapshotStatus() {
+        return this.status;
+    }
+
+    /**
+     * [React SSR 用] 获取 status 的当前状态
+     */
+    getServerSnapshotStatus() {
         return this.status;
     }
 
@@ -381,6 +402,13 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
     }
 
     /**
+     * [React SSR 用] 获取 audioProgress 的当前状态
+     */
+    getServerSnapshotAudioProgress() {
+        return this.audioProgress;
+    }
+
+    /**
      * [React 用] 订阅 audioProgress
      * @param callback
      */
@@ -394,6 +422,10 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
 
     // =========================================================================
 
+    /**
+     * 处理队列变更 EventTarget 事件
+     * @private
+     */
     private handleQueueUpdate() {
         const event = new CustomEvent("queueUpdate", {
             detail: this.queue,
@@ -401,6 +433,10 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
         this.dispatchEvent(event);
     }
 
+    /**
+     * 处理当前播放变更 EventTarget 事件
+     * @private
+     */
     private handleIndexUpdate() {
         const event = new CustomEvent("indexUpdate", {
             detail: this.index,

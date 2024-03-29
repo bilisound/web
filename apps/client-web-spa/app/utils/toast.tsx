@@ -7,8 +7,6 @@ import IconWarning from "@/icons/warning.svg?react";
 import IconCross from "@/icons/cross.svg?react";
 import { SystemStyleObject } from "@styled-system/types";
 
-import styles from "./toast.module.css";
-
 export type ToastTypes = "success" | "warning" | "error" | "info";
 
 interface ToastAppearance {
@@ -56,7 +54,7 @@ export function sendToast(message: React.ReactNode | Error, options: SendToastOp
     toast.custom(
         t => (
             <div
-                className={`${t.visible ? styles.animateEnter : styles.animateLeave} ${css({
+                className={css({
                     bgColor: "white",
                     _dark: { bgColor: "neutral.800", borderColor: "neutral.700" },
                     shadow: "xl",
@@ -67,7 +65,8 @@ export function sendToast(message: React.ReactNode | Error, options: SendToastOp
                     display: "flex",
                     alignItems: "center",
                     minW: "0",
-                })}`}
+                    animation: t.visible ? "bsFadeinToast .2s ease-out" : "bsFadeoutToast .15s ease-in forwards",
+                })}
             >
                 <div
                     className={css(kinds[type].bg, {

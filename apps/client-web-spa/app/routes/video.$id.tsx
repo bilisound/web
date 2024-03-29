@@ -16,6 +16,7 @@ import { measureNumberWidth } from "@/utils/vendors/dom";
 import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
 import { useInstance, useStatus } from "@/utils/audio/react";
 import BilisoundAudioService from "@/utils/audio/instance";
+import { useConfigStore } from "@/store/config.client";
 
 const skeletonLength = [
     0.3484095619198131, 0.5274406037172059, 0.5640563137468972, 0.9519480340267148, 0.23511593039367695,
@@ -68,6 +69,10 @@ const episode = cva({
 
 function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
     const [showDetail, setShowDetail] = useState(false);
+    const instance = useInstance();
+    const { pauseWhenOpenExternal } = useConfigStore(state => ({
+        pauseWhenOpenExternal: state.pauseWhenOpenExternal,
+    }));
 
     return (
         <section className={grid({ columns: [1, 1, 2], gap: [4, 4, 5], w: "full", maxW: "container" })}>
@@ -203,6 +208,11 @@ function Information({ detail }: { detail: GetBilisoundMetadataResponse }) {
                         href={`https://www.bilibili.com/video/${detail.bvid}`}
                         target={"_blank"}
                         rel="noreferrer"
+                        onClick={() => {
+                            if (pauseWhenOpenExternal) {
+                                instance.pause();
+                            }
+                        }}
                     >
                         <IconExternal />
                         查看源视频

@@ -14,6 +14,8 @@ export interface ConfigStoreProps {
     showYuruChara: boolean;
     // 显示播放器
     showPlayer: boolean;
+    // 点击「查看源视频」后暂停音频
+    pauseWhenOpenExternal: boolean;
 }
 
 export interface ConfigStoreMethods {
@@ -23,6 +25,7 @@ export interface ConfigStoreMethods {
     setUseAv: (useAv: boolean) => void;
     setShowYuruChara: (showYuruChara: boolean) => void;
     setShowPlayer: (showPlayer: boolean) => void;
+    setPauseWhenOpenExternal: (pauseWhenOpenExternal: boolean) => void;
 }
 
 export const useConfigStore = create<ConfigStoreProps & ConfigStoreMethods>()(
@@ -40,6 +43,8 @@ export const useConfigStore = create<ConfigStoreProps & ConfigStoreMethods>()(
             setShowYuruChara: showYuruChara => set(() => ({ showYuruChara })),
             showPlayer: true,
             setShowPlayer: showPlayer => set(() => ({ showPlayer })),
+            pauseWhenOpenExternal: true,
+            setPauseWhenOpenExternal: pauseWhenOpenExternal => set(() => ({ pauseWhenOpenExternal })),
         }),
         {
             name: "bilisound-config", // name of the item in the storage (must be unique)

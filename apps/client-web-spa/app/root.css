@@ -1,6 +1,6 @@
-@layer reset, base, tokens, recipes, utilities, extra;
+@layer reset, base, tokens, recipes, utilities;
 
-@layer extra {
+@layer tokens {
     [data-theme="red"] {
         --colors-primary-50: #fef2f2;
         --colors-primary-100: #fde6e7;

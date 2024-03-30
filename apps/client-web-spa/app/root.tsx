@@ -1,16 +1,18 @@
 // noinspection HtmlUnknownAttribute,HtmlRequiredTitleElement
 
-import { Links, Meta, Scripts, ScrollRestoration } from "@remix-run/react";
+import { Links, Meta, Scripts, ScrollRestoration, useFetchers, useNavigation } from "@remix-run/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import "./root.css";
 import WebLayout from "@/layouts";
-import React from "react";
+import React, { useMemo } from "react";
 import { BilisoundAudioServiceProvider } from "@/utils/audio/react";
 import BilisoundAudioService from "@/utils/audio/instance";
 import { AudioQueueData } from "@/utils/audio/types";
 import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/local-storage";
 import { BASE_URL } from "@/constants";
+import NProgress from "nprogress";
+import "./assets/vendors/nprogress.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -250,6 +252,33 @@ audioInstance.addEventListener("indexUpdate", evt => {
 });
 
 export default function App() {
+    const transition = useNavigation();
+
+    const fetchers = useFetchers();
+
+    /**
+     * This gets the state of every fetcher active on the app and combine it with
+     * the state of the global transition (Link and Form), then use them to
+     * determine if the app is idle or if it's loading.
+     * Here we consider both loading and submitting as loading.
+     */
+    const state = useMemo<"idle" | "loading">(
+        function getGlobalState() {
+            const states = [transition.state, ...fetchers.map(fetcher => fetcher.state)];
+            if (states.every(state => state === "idle")) return "idle";
+            return "loading";
+        },
+        [transition.state, fetchers],
+    );
+
+    React.useEffect(() => {
+        // and when it's something else it means it's either submitting a form or
+        // waiting for the loaders of the next location so we start it
+        if (state === "loading") NProgress.start();
+        // when the state is idle then we can to complete the progress bar
+        if (state === "idle") NProgress.done();
+    }, [transition.state]);
+
     return (
         <QueryClientProvider client={queryClient}>
             <BilisoundAudioServiceProvider instance={audioInstance}>

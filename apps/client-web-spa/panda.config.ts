@@ -34,6 +34,10 @@ export default defineConfig({
                 _dark: "neutral.50",
             },
         },
+        "::selection": {
+            color: "white",
+            backgroundColor: "primary.800",
+        },
     },
 
     // Useful for theme customization

@@ -19,4 +19,5 @@ export default class TypedEventTarget<T> extends EventTarget {
         listener: EventListenerOrEventListenerObject,
         options?: boolean | EventListenerOptions,
     ): void;
+    dispatchEvent<K extends keyof T>(event: T[K]): void;
 }

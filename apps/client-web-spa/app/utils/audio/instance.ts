@@ -427,10 +427,11 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
      * @private
      */
     private handleQueueUpdate() {
-        const event = new CustomEvent("queueUpdate", {
-            detail: this.queue,
-        });
-        this.dispatchEvent(event);
+        this.dispatchEvent<"queueUpdate">(
+            new CustomEvent("queueUpdate", {
+                detail: this.queue,
+            }),
+        );
     }
 
     /**
@@ -438,9 +439,10 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
      * @private
      */
     private handleIndexUpdate() {
-        const event = new CustomEvent("indexUpdate", {
-            detail: this.index,
-        });
-        this.dispatchEvent(event);
+        this.dispatchEvent<"indexUpdate">(
+            new CustomEvent("indexUpdate", {
+                detail: this.index,
+            }),
+        );
     }
 }

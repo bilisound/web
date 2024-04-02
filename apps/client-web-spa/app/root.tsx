@@ -14,6 +14,10 @@ import { BASE_URL } from "@/constants";
 import NProgress from "nprogress";
 import "./assets/vendors/nprogress.css";
 
+NProgress.configure({
+    showSpinner: false,
+});
+
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="zh-hans-CN">

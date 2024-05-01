@@ -42,7 +42,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频网页
-			const { initialState } = await getVideo(id, 1, cache);
+			const { initialState } = await getVideo(id, 1, { cache, env });
 
 			// 提取视频信息
 			const videoData = initialState?.videoData;
@@ -77,7 +77,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频
-			const { playInfo, initialState } = await getVideo(id, episode, cache);
+			const { playInfo, initialState } = await getVideo(id, episode, { cache, env });
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
 			if (dashAudio.length < 1) {
@@ -91,7 +91,7 @@ export default function bilisound(router: RouterType) {
 			const range = request.headers.get('Range');
 			const headers = {
 				'user-agent': USER_AGENT,
-				'referer': 'https://www.bilibili.com/video/' + id + '/?p=' + episode,
+				'referer': `${env.ENDPOINT_BILI}/video/` + id + '/?p=' + episode,
 				'Range': range || "bytes=0-"
 			};
 			const res = await fetch(dashAudio[maxQualityIndex].baseUrl, {
@@ -136,7 +136,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频
-			const { playInfo, initialState } = await getVideo(id, episode, cache);
+			const { playInfo, initialState } = await getVideo(id, episode, { cache, env });
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
 			if (dashAudio.length < 1) {
@@ -151,7 +151,7 @@ export default function bilisound(router: RouterType) {
 				method: "head",
 				headers: {
 					'user-agent': USER_AGENT,
-					'referer': 'https://www.bilibili.com/video/' + id + '/?p=' + episode,
+					'referer': `${env.ENDPOINT_BILI}/video/` + id + '/?p=' + episode,
 				},
 			});
 
@@ -208,7 +208,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频网页
-			const response = await getVideo(id, 1, cache);
+			const response = await getVideo(id, 1, { cache, env });
 			return AjaxSuccess(response);
 		} catch (e) {
 			return AjaxError(e);

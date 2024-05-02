@@ -2,11 +2,11 @@ import { AudioQueueData, BilisoundAudioServiceStatus } from "@/utils/audio/types
 import { v4 } from "uuid";
 import { getImageProxyUrl } from "@/utils/misc";
 import { BASE_URL } from "@/constants";
-import TypedEventTarget from "@/utils/audio/typed-event-target";
+import { TypedCustomEvent, TypedEventTarget } from "./typed-event-target";
 
 export interface BilisoundAudioServiceEventMap {
-    queueUpdate: CustomEvent<AudioQueueData[]>;
-    indexUpdate: CustomEvent<number>;
+    queueUpdate: AudioQueueData[];
+    indexUpdate: number;
 }
 
 export interface BilisoundAudioServiceOptions {
@@ -428,7 +428,7 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
      */
     private handleQueueUpdate() {
         this.dispatchEvent<"queueUpdate">(
-            new CustomEvent("queueUpdate", {
+            new TypedCustomEvent("queueUpdate", {
                 detail: this.queue,
             }),
         );
@@ -440,7 +440,7 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
      */
     private handleIndexUpdate() {
         this.dispatchEvent<"indexUpdate">(
-            new CustomEvent("indexUpdate", {
+            new TypedCustomEvent("indexUpdate", {
                 detail: this.index,
             }),
         );

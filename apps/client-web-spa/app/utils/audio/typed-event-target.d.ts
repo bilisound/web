@@ -1,7 +1,7 @@
-export default class TypedEventTarget<T> extends EventTarget {
+export class TypedEventTarget<T> extends EventTarget {
     addEventListener<K extends keyof T>(
         type: K,
-        listener: (this: TypedEventTarget, ev: T[K]) => any,
+        listener: (this: TypedEventTarget<T>, ev: TypedCustomEvent<K, T[K]>) => any,
         options?: boolean | AddEventListenerOptions,
     ): void;
     addEventListener(
@@ -11,7 +11,7 @@ export default class TypedEventTarget<T> extends EventTarget {
     ): void;
     removeEventListener<K extends keyof T>(
         type: K,
-        listener: (this: TypedEventTarget, ev: T[K]) => any,
+        listener: (this: TypedEventTarget<T>, ev: TypedCustomEvent<K, T[K]>) => any,
         options?: boolean | EventListenerOptions,
     ): void;
     removeEventListener(
@@ -19,5 +19,9 @@ export default class TypedEventTarget<T> extends EventTarget {
         listener: EventListenerOrEventListenerObject,
         options?: boolean | EventListenerOptions,
     ): void;
-    dispatchEvent<K extends keyof T>(event: T[K]): void;
+    dispatchEvent<K extends keyof T>(event: TypedCustomEvent<K, T[K]>): void;
+}
+
+export class TypedCustomEvent<S, T> extends CustomEvent<T> {
+    constructor(type: S, eventInitDict?: CustomEventInit<T> | undefined);
 }

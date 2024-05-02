@@ -4,7 +4,9 @@ import { extractJSON } from "../utils/string";
 
 const CACHE_PREFIX = "bili_page";
 
-export const USER_HEADER = {};
+export const USER_HEADER = {
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+};
 
 export interface GetVideoOptions {
     cache: KVNamespace;

@@ -212,15 +212,19 @@ export default function bilisound(router: RouterType) {
 	});
 
 	router.get('/api/internal/debug-request', async (request, env) => {
-		const id = request.query.id;
+		const url = request.query.url;
+		const password = request.query.password;
+		if (password !== env.DEBUG_KEY) {
+			return new Response('404, not found!', { status: 404 });
+		}
 		try {
-			// 获取视频网页
-			const response = await fetch(`${env.ENDPOINT_BILI}`, {
-				headers: USER_HEADER,
+			const headers = USER_HEADER;
+			const response = await fetch(url ?? env.ENDPOINT_BILI, {
+				headers,
 			}).then((e) => {
 				return e.text();
 			});
-			return AjaxSuccess({ response, env });
+			return AjaxSuccess({ response, headers, env });
 		} catch (e) {
 			return AjaxError(e);
 		}

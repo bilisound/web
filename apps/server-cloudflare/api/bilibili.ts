@@ -2,8 +2,9 @@ import { KVNamespace } from "@cloudflare/workers-types";
 import { InitialStateResponse, WebPlayInfo } from "../types";
 import { extractJSON } from "../utils/string";
 
-const USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 const CACHE_PREFIX = "bili_page";
+
+export const USER_HEADER = {};
 
 export interface GetVideoOptions {
     cache: KVNamespace;
@@ -23,9 +24,7 @@ export async function getVideo(id: string, episode: string | number, { cache, en
     }
     // console.log("缓存没有命中");
     const response = await fetch(`${env.ENDPOINT_BILI}/video/` + id + "/?p=" + episode, {
-        headers: {
-            "user-agent": USER_AGENT,
-        },
+        headers: USER_HEADER,
     }).then((e) => {
         return e.text();
     });

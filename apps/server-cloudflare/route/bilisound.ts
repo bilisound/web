@@ -2,10 +2,8 @@ import { RouterType } from 'itty-router';
 import { AjaxError, AjaxSuccess, fineBestAudio } from "../utils/misc";
 import CORS_HEADERS from '../constants/cors';
 import { KVNamespace } from '@cloudflare/workers-types';
-import { getVideo } from '../api/bilibili';
+import { getVideo, USER_HEADER } from "../api/bilibili";
 import { v4 } from "uuid";
-
-const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 
 export default function bilisound(router: RouterType) {
 	router.get('/api/internal/resolve-b23', async (request) => {
@@ -16,9 +14,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			const response = await fetch('https://b23.tv/' + id, {
-				headers: {
-					'user-agent': USER_AGENT,
-				},
+				headers: USER_HEADER,
 				redirect: 'manual',
 			});
 
@@ -90,8 +86,8 @@ export default function bilisound(router: RouterType) {
 			// 将音频字节流进行转发
 			const range = request.headers.get('Range');
 			const headers = {
-				'user-agent': USER_AGENT,
-				'referer': `${env.ENDPOINT_BILI}/video/` + id + '/?p=' + episode,
+				...USER_HEADER,
+				'referer': `https://www.bilibili.com/video/` + id + '/?p=' + episode,
 				'Range': range || "bytes=0-"
 			};
 			const res = await fetch(dashAudio[maxQualityIndex].baseUrl, {
@@ -150,8 +146,8 @@ export default function bilisound(router: RouterType) {
 			const res = await fetch(item.baseUrl, {
 				method: "head",
 				headers: {
-					'user-agent': USER_AGENT,
-					'referer': `${env.ENDPOINT_BILI}/video/` + id + '/?p=' + episode,
+					...USER_HEADER,
+					'referer': `https://www.bilibili.com/video/` + id + '/?p=' + episode,
 				},
 			});
 
@@ -181,7 +177,7 @@ export default function bilisound(router: RouterType) {
 
 			const res = await fetch(url, {
 				headers: {
-					'user-agent': request.headers.get("user-agent") || USER_AGENT,
+					...USER_HEADER,
 					'referer': 'https://www.bilibili.com/video/' + referrer,
 				},
 			});
@@ -210,6 +206,21 @@ export default function bilisound(router: RouterType) {
 			// 获取视频网页
 			const response = await getVideo(id, 1, { cache, env });
 			return AjaxSuccess(response);
+		} catch (e) {
+			return AjaxError(e);
+		}
+	});
+
+	router.get('/api/internal/debug-request', async (request, env) => {
+		const id = request.query.id;
+		try {
+			// 获取视频网页
+			const response = await fetch(`${env.ENDPOINT_BILI}`, {
+				headers: USER_HEADER,
+			}).then((e) => {
+				return e.text();
+			});
+			return AjaxSuccess({ response, env });
 		} catch (e) {
 			return AjaxError(e);
 		}

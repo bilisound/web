@@ -1,40 +1,44 @@
 import { KVNamespace } from "@cloudflare/workers-types";
 import { InitialStateResponse, WebPlayInfo } from "../types";
 import { extractJSON } from "../utils/string";
+import { USER_HEADER } from "../constants/visit-header";
 
 const CACHE_PREFIX = "bili_page";
-
-export const USER_HEADER = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-};
 
 export interface GetVideoOptions {
     cache: KVNamespace;
     env: Record<string, string>;
 }
 
-export async function getVideo(id: string, episode: string | number, { cache, env }: GetVideoOptions): Promise<{
+export interface GetVideoReturns {
     initialState: InitialStateResponse,
     playInfo: WebPlayInfo,
-}> {
+}
+
+export async function getVideo(id: string, episode: string | number, { cache, env }: GetVideoOptions): Promise<GetVideoReturns> {
     const key = CACHE_PREFIX + "_" + id + "_" + episode;
     const got = await cache.get(key);
-    // console.log("缓存内容", got);
     if (got) {
-        // console.log("缓存命中");
         return JSON.parse(got);
     }
-    // console.log("缓存没有命中");
-    const response = await fetch(`${env.ENDPOINT_BILI}/video/` + id + "/?p=" + episode, {
+    const response: string | GetVideoReturns = await fetch(`${env.ENDPOINT_BILI}/video/` + id + "/?p=" + episode, {
         headers: USER_HEADER,
     }).then((e) => {
+        if (e.headers.get("content-type") === "application/json") {
+            return e.json();
+        }
         return e.text();
     });
 
     // 提取视频播放信息
-    const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__={(.+)};/, response);
-    const playInfo: WebPlayInfo = extractJSON(/window\.__playinfo__={(.+)}<\/script><script>/, response);
-    const obj = { initialState, playInfo };
+    let obj: GetVideoReturns;
+    if (typeof response === "string") {
+        const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__={(.+)};/, response);
+        const playInfo: WebPlayInfo = extractJSON(/window\.__playinfo__={(.+)}<\/script><script>/, response);
+        obj = { initialState, playInfo };
+    } else {
+        obj = response;
+    }
     await cache.put(key, JSON.stringify(obj), { expirationTtl: 5400 }); // 90 分钟
     return obj;
 }

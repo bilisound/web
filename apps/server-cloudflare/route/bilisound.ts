@@ -2,8 +2,9 @@ import { RouterType } from 'itty-router';
 import { AjaxError, AjaxSuccess, fineBestAudio } from "../utils/misc";
 import CORS_HEADERS from '../constants/cors';
 import { KVNamespace } from '@cloudflare/workers-types';
-import { getVideo, USER_HEADER } from "../api/bilibili";
+import { getVideo } from "../api/bilibili";
 import { v4 } from "uuid";
+import { USER_HEADER } from "../constants/visit-header";
 
 export default function bilisound(router: RouterType) {
 	router.get('/api/internal/resolve-b23', async (request) => {

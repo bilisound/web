@@ -1,5 +1,5 @@
 import { RouterType } from 'itty-router';
-import { AjaxError, AjaxSuccess, fineBestAudio } from "../utils/misc";
+import { AjaxError, AjaxSuccess, fineBestAudio, pickRandom } from "../utils/misc";
 import CORS_HEADERS from '../constants/cors';
 import { KVNamespace } from '@cloudflare/workers-types';
 import { getVideo } from "../api/bilibili";
@@ -213,14 +213,14 @@ export default function bilisound(router: RouterType) {
 	});
 
 	router.get('/api/internal/debug-request', async (request, env) => {
-		const url = request.query.url;
+		const url = request.query.url as string;
 		const password = request.query.password;
 		if (password !== env.DEBUG_KEY) {
 			return new Response('404, not found!', { status: 404 });
 		}
 		try {
 			const headers = USER_HEADER;
-			const response = await fetch(url ?? env.ENDPOINT_BILI, {
+			const response = await fetch(url ?? pickRandom(env.ENDPOINT_BILI), {
 				headers,
 			}).then((e) => {
 				return e.text();

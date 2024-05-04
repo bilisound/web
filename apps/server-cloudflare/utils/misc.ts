@@ -42,3 +42,7 @@ export const fineBestAudio = (dashAudio: WebPlayInfo["data"]["dash"]["audio"]) =
 	});
 	return maxQualityIndex;
 }
+
+export function pickRandom<T>(item: T[]) {
+	return item[Math.floor(Math.random() * item.length)]
+}

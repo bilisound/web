@@ -2,12 +2,15 @@ import { KVNamespace } from "@cloudflare/workers-types";
 import { InitialStateResponse, WebPlayInfo } from "../types";
 import { extractJSON } from "../utils/string";
 import { USER_HEADER } from "../constants/visit-header";
+import { pickRandom } from "../utils/misc";
 
 const CACHE_PREFIX = "bili_page";
 
 export interface GetVideoOptions {
     cache: KVNamespace;
-    env: Record<string, string>;
+    env: {
+        ENDPOINT_BILI: string[];
+    };
 }
 
 export interface GetVideoReturns {
@@ -21,7 +24,7 @@ export async function getVideo(id: string, episode: string | number, { cache, en
     if (got) {
         return JSON.parse(got);
     }
-    const response: string | GetVideoReturns = await fetch(`${env.ENDPOINT_BILI}/video/` + id + "/?p=" + episode, {
+    const response: string | GetVideoReturns = await fetch(`${pickRandom(env.ENDPOINT_BILI)}/video/` + id + "/?p=" + episode, {
         headers: USER_HEADER,
     }).then((e) => {
         if (e.headers.get("content-type") === "application/json") {

@@ -91,7 +91,7 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
             navigator.mediaSession.setActionHandler("nexttrack", () => this.nextTrack());
 
             // 如果 index 是合法值，初始化 <audio> 的 src 值
-            if (index >= 0) {
+            if (index >= 0 && queue[index]) {
                 el.src = queue[index].url;
             }
 

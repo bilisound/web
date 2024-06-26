@@ -1,6 +1,7 @@
 import { merge } from 'lodash-es';
 import CORS_HEADERS from '../constants/cors';
 import { ResponseInit } from '@cloudflare/workers-types/2021-11-03/index';
+import { WebPlayInfo } from "../types";
 
 export const AjaxSuccess = (data: any, options: RequestInit = {}) => {
 	return new Response(JSON.stringify({
@@ -31,3 +32,17 @@ export const AjaxError = (msg: any, code = 500, options: RequestInit = {}) => {
 		} as ResponseInit, options),
 	);
 };
+
+export const fineBestAudio = (dashAudio: WebPlayInfo["data"]["dash"]["audio"]) => {
+	let maxQualityIndex = 0;
+	dashAudio.forEach((value, index, array) => {
+		if (array[maxQualityIndex].codecid < maxQualityIndex) {
+			maxQualityIndex = index;
+		}
+	});
+	return maxQualityIndex;
+}
+
+export function pickRandom<T>(item: T[]) {
+	return item[Math.floor(Math.random() * item.length)]
+}

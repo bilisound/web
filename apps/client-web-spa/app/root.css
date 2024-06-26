@@ -1,0 +1,69 @@
+@layer reset, base, tokens, recipes, utilities;
+
+@layer tokens {
+    [data-theme="red"] {
+        --colors-primary-50: #fef2f2;
+        --colors-primary-100: #fde6e7;
+        --colors-primary-200: #fad1d4;
+        --colors-primary-300: #f6abb1;
+        --colors-primary-400: #f07c88;
+        --colors-primary-500: #e64f62;
+        --colors-primary-600: #d22c49;
+        --colors-primary-700: #b0203c;
+        --colors-primary-800: #941d39;
+        --colors-primary-900: #7f1c37;
+        --colors-primary-950: #460b18;
+    }
+}
+
+/* Loading Animation by https://css-loaders.com/dots/ */
+/* HTML: <div class="loader"></div> */
+
+:root {
+    --bs-loader-bg: #00ba9d;
+}
+
+:root.dark {
+    --bs-loader-bg: #028373;
+}
+
+#root {
+    display: contents;
+}
+
+/* 加载动画 */
+.bs-loader {
+    width: 50px;
+    height: 12px;
+    --_g: no-repeat radial-gradient(farthest-side, var(--bs-loader-bg) 94%, #0000);
+    background:
+            var(--_g) left,
+            var(--_g) right;
+    background-size: 12px 12px;
+    position: absolute;
+    left: 50dvw;
+    top: 50dvh;
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+.bs-loader:before {
+    content: "";
+    position: absolute;
+    height: 12px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--bs-loader-bg);
+    inset: 0;
+    margin: auto;
+    animation: l25-1 1s, l25-2 0.5s;
+    animation-timing-function: cubic-bezier(.5,-900,.5,900);
+    animation-iteration-count: infinite;
+}
+
+@keyframes l25-1 {
+    100% {transform:translate(0.12px)}
+}
+
+@keyframes l25-2 {
+    100% {inset:-0.15px 0 0;}
+}

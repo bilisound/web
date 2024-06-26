@@ -8,8 +8,5 @@
     "build": "tsc",
     "watch": "tsc -w"
   },
-  "keywords": [],
-  "devDependencies": {
-    "eslint-config-bilisound2": "workspace:*"
-  }
+  "keywords": []
 }

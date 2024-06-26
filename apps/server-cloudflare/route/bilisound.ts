@@ -1,10 +1,10 @@
 import { RouterType } from 'itty-router';
-import { AjaxError, AjaxSuccess } from '../utils/misc';
+import { AjaxError, AjaxSuccess, fineBestAudio, pickRandom } from "../utils/misc";
 import CORS_HEADERS from '../constants/cors';
 import { KVNamespace } from '@cloudflare/workers-types';
-import { getVideo } from '../api/bilibili';
-
-const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36';
+import { getVideo } from "../api/bilibili";
+import { v4 } from "uuid";
+import { USER_HEADER } from "../constants/visit-header";
 
 export default function bilisound(router: RouterType) {
 	router.get('/api/internal/resolve-b23', async (request) => {
@@ -15,9 +15,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			const response = await fetch('https://b23.tv/' + id, {
-				headers: {
-					'user-agent': USER_AGENT,
-				},
+				headers: USER_HEADER,
 				redirect: 'manual',
 			});
 
@@ -41,7 +39,7 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频网页
-			const { initialState } = await getVideo(id, 1, cache);
+			const { initialState } = await getVideo(id, 1, { cache, env });
 
 			// 提取视频信息
 			const videoData = initialState?.videoData;
@@ -69,42 +67,49 @@ export default function bilisound(router: RouterType) {
 		const cache = env.bilisound as KVNamespace;
 		const id = request.query.id;
 		const episode = Number(request.query.episode);
+		const dl = request.query.dl;
 		if (typeof id !== 'string' || !Number.isInteger(episode) || episode < 1) {
 			return AjaxError('api usage error', 400);
 		}
 
 		try {
 			// 获取视频
-			const { playInfo } = await getVideo(id, episode, cache);
+			const { playInfo, initialState } = await getVideo(id, episode, { cache, env });
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
-			if (!dashAudio) {
+			if (dashAudio.length < 1) {
 				return AjaxError('no dash data found');
 			}
 
 			// 遍历获取最佳音质视频
-			let maxQualityIndex = 0;
-			dashAudio.forEach((value, index, array) => {
-				if (array[maxQualityIndex].codecid < maxQualityIndex) {
-					maxQualityIndex = index;
-				}
-			});
+			const maxQualityIndex = fineBestAudio(dashAudio);
 
 			// 将音频字节流进行转发
 			const range = request.headers.get('Range');
+			const headers = {
+				...USER_HEADER,
+				'referer': `https://www.bilibili.com/video/` + id + '/?p=' + episode,
+				'Range': range || "bytes=0-"
+			};
 			const res = await fetch(dashAudio[maxQualityIndex].baseUrl, {
-				headers: {
-					'user-agent': USER_AGENT,
-					'referer': 'https://www.bilibili.com/video/' + id + '/?p=' + episode,
-					'Range': range,
-				},
+				headers,
 			});
 
-			return new Response(await res.arrayBuffer(), {
+			let episodeName = initialState.videoData.title;
+			if (initialState.videoData.pages.length > 1) {
+				episodeName = initialState.videoData.pages.find(e => e.page === episode)?.part;
+			}
+			const fileName = `[${dl === "av" ? `av${initialState.aid}` : initialState.bvid}] [P${episode}] ${episodeName}.m4a`;
+			const buf = await res.arrayBuffer();
+
+			return new Response(buf, {
 				status: range ? 206 : 200,
 				headers: {
 					...CORS_HEADERS,
-					'Content-Type': 'audio/mp4',
+					...(dl ? {
+						'Content-Disposition': `filename*=utf-8''${encodeURIComponent(fileName)}`
+					} : {}),
+					'Content-Type': dl ? "application/octet-stream": 'audio/mp4',
 					'Accept-Ranges': 'bytes',
 					'Cache-Control': 'max-age=604800',
 					...(range ? {
@@ -128,27 +133,22 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频
-			const { playInfo, initialState } = await getVideo(id, episode, cache);
+			const { playInfo, initialState } = await getVideo(id, episode, { cache, env });
 			const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
-			if (!dashAudio) {
+			if (dashAudio.length < 1) {
 				return AjaxError('no dash data found');
 			}
 
 			// 遍历获取最佳音质视频
-			let maxQualityIndex = 0;
-			dashAudio.forEach((value, index, array) => {
-				if (array[maxQualityIndex].codecid < maxQualityIndex) {
-					maxQualityIndex = index;
-				}
-			});
+			const maxQualityIndex = fineBestAudio(dashAudio);
 
 			const item = dashAudio[maxQualityIndex];
 			const res = await fetch(item.baseUrl, {
 				method: "head",
 				headers: {
-					'user-agent': USER_AGENT,
-					'referer': 'https://www.bilibili.com/video/' + id + '/?p=' + episode,
+					...USER_HEADER,
+					'referer': `https://www.bilibili.com/video/` + id + '/?p=' + episode,
 				},
 			});
 
@@ -178,7 +178,7 @@ export default function bilisound(router: RouterType) {
 
 			const res = await fetch(url, {
 				headers: {
-					'user-agent': request.headers.get("user-agent") || USER_AGENT,
+					...USER_HEADER,
 					'referer': 'https://www.bilibili.com/video/' + referrer,
 				},
 			});
@@ -205,10 +205,66 @@ export default function bilisound(router: RouterType) {
 
 		try {
 			// 获取视频网页
-			const response = await getVideo(id, 1, cache);
+			const response = await getVideo(id, 1, { cache, env });
 			return AjaxSuccess(response);
 		} catch (e) {
 			return AjaxError(e);
 		}
+	});
+
+	router.get('/api/internal/debug-request', async (request, env) => {
+		const url = request.query.url as string;
+		const password = request.query.password;
+		if (password !== env.DEBUG_KEY) {
+			return new Response('404, not found!', { status: 404 });
+		}
+		try {
+			const headers = USER_HEADER;
+			const response = await fetch(url ?? pickRandom(env.ENDPOINT_BILI), {
+				headers,
+			}).then((e) => {
+				return e.text();
+			});
+			return AjaxSuccess({ response, headers, env });
+		} catch (e) {
+			return AjaxError(e);
+		}
+	});
+
+	router.post("/api/internal/transfer-list", async (request, env) => {
+		const cache = env.bilisound as KVNamespace;
+		const keySuffix = v4();
+		try {
+			// 请求预检
+			if (request.headers.get("content-type") !== "application/json") {
+				return AjaxError("Unsupported data type", 400);
+			}
+
+			// 读取用户传输的数据
+			const userInput = await request.json();
+			if (!Array.isArray(userInput)) {
+				return AjaxError("Unsupported data type", 400);
+			}
+
+			await cache.put(`transfer_list_${keySuffix}`, JSON.stringify(userInput, (key, value) => {
+				if (key === "key" || key === "url") {
+					return undefined;
+				}
+				return value;
+			}), { expirationTtl: 330 }); // 5 分钟 30 秒
+			return AjaxSuccess(keySuffix);
+		} catch (e) {
+			return AjaxError(e);
+		}
+	});
+
+	router.get("/api/internal/transfer-list/:id", async (request, env) => {
+		const cache = env.bilisound as KVNamespace;
+		const { params } = request;
+		const keySuffix = params.id;
+
+		const got = await cache.get(`transfer_list_${keySuffix}`);
+
+		return AjaxSuccess(JSON.parse(got));
 	});
 }

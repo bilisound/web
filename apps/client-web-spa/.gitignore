@@ -1,10 +1,11 @@
-/node_modules
-/.env.local
-/.umirc.local.ts
-/config/config.local.ts
-/src/.umi
-/src/.umi-production
-/src/.umi-test
-/dist
-.swc
-/src/version.json
+node_modules
+
+/.cache
+/build
+/public/build
+.env.local
+/app/version.json
+
+## Panda
+/styled-system
+/styled-system-studio

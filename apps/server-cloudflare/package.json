@@ -4,14 +4,15 @@
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy index.ts",
-		"dev": "wrangler dev index.ts --local",
-		"start-stackblitz": "WRANGLER_SEND_METRICS=false wrangler dev index.ts --local"
+		"dev": "wrangler dev index.ts"
 	},
 	"dependencies": {
-		"itty-router": "^4.0.9"
+		"itty-router": "^4.2.2",
+		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230518.0",
-		"wrangler": "^3.1.0"
+		"@cloudflare/workers-types": "^4.20240320.1",
+		"@types/uuid": "^9.0.8",
+		"wrangler": "^3.40.0"
 	}
 }

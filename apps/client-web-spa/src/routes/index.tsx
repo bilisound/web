@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { center } from "@styled-system/patterns";
 import { Formik, Field, Form } from "formik";
 import { bsInput } from "@/components/recipes/input";
@@ -12,15 +12,19 @@ import IconLoading from "@/icons/loading.svg?react";
 import { resolveVideo } from "@/utils/format";
 import { getBilisoundMetadata } from "@/api/online";
 import { sendToast } from "@/utils/toast";
-import { useNavigate } from "@remix-run/react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { HTTPError, TimeoutError } from "ky";
+
+export const Route = createFileRoute("/")({
+    component: Page,
+});
 
 interface Values {
     query: string;
 }
 
-export default function Page() {
+function Page() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 

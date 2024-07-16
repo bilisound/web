@@ -12,7 +12,7 @@ import IconPlaylist from "@/icons/flowbite--list-music-solid.svg?react";
 import IconDownload from "@/icons/fa-solid--download.svg?react";
 import IconDisc from "@/icons/fa-solid--compact-disc.svg?react";
 import { secondToTimestamp } from "@bilisound2/utils";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { useConfigStore } from "@/store/config.client";
 import { BASE_URL } from "@/constants";

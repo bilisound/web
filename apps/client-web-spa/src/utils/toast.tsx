@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import IconCheckMark from "@/icons/check-mark.svg?react";
 import IconWarning from "@/icons/warning.svg?react";
 import IconCross from "@/icons/cross.svg?react";
-import { SystemStyleObject } from "@styled-system/types";
+import type { SystemStyleObject } from "@styled-system/types";
 
 export type ToastTypes = "success" | "warning" | "error" | "info";
 

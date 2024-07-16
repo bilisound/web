@@ -7,7 +7,7 @@ export default defineConfig({
 
     presets: [
         "@pandacss/dev/presets",
-        "pform-reset",
+        // "pform-reset",
         typographyPreset({
             recipe: {
                 semanticTokens: {

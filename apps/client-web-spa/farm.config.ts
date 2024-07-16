@@ -19,6 +19,6 @@ export default defineConfig({
     server: {
         port: 5173,
     },
-    plugins: ["@farmfe/plugin-react", farmPluginPostcss()],
+    plugins: ["@farmfe/plugin-react", "@farmfe/plugin-sass", farmPluginPostcss()],
     vitePlugins: [TanStackRouterVite(), svgr()],
 });

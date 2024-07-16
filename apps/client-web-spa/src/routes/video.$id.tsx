@@ -479,9 +479,7 @@ function DataSkeleton() {
 }
 
 function Page() {
-    const { id } = useParams<{
-        id: string;
-    }>();
+    const { id } = useParams({ from: "/video/$id" });
     const { data, isLoading } = useQuery({
         queryKey: [id ?? ""],
         queryFn: () => {

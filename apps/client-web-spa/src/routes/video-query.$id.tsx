@@ -9,11 +9,11 @@ export const Route = createFileRoute("/video-query/$id")({
 // 兼容 v1 地址用
 function Page() {
     const navigate = useNavigate();
-    const params = useParams<"id">();
+    const { id } = useParams({ from: "/video-query/$id" });
 
     useEffect(() => {
-        navigate("/video/" + decode(params.id ?? ""));
-    }, [navigate, params.id]);
+        navigate({ from: "/video/$id", params: { id: decode(id) } });
+    }, [navigate, id]);
 
     return <div></div>;
 }

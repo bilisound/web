@@ -8,7 +8,8 @@
 	},
 	"dependencies": {
 		"itty-router": "^4.2.2",
-		"uuid": "^9.0.1"
+		"uuid": "^9.0.1",
+		"@bilisound2/server-wintercg": "workspace:*"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240320.1",

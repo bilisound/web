@@ -5,29 +5,11 @@ import { KVNamespace } from '@cloudflare/workers-types';
 import { getVideo } from "../api/bilibili";
 import { v4 } from "uuid";
 import { USER_HEADER } from "../constants/visit-header";
+import { resolveB23 } from "@bilisound2/server-wintercg";
 
 export default function bilisound(router: RouterType) {
 	router.get('/api/internal/resolve-b23', async (request) => {
-		const id = request.query.id;
-		if (typeof id !== 'string') {
-			return AjaxError('api usage error', 400);
-		}
-
-		try {
-			const response = await fetch('https://b23.tv/' + id, {
-				headers: USER_HEADER,
-				redirect: 'manual',
-			});
-
-			const target = response.headers.get('location');
-			if (!target) {
-				return AjaxError('bad location', 404);
-			}
-
-			return AjaxSuccess(response.headers.get('location'));
-		} catch (e) {
-			return AjaxError(e);
-		}
+		return resolveB23(request);
 	});
 
 	router.get('/api/internal/metadata', async (request, env) => {

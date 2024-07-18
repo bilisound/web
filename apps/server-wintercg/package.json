@@ -1,0 +1,22 @@
+{
+  "name": "@bilisound2/server-wintercg",
+  "description": "Runtime-agnostic server core compatible with WinterCG-complaint runtimes",
+  "scripts": {
+    "build": "tsup-node ./src/index.ts --format esm --dts"
+  },
+  "devDependencies": {
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "axios": "^1.7.2",
+    "itty-router": "^5.0.17",
+    "lodash": "^4.17.21"
+  },
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
+  }
+}

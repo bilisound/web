@@ -234,7 +234,6 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             transform: ["translateY(-50%)", "none"],
                         })}
                         aria-label={"前往当前正在播放的曲目页面"}
-                        prefetch="intent"
                     >
                         <IconTarget />
                     </Link>
@@ -253,7 +252,6 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             })}
                             aria-label={"查看播放列表"}
                             to={"/queue"}
-                            prefetch="intent"
                         >
                             <IconPlaylist />
                         </Link>

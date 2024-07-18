@@ -50,7 +50,12 @@ function Page() {
                 onSubmit={async values => {
                     try {
                         const value = await handleRequest(values);
-                        navigate("/video/" + value.data.bvid);
+                        await navigate({
+                            from: "/video/$id",
+                            params: {
+                                id: value.data.bvid,
+                            },
+                        });
                     } catch (e) {
                         if (e instanceof TimeoutError) {
                             sendToast("网络请求失败，请稍候再试", {

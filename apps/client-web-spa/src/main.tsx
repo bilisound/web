@@ -39,9 +39,29 @@ import { BILISOUND_DEFAULT_PLAYLIST, BILISOUND_QUEUE_INDEX } from "@/constants/l
 import { BASE_URL } from "@/constants";
 import { AudioQueueData } from "@/utils/audio/types";
 import { BilisoundAudioServiceProvider } from "@/utils/audio/react";
+import { Toaster } from "react-hot-toast";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
+
+router.subscribe("onBeforeLoad", () => {
+    console.log("onBeforeLoad");
+    document.getElementById("bs-loader")?.remove();
+    NProgress.start();
+});
+
+router.subscribe("onResolved", () => {
+    console.log("onResolved");
+    NProgress.done();
+});
+
+router.subscribe("onLoad", () => {
+    console.log("onLoad");
+});
+
+router.subscribe("onBeforeNavigate", () => {
+    console.log("onBeforeNavigate");
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -62,6 +82,7 @@ if (!rootElement.innerHTML) {
             <QueryClientProvider client={queryClient}>
                 <BilisoundAudioServiceProvider instance={audioInstance}>
                     <RouterProvider router={router} />
+                    <Toaster />
                 </BilisoundAudioServiceProvider>
             </QueryClientProvider>
         </StrictMode>,

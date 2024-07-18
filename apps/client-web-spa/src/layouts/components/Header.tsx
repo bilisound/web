@@ -36,7 +36,6 @@ export default function Header() {
             >
                 <h1>
                     <Link
-                        prefetch="intent"
                         to={"/"}
                         className={css({
                             color: "white",
@@ -67,7 +66,6 @@ export default function Header() {
                         })}
                         aria-label={"查看播放列表"}
                         to={"/queue"}
-                        prefetch="intent"
                     >
                         <IconPlaylist />
                     </Link>
@@ -89,7 +87,6 @@ export default function Header() {
                         })}
                         aria-label={"设置"}
                         to={"/settings"}
-                        prefetch="intent"
                     >
                         <IconSettings />
                     </Link>

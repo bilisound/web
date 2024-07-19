@@ -1,4 +1,4 @@
-import { Outlet } from "@remix-run/react";
+import { Outlet } from "@tanstack/react-router";
 import React from "react";
 import Header from "@/layouts/components/Header";
 import YuruChara from "@/components/YuruChara";

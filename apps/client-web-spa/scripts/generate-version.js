@@ -10,4 +10,4 @@ const builtInfo = {
     gitHash: childProcess.execSync("git rev-parse HEAD").toString().trim(),
 };
 
-fs.writeFileSync("./app/version.json", JSON.stringify(builtInfo, null, 4));
+fs.writeFileSync("./src/version.json", JSON.stringify(builtInfo, null, 4));

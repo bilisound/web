@@ -1,6 +1,6 @@
 [build]
 command = "pnpm run build"
-publish = "apps/client-web-spa/build/client"
+publish = "apps/client-web-spa/dist"
 
 [dev]
 command = "pnpm run dev"

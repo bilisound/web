@@ -17,6 +17,11 @@ import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
 import { measureNumberWidth } from "@/utils/vendors/dom";
 import { useInstance, useStatus } from "@/utils/audio/react";
 import { AudioQueueData } from "@/utils/audio/types";
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/queue")({
+    component: Page,
+});
 
 const playListItemRoot = cva({
     base: {
@@ -322,7 +327,7 @@ function ClearListButton() {
     );
 }
 
-export default function Page() {
+function Page() {
     return (
         <div className={center({ flexDirection: "column", justifyContent: "flex-start" })}>
             <div className={css({ w: "full", maxW: "container" })}>

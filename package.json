@@ -5,8 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "turbo run build",
-    "postinstall": "pnpm run build"
+    "build": "turbo run build"
   },
   "keywords": [],
   "author": "",

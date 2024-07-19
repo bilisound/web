@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { center } from "@styled-system/patterns";
 import { Formik, Field, Form } from "formik";
 import { bsInput } from "@/components/recipes/input";
@@ -12,15 +12,19 @@ import IconLoading from "@/icons/loading.svg?react";
 import { resolveVideo } from "@/utils/format";
 import { getBilisoundMetadata } from "@/api/online";
 import { sendToast } from "@/utils/toast";
-import { useNavigate } from "@remix-run/react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { HTTPError, TimeoutError } from "ky";
+
+export const Route = createFileRoute("/")({
+    component: Page,
+});
 
 interface Values {
     query: string;
 }
 
-export default function Page() {
+function Page() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -46,7 +50,12 @@ export default function Page() {
                 onSubmit={async values => {
                     try {
                         const value = await handleRequest(values);
-                        navigate("/video/" + value.data.bvid);
+                        await navigate({
+                            to: "/video/$id",
+                            params: {
+                                id: value.data.bvid,
+                            },
+                        });
                     } catch (e) {
                         if (e instanceof TimeoutError) {
                             sendToast("网络请求失败，请稍候再试", {

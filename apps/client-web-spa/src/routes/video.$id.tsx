@@ -1,4 +1,4 @@
-import { useParams } from "@remix-run/react";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { getBilisoundMetadata, GetBilisoundMetadataResponse } from "@/api/online";
 import { css, cva } from "@styled-system/css";
 import { center, circle, grid, hstack, vstack } from "@styled-system/patterns";
@@ -17,6 +17,10 @@ import CurrentPlayingIcon from "@/components/CurrentPlayingIcon";
 import { useInstance, useStatus } from "@/utils/audio/react";
 import BilisoundAudioService from "@/utils/audio/instance";
 import { useConfigStore } from "@/store/config.client";
+
+export const Route = createFileRoute("/video/$id")({
+    component: Page,
+});
 
 const skeletonLength = [
     0.3484095619198131, 0.5274406037172059, 0.5640563137468972, 0.9519480340267148, 0.23511593039367695,
@@ -474,10 +478,8 @@ function DataSkeleton() {
     );
 }
 
-export default function Page() {
-    const { id } = useParams<{
-        id: string;
-    }>();
+function Page() {
+    const { id } = useParams({ from: "/video/$id" });
     const { data, isLoading } = useQuery({
         queryKey: [id ?? ""],
         queryFn: () => {

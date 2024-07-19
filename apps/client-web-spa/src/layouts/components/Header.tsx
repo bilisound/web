@@ -1,7 +1,7 @@
 import { css } from "@styled-system/css";
 import { center, flex, hstack } from "@styled-system/patterns";
 import ColorModeButton from "@/layouts/components/ColorModeButton";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
 import IconPlaylist from "@/icons/flowbite--list-music-solid.svg?react";
 import IconSettings from "@/icons/mingcute--settings-6-line.svg?react";
 
@@ -36,7 +36,6 @@ export default function Header() {
             >
                 <h1>
                     <Link
-                        prefetch="intent"
                         to={"/"}
                         className={css({
                             color: "white",
@@ -67,7 +66,6 @@ export default function Header() {
                         })}
                         aria-label={"查看播放列表"}
                         to={"/queue"}
-                        prefetch="intent"
                     >
                         <IconPlaylist />
                     </Link>
@@ -89,7 +87,6 @@ export default function Header() {
                         })}
                         aria-label={"设置"}
                         to={"/settings"}
-                        prefetch="intent"
                     >
                         <IconSettings />
                     </Link>

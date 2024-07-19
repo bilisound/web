@@ -12,7 +12,7 @@ import IconPlaylist from "@/icons/flowbite--list-music-solid.svg?react";
 import IconDownload from "@/icons/fa-solid--download.svg?react";
 import IconDisc from "@/icons/fa-solid--compact-disc.svg?react";
 import { secondToTimestamp } from "@bilisound2/utils";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
 import MusicPlayingIcon from "@/components/MusicPlayingIcon";
 import { useConfigStore } from "@/store/config.client";
 import { BASE_URL } from "@/constants";
@@ -234,7 +234,6 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             transform: ["translateY(-50%)", "none"],
                         })}
                         aria-label={"前往当前正在播放的曲目页面"}
-                        prefetch="intent"
                     >
                         <IconTarget />
                     </Link>
@@ -253,7 +252,6 @@ const AudioPlayerInner = forwardRef<HTMLDivElement, React.HTMLProps<any>>((props
                             })}
                             aria-label={"查看播放列表"}
                             to={"/queue"}
-                            prefetch="intent"
                         >
                             <IconPlaylist />
                         </Link>

@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
+import type React from "react";
 import { bsForm } from "@/components/recipes/form";
 import { FormContext, formContextDefaultOption, FormContextOption } from "@/components/ui/FormProvider";
-import { SystemStyleObject } from "@styled-system/types";
+import type { SystemStyleObject } from "@styled-system/types";
 import { css } from "@styled-system/css";
 
 export interface FormItemProps extends Partial<FormContextOption> {

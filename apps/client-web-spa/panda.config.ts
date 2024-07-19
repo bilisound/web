@@ -7,7 +7,7 @@ export default defineConfig({
 
     presets: [
         "@pandacss/dev/presets",
-        "pform-reset",
+        // "pform-reset",
         typographyPreset({
             recipe: {
                 semanticTokens: {
@@ -18,7 +18,7 @@ export default defineConfig({
     ],
 
     // Where to look for your css declarations
-    include: ["./app/**/*.{js,jsx,ts,tsx}"],
+    include: ["./src/**/*.{js,jsx,ts,tsx}"],
 
     // Files to exclude
     exclude: [],

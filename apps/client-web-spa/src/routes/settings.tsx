@@ -2,8 +2,13 @@ import { center } from "@styled-system/patterns";
 import { css } from "@styled-system/css";
 import { useConfigStore } from "@/store/config.client";
 import { bsCheckbox } from "@/components/recipes/checkbox";
+import { createFileRoute } from "@tanstack/react-router";
 
-export default function Page() {
+export const Route = createFileRoute("/settings")({
+    component: Page,
+});
+
+function Page() {
     const { showYuruChara, setShowYuruChara, pauseWhenOpenExternal, setPauseWhenOpenExternal } = useConfigStore(
         state => ({
             showYuruChara: state.showYuruChara,

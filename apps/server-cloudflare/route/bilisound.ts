@@ -59,6 +59,7 @@ export default function bilisound(router: RouterType) {
 				pages: pages.map(({ page, part, duration }) => ({ page, part, duration })),
 			});
 		} catch (e) {
+			console.log(e)
 			return AjaxError(e);
 		}
 	});

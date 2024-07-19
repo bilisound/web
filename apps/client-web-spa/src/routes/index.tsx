@@ -51,7 +51,7 @@ function Page() {
                     try {
                         const value = await handleRequest(values);
                         await navigate({
-                            from: "/video/$id",
+                            to: "/video/$id",
                             params: {
                                 id: value.data.bvid,
                             },

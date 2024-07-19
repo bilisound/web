@@ -45,22 +45,22 @@ import { Toaster } from "react-hot-toast";
 const router = createRouter({ routeTree });
 
 router.subscribe("onBeforeLoad", () => {
-    console.log("onBeforeLoad");
+    // console.log("onBeforeLoad");
     document.getElementById("bs-loader")?.remove();
     NProgress.start();
 });
 
 router.subscribe("onResolved", () => {
-    console.log("onResolved");
+    // console.log("onResolved");
     NProgress.done();
 });
 
 router.subscribe("onLoad", () => {
-    console.log("onLoad");
+    // console.log("onLoad");
 });
 
 router.subscribe("onBeforeNavigate", () => {
-    console.log("onBeforeNavigate");
+    // console.log("onBeforeNavigate");
 });
 
 // Register the router instance for type safety

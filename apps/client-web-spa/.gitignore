@@ -1,11 +1,12 @@
 node_modules
 
 /.cache
-/build
-/public/build
+
 .env.local
-/app/version.json
 
 ## Panda
 /styled-system
 /styled-system-studio
+
+/src/routeTree.gen.ts
+/src/version.json

@@ -12,7 +12,7 @@ function Page() {
     const { id } = useParams({ from: "/video-query/$id" });
 
     useEffect(() => {
-        navigate({ from: "/video/$id", params: { id: decode(id) } });
+        navigate({ to: "/video/$id", params: { id: decode(id) } });
     }, [navigate, id]);
 
     return <div></div>;

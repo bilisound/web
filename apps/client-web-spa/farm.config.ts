@@ -15,6 +15,8 @@ export default defineConfig({
             },
         },
         sourcemap: false,
+        // temp
+        minify: false,
     },
     server: {
         port: 5173,

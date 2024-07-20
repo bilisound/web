@@ -12,10 +12,13 @@
     "itty-router": "^5.0.17",
     "lodash": "^4.17.21"
   },
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
-  }
+  },
+  "types": "./dist/index.d.ts",
+  "type": "module"
 }

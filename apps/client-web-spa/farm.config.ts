@@ -7,7 +7,6 @@ import { fileURLToPath } from "node:url";
 
 export default defineConfig({
     compilation: {
-        partialBundling: {},
         resolve: {
             alias: {
                 "@/": path.join(fileURLToPath(import.meta.url), "../src"),
@@ -15,8 +14,9 @@ export default defineConfig({
             },
         },
         sourcemap: false,
-        // temp
-        minify: false,
+        minify: {
+            moduleDecls: false,
+        },
     },
     server: {
         port: 5173,

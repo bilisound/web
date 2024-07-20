@@ -6,6 +6,15 @@ import IconPlaylist from "@/icons/flowbite--list-music-solid.svg?react";
 import IconSettings from "@/icons/mingcute--settings-6-line.svg?react";
 
 export default function Header() {
+    const navButton = center({
+        paddingX: 3,
+        height: 10,
+        borderRadius: "md",
+        transitionDuration: "fast",
+        _hover: {
+            bg: "white/10",
+        },
+    });
     return (
         <header
             className={flex({
@@ -30,11 +39,11 @@ export default function Header() {
                 className={flex({
                     h: 14,
                     width: "container",
-                    justifyContent: "space-between",
+                    gap: 4,
                     alignItems: "center",
                 })}
             >
-                <h1>
+                <h1 className={css({ flex: 0 })}>
                     <Link
                         to={"/"}
                         className={css({
@@ -47,7 +56,30 @@ export default function Header() {
                         Bilisound
                     </Link>
                 </h1>
-                <div className={hstack({ me: -2, gap: 0 })}>
+                <ul
+                    className={flex({
+                        flex: 1,
+                        gap: 1,
+                        color: "white",
+                        _dark: {
+                            color: "white",
+                        },
+                        fontWeight: 700,
+                        fontSize: "sm",
+                    })}
+                >
+                    <li>
+                        <Link to={"/"} className={navButton}>
+                            首页
+                        </Link>
+                    </li>
+                    <li>
+                        <a href={"https://github.com/bilisound/client-mobile/releases/latest"} className={navButton}>
+                            客户端
+                        </a>
+                    </li>
+                </ul>
+                <div className={hstack({ me: -2, gap: 0, flex: 0 })}>
                     <Link
                         className={center({
                             w: 10,

@@ -1,5 +1,5 @@
 import { defineConfig } from "@pandacss/dev";
-import typographyPreset from "pandacss-preset-typography";
+// import typographyPreset from "pandacss-preset-typography";
 
 export default defineConfig({
     // Whether to use css reset
@@ -8,13 +8,13 @@ export default defineConfig({
     presets: [
         "@pandacss/dev/presets",
         // "pform-reset",
-        typographyPreset({
+        /*typographyPreset({
             recipe: {
                 semanticTokens: {
                     defaults: false,
                 },
             },
-        }),
+        }),*/
     ],
 
     // Where to look for your css declarations
@@ -158,7 +158,7 @@ export default defineConfig({
                         _dark: "{colors.neutral.700}",
                     },
                 },
-                prose: {
+                /*prose: {
                     body: {
                         value: {
                             base: "{colors.neutral.700}",
@@ -259,7 +259,7 @@ export default defineConfig({
                             _dark: "{colors.neutral.800}",
                         },
                     },
-                },
+                },*/
             },
         },
     },

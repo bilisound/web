@@ -2,7 +2,7 @@ import { AjaxError, AjaxSuccess } from "../utils/misc";
 import { USER_HEADER } from "../constants/visit-header";
 import { IRequest } from "itty-router";
 
-export async function resolveB23(request: IRequest) {
+export async function getResolvedB23(request: IRequest) {
     const id = request.query.id;
     if (typeof id !== "string") {
         return AjaxError("api usage error", 400);

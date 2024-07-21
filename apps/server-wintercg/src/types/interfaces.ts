@@ -5,7 +5,7 @@ export interface BilisoundEnv {
 
 export interface BilisoundCache {
     get: (key: string) => Promise<string>;
-    pub: (key: string, value: string, duration?: number) => Promise<void>;
+    put: (key: string, value: string, duration?: number) => Promise<void>;
 }
 
 export interface BilisoundPlatformTools {

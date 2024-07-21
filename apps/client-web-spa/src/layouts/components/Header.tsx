@@ -63,25 +63,25 @@ export default function Header() {
 
     const drawerMenu = (
         <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-            <Dialog.Trigger>
-                <button
-                    className={center({
-                        w: 10,
-                        h: 10,
-                        borderRadius: "full",
-                        color: "white",
-                        transitionDuration: "fast",
-                        cursor: "pointer",
-                        _hover: {
-                            bg: "primary.50/10",
-                        },
-                        _active: {
-                            bg: "primary.50/10",
-                        },
-                    })}
-                >
-                    <IconMenu />
-                </button>
+            <Dialog.Trigger
+                aria-label={"打开菜单"}
+                className={center({
+                    display: ["flex", "none"],
+                    w: 10,
+                    h: 10,
+                    borderRadius: "full",
+                    color: "white",
+                    transitionDuration: "fast",
+                    cursor: "pointer",
+                    _hover: {
+                        bg: "primary.50/10",
+                    },
+                    _active: {
+                        bg: "primary.50/10",
+                    },
+                })}
+            >
+                <IconMenu />
             </Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className={bsDialog().overlay} />
@@ -99,27 +99,24 @@ export default function Header() {
                             px: 2,
                         })}
                     >
-                        <Dialog.Close>
-                            <button
-                                className={center({
-                                    w: 10,
-                                    h: 10,
-                                    borderRadius: "full",
-                                    color: "white",
-                                    transitionDuration: "fast",
-                                    cursor: "pointer",
-                                    _hover: {
-                                        bg: "primary.50/10",
-                                    },
-                                    _active: {
-                                        bg: "primary.50/10",
-                                    },
-                                    display: ["flex", "none"],
-                                })}
-                                aria-label={"关闭菜单"}
-                            >
-                                <IconClose />
-                            </button>
+                        <Dialog.Close
+                            aria-label={"关闭菜单"}
+                            className={center({
+                                w: 10,
+                                h: 10,
+                                borderRadius: "full",
+                                color: "white",
+                                transitionDuration: "fast",
+                                cursor: "pointer",
+                                _hover: {
+                                    bg: "primary.50/10",
+                                },
+                                _active: {
+                                    bg: "primary.50/10",
+                                },
+                            })}
+                        >
+                            <IconClose />
                         </Dialog.Close>
                     </div>
                     <ul

@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import NProgress from "nprogress";
-import "./assets/vendors/nprogress.css";
 import "./root.css";
 
 NProgress.configure({

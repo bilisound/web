@@ -14,9 +14,6 @@ export default defineConfig({
             },
         },
         sourcemap: false,
-        minify: {
-            moduleDecls: false,
-        },
     },
     server: {
         port: 5173,

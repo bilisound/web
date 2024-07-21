@@ -43,7 +43,7 @@ export default function Header() {
                     alignItems: "center",
                 })}
             >
-                <h1 className={css({ flex: 0 })}>
+                <h1 className={css({ flex: 1, sm: { flex: 0 } })}>
                     <Link
                         to={"/"}
                         className={css({
@@ -57,7 +57,7 @@ export default function Header() {
                     </Link>
                 </h1>
                 <ul
-                    className={flex({
+                    className={css({
                         flex: 1,
                         gap: 1,
                         color: "white",
@@ -66,6 +66,10 @@ export default function Header() {
                         },
                         fontWeight: 700,
                         fontSize: "sm",
+                        display: "none",
+                        sm: {
+                            display: "flex",
+                        },
                     })}
                 >
                     <li>

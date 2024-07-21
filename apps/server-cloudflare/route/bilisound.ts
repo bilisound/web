@@ -1,14 +1,16 @@
 import { RouterType } from "itty-router";
-import { getMetadata, getResolvedB23, getResource } from "@bilisound2/server-wintercg";
 import { workerAdapter } from "../utils/adapter";
 import {
+    getMetadata,
+    getResolvedB23,
+    getResource,
     getDebugRequest,
     getImgProxy,
     getRaw,
     getResourceMetadata,
     getTransferListId,
     postTransferList,
-} from "@bilisound2/server-wintercg/src";
+} from "@bilisound2/server-wintercg";
 
 export default function bilisound(router: RouterType) {
     router.get("/api/internal/resolve-b23", async request => {

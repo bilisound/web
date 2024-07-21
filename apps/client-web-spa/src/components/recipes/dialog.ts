@@ -1,4 +1,4 @@
-import { cva, sva } from "@styled-system/css";
+import { sva } from "@styled-system/css";
 
 export const bsDialog = sva({
     slots: ["overlay", "content", "title", "description", "actionGroup"],

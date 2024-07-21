@@ -100,6 +100,14 @@ export default defineConfig({
                     "0%": { opacity: "1" },
                     "100%": { opacity: "0", transform: "translateY(2px)" },
                 },
+                bsDrawerOpen: {
+                    "0%": { transform: "translateX(100%)" },
+                    "100%": {},
+                },
+                bsDrawerClose: {
+                    "0%": {},
+                    "100%": { transform: "translateX(100%)" },
+                },
             },
             tokens: {
                 colors: {

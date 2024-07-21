@@ -1,4 +1,4 @@
-import { AjaxError, AjaxSuccess } from "../utils/misc";
+import { ajaxError, ajaxSuccess } from "../utils/misc";
 import { getVideo } from "../api/bilibili";
 import { IRequest } from "itty-router";
 import { BilisoundPlatformTools } from "../types/interfaces";
@@ -6,7 +6,7 @@ import { BilisoundPlatformTools } from "../types/interfaces";
 export async function getMetadata(request: IRequest, { env, cache }: BilisoundPlatformTools) {
     const id = request.query.id;
     if (typeof id !== "string") {
-        return AjaxError("api usage error", 400);
+        return ajaxError("api usage error", 400);
     }
 
     try {
@@ -17,10 +17,10 @@ export async function getMetadata(request: IRequest, { env, cache }: BilisoundPl
         const videoData = initialState?.videoData;
         const pages = videoData?.pages ?? [];
         if (pages.length <= 0) {
-            return AjaxError("no video found", 404);
+            return ajaxError("no video found", 404);
         }
 
-        return AjaxSuccess({
+        return ajaxSuccess({
             bvid: videoData.bvid,
             aid: videoData.aid,
             title: videoData.title,
@@ -32,6 +32,6 @@ export async function getMetadata(request: IRequest, { env, cache }: BilisoundPl
         });
     } catch (e) {
         console.log(e);
-        return AjaxError(e);
+        return ajaxError(e);
     }
 }

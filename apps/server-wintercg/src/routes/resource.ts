@@ -1,16 +1,17 @@
 import { IRequest } from "itty-router";
 import { BilisoundPlatformTools } from "../types/interfaces";
-import { AjaxError, fineBestAudio } from "../utils/misc";
+import { ajaxError } from "../utils/misc";
 import { getVideo } from "../api/bilibili";
 import { USER_HEADER } from "../constants/visit-header";
 import CORS_HEADERS from "../constants/cors";
+import { findBestAudio } from "../utils/data";
 
 export async function getResource(request: IRequest, env: BilisoundPlatformTools) {
     const id = request.query.id;
     const episode = Number(request.query.episode);
     const dl = request.query.dl;
     if (typeof id !== "string" || !Number.isInteger(episode) || episode < 1) {
-        return AjaxError("api usage error", 400);
+        return ajaxError("api usage error", 400);
     }
 
     try {
@@ -19,11 +20,11 @@ export async function getResource(request: IRequest, env: BilisoundPlatformTools
         const dashAudio = playInfo?.data?.dash?.audio ?? [];
 
         if (dashAudio.length < 1) {
-            return AjaxError("no dash data found");
+            return ajaxError("no dash data found");
         }
 
         // 遍历获取最佳音质视频
-        const maxQualityIndex = fineBestAudio(dashAudio);
+        const maxQualityIndex = findBestAudio(dashAudio);
 
         // 将音频字节流进行转发
         const range = request.headers.get("Range");
@@ -64,6 +65,6 @@ export async function getResource(request: IRequest, env: BilisoundPlatformTools
             },
         });
     } catch (e) {
-        return AjaxError(e);
+        return ajaxError(e);
     }
 }

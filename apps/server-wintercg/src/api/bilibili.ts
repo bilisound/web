@@ -1,8 +1,8 @@
 import { InitialStateResponse, WebPlayInfo } from "../types";
 import { extractJSON } from "../utils/string";
 import { USER_HEADER } from "../constants/visit-header";
-import { pickRandom } from "../utils/misc";
 import { BilisoundPlatformTools } from "../types/interfaces";
+import { pickRandom } from "../utils/data";
 
 const CACHE_PREFIX = "bili_page";
 

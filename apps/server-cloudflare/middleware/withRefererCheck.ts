@@ -1,13 +1,13 @@
 import { IRequest } from "itty-router";
-import { AjaxError } from "../utils/misc";
+import { ajaxError } from "@bilisound2/server-wintercg";
 
-const whitelist = [/^https:\/\/(?:[\w-]+\.)*bilisound\.moe(?:\/[\w\/.-]*)?$/]
+const whitelist = [/^https:\/\/(?:[\w-]+\.)*bilisound\.moe(?:\/[\w\/.-]*)?$/];
 
 const withRefererCheck = (request: IRequest) => {
     const refererValue = request.headers.get("referer");
-    if (refererValue && !whitelist.find((e) => e.test(refererValue))) {
-        return AjaxError("forbidden", 403);
+    if (refererValue && !whitelist.find(e => e.test(refererValue))) {
+        return ajaxError("forbidden", 403);
     }
-}
+};
 
 export default withRefererCheck;

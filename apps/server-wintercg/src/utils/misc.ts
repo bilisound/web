@@ -2,7 +2,7 @@ import { merge } from "lodash-es";
 import CORS_HEADERS from "../constants/cors";
 import { WebPlayInfo } from "../types";
 
-export const AjaxSuccess = (data: unknown, options: RequestInit = {}) => {
+export const ajaxSuccess = (data: unknown, options: RequestInit = {}) => {
     return new Response(
         JSON.stringify({
             data,
@@ -21,7 +21,7 @@ export const AjaxSuccess = (data: unknown, options: RequestInit = {}) => {
     );
 };
 
-export const AjaxError = (msg: unknown, code = 500, options: RequestInit = {}) => {
+export const ajaxError = (msg: unknown, code = 500, options: RequestInit = {}) => {
     return new Response(
         JSON.stringify({
             code,
@@ -40,17 +40,3 @@ export const AjaxError = (msg: unknown, code = 500, options: RequestInit = {}) =
         ),
     );
 };
-
-export const fineBestAudio = (dashAudio: WebPlayInfo["data"]["dash"]["audio"]) => {
-    let maxQualityIndex = 0;
-    dashAudio.forEach((value, index, array) => {
-        if (array[maxQualityIndex].codecid < maxQualityIndex) {
-            maxQualityIndex = index;
-        }
-    });
-    return maxQualityIndex;
-};
-
-export function pickRandom<T>(item: T[]) {
-    return item[Math.floor(Math.random() * item.length)];
-}

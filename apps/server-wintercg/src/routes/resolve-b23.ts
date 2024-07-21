@@ -1,11 +1,11 @@
-import { AjaxError, AjaxSuccess } from "../utils/misc";
+import { ajaxError, ajaxSuccess } from "../utils/misc";
 import { USER_HEADER } from "../constants/visit-header";
 import { IRequest } from "itty-router";
 
 export async function getResolvedB23(request: IRequest) {
     const id = request.query.id;
     if (typeof id !== "string") {
-        return AjaxError("api usage error", 400);
+        return ajaxError("api usage error", 400);
     }
 
     try {
@@ -16,11 +16,11 @@ export async function getResolvedB23(request: IRequest) {
 
         const target = response.headers.get("location");
         if (!target) {
-            return AjaxError("bad location", 404);
+            return ajaxError("bad location", 404);
         }
 
-        return AjaxSuccess(response.headers.get("location"));
+        return ajaxSuccess(response.headers.get("location"));
     } catch (e) {
-        return AjaxError(e);
+        return ajaxError(e);
     }
 }

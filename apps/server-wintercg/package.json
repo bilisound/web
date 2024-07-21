@@ -5,6 +5,7 @@
     "build": "tsup-node ./src/index.ts --format esm --dts"
   },
   "devDependencies": {
+    "eslint-config-bilisound2": "workspace:*",
     "tsup": "^8.1.2"
   },
   "peerDependencies": {

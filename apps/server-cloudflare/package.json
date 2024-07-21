@@ -2,6 +2,7 @@
 	"name": "@bilisound2/server-cloudflare",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"deploy": "wrangler deploy index.ts",
 		"dev": "wrangler dev index.ts"
@@ -14,6 +15,7 @@
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240320.1",
 		"@types/uuid": "^9.0.8",
+		"eslint-config-bilisound2": "workspace:*",
 		"wrangler": "^3.40.0"
 	}
 }

@@ -14,19 +14,26 @@ export interface GetVideoOptions {
 }
 
 export interface GetVideoReturns {
-    initialState: InitialStateResponse,
-    playInfo: WebPlayInfo,
+    initialState: InitialStateResponse;
+    playInfo: WebPlayInfo;
 }
 
-export async function getVideo(id: string, episode: string | number, { cache, env }: GetVideoOptions): Promise<GetVideoReturns> {
+export async function getVideo(
+    id: string,
+    episode: string | number,
+    { cache, env }: GetVideoOptions,
+): Promise<GetVideoReturns> {
     const key = CACHE_PREFIX + "_" + id + "_" + episode;
     const got = await cache.get(key);
     if (got) {
         return JSON.parse(got);
     }
-    const response: string | GetVideoReturns = await fetch(`${pickRandom(env.ENDPOINT_BILI)}/video/` + id + "/?p=" + episode, {
-        headers: USER_HEADER,
-    }).then((e) => {
+    const response: string | GetVideoReturns = await fetch(
+        `${pickRandom(env.ENDPOINT_BILI)}/video/` + id + "/?p=" + episode,
+        {
+            headers: USER_HEADER,
+        },
+    ).then(e => {
         if (e.headers.get("content-type") === "application/json") {
             return e.json();
         }

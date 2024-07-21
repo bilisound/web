@@ -4,22 +4,22 @@ import { IRequest } from "itty-router";
 
 export async function resolveB23(request: IRequest) {
     const id = request.query.id;
-    if (typeof id !== 'string') {
-        return AjaxError('api usage error', 400);
+    if (typeof id !== "string") {
+        return AjaxError("api usage error", 400);
     }
 
     try {
-        const response = await fetch('https://b23.tv/' + id, {
+        const response = await fetch("https://b23.tv/" + id, {
             headers: USER_HEADER,
-            redirect: 'manual',
+            redirect: "manual",
         });
 
-        const target = response.headers.get('location');
+        const target = response.headers.get("location");
         if (!target) {
-            return AjaxError('bad location', 404);
+            return AjaxError("bad location", 404);
         }
 
-        return AjaxSuccess(response.headers.get('location'));
+        return AjaxSuccess(response.headers.get("location"));
     } catch (e) {
         return AjaxError(e);
     }

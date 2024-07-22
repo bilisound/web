@@ -15,6 +15,7 @@ export interface BilisoundAudioServiceOptions {
 }
 
 export default class BilisoundAudioService extends TypedEventTarget<BilisoundAudioServiceEventMap> {
+    static isMediaSessionAvailable = !!window?.navigator?.mediaSession;
     /**
      * HTMLAudioElement 本体
      */
@@ -87,8 +88,10 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
             el.addEventListener("loadedmetadata", this.emitAudioProgressEvents.bind(this));
             el.addEventListener("progress", this.emitAudioProgressEvents.bind(this));
             el.addEventListener("ended", this.handleEnded.bind(this));
-            navigator.mediaSession.setActionHandler("previoustrack", () => this.prevTrack());
-            navigator.mediaSession.setActionHandler("nexttrack", () => this.nextTrack());
+            if (BilisoundAudioService.isMediaSessionAvailable) {
+                navigator.mediaSession.setActionHandler("previoustrack", () => this.prevTrack());
+                navigator.mediaSession.setActionHandler("nexttrack", () => this.nextTrack());
+            }
 
             // 如果 index 是合法值，初始化 <audio> 的 src 值
             if (index >= 0 && queue[index]) {
@@ -111,6 +114,9 @@ export default class BilisoundAudioService extends TypedEventTarget<BilisoundAud
      * 更新 Media Session，这样用户可以使用媒体键或在锁屏界面控制 Bilisound
      */
     private updateMediaSession() {
+        if (!BilisoundAudioService.isMediaSessionAvailable) {
+            return;
+        }
         if (!this.status.current) {
             navigator.mediaSession.metadata = null;
             return;

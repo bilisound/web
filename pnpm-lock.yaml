@@ -11,9 +11,6 @@ importers:
       filesize:
         specifier: ^10.1.4
         version: 10.1.4
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
     devDependencies:
       '@types/lodash-es':
         specifier: ^4.17.12
@@ -230,9 +227,6 @@ importers:
       itty-router:
         specifier: ^5.0.17
         version: 5.0.17
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
     devDependencies:
       eslint-config-bilisound2:
         specifier: workspace:*

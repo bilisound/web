@@ -191,10 +191,12 @@ export default function Header() {
                     h: 14,
                     width: "container",
                     gap: 4,
+                    justifyContent: ["space-between"],
                     alignItems: "center",
+                    position: "relative",
                 })}
             >
-                <h1 className={css({ flex: 1, sm: { flex: 0 } })}>
+                <h1>
                     <Link
                         to={"/"}
                         className={css({
@@ -209,7 +211,10 @@ export default function Header() {
                 </h1>
                 <ul
                     className={css({
-                        flex: 1,
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
                         gap: 1,
                         color: "white",
                         _dark: {

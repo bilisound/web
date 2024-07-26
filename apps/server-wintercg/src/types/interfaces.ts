@@ -1,6 +1,11 @@
 export interface BilisoundEnv {
-    endpoints: string[];
+    endpoints: BilisoundEndpoint[];
     debugKey: string;
+}
+
+export interface BilisoundEndpoint {
+    url: string;
+    key?: string;
 }
 
 export interface BilisoundCache {

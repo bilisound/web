@@ -11,8 +11,12 @@ export async function getDebugRequest(request: IRequest, { env }: BilisoundPlatf
         return new Response("404, not found!", { status: 404 });
     }
     try {
-        const headers = USER_HEADER;
-        const response = await fetch(url ?? pickRandom(env.endpoints), {
+        const endpoint = pickRandom(env.endpoints);
+        const headers = { ...USER_HEADER };
+        if (endpoint.key) {
+            headers["Bilisound-Token"] = endpoint.key;
+        }
+        const response = await fetch(url ?? endpoint.url, {
             headers,
         }).then(e => {
             return e.text();

@@ -21,12 +21,14 @@ export async function getVideo(
     if (got) {
         return JSON.parse(got);
     }
-    const response: string | GetVideoReturns = await fetch(
-        `${pickRandom(env.endpoints)}/video/` + id + "/?p=" + episode,
-        {
-            headers: USER_HEADER,
-        },
-    ).then(e => {
+    const endpoint = pickRandom(env.endpoints);
+    const headers = { ...USER_HEADER };
+    if (endpoint.key) {
+        headers["Bilisound-Token"] = endpoint.key;
+    }
+    const response: string | GetVideoReturns = await fetch(`${endpoint.url}/video/` + id + "/?p=" + episode, {
+        headers,
+    }).then(e => {
         if (e.headers.get("content-type") === "application/json") {
             return e.json();
         }

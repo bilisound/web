@@ -1,6 +1,6 @@
 import { IRequest } from "itty-router";
-import { USER_HEADER } from "../constants/visit-header";
-import CORS_HEADERS from "../constants/cors";
+import { USER_HEADER } from "@/constants/visit-header";
+import CORS_HEADERS from "@/constants/cors";
 
 export async function getImgProxy(request: IRequest) {
     try {

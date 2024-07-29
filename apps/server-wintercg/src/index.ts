@@ -6,6 +6,7 @@ export * from "./routes/img-proxy";
 export * from "./routes/raw";
 export * from "./routes/debug-request";
 export * from "./routes/transfer-list";
+export * from "./routes/user-list";
 
 export * from "./types/interfaces";
 export * from "./utils/misc";

@@ -4,6 +4,10 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "lib": ["esnext", "dom"],
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+    }
   }
 }

@@ -10,6 +10,7 @@ import {
     getResourceMetadata,
     getTransferListId,
     postTransferList,
+    getUserList,
 } from "@bilisound2/server-wintercg";
 
 export default function bilisound(router: RouterType) {
@@ -17,11 +18,19 @@ export default function bilisound(router: RouterType) {
         return getResolvedB23(request);
     });
 
+    router.get("/api/internal/user-list", async (request, env) => {
+        return getUserList(request, workerAdapter(env));
+    });
+
     router.get("/api/internal/metadata", async (request, env) => {
         return getMetadata(request, workerAdapter(env));
     });
 
     router.get("/api/internal/resource", async (request, env) => {
+        return getResource(request, workerAdapter(env));
+    });
+
+    router.head("/api/internal/resource", async (request, env) => {
         return getResource(request, workerAdapter(env));
     });
 

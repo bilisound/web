@@ -1,4 +1,4 @@
-import { WebPlayInfo } from "../types";
+import { WebPlayInfo } from "../api/types";
 
 export const findBestAudio = (dashAudio: WebPlayInfo["data"]["dash"]["audio"]) => {
     let maxQualityIndex = 0;

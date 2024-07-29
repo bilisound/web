@@ -1,8 +1,9 @@
-import { InitialStateResponse, WebPlayInfo } from "../types";
-import { extractJSON } from "../utils/string";
-import { USER_HEADER } from "../constants/visit-header";
-import { BilisoundPlatformTools } from "../types/interfaces";
-import { pickRandom } from "../utils/data";
+import { InitialStateResponse, WebPlayInfo } from "@/api/types";
+import { extractJSON } from "@/utils/string";
+import { USER_HEADER } from "@/constants/visit-header";
+import { BilisoundPlatformTools } from "@/types/interfaces";
+import { pickRandom } from "@/utils/data";
+import { Numberish } from "@/types/common";
 
 const CACHE_PREFIX = "bili_page";
 
@@ -26,24 +27,38 @@ export async function getVideo(
     if (endpoint.key) {
         headers["Bilisound-Token"] = endpoint.key;
     }
-    const response: string | GetVideoReturns = await fetch(`${endpoint.url}/video/` + id + "/?p=" + episode, {
+    const response = await fetch(`${endpoint.url}/video/` + id + "/?p=" + episode, {
         headers,
-    }).then(e => {
-        if (e.headers.get("content-type") === "application/json") {
-            return e.json();
-        }
-        return e.text();
     });
+    const data = await response.text();
 
     // 提取视频播放信息
-    let obj: GetVideoReturns;
-    if (typeof response === "string") {
-        const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__={(.+)};/, response);
-        const playInfo: WebPlayInfo = extractJSON(/window\.__playinfo__={(.+)}<\/script><script>/, response);
-        obj = { initialState, playInfo };
-    } else {
-        obj = response;
-    }
+    const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__={(.+)};/, data);
+    const playInfo: WebPlayInfo = extractJSON(/window\.__playinfo__={(.+)}<\/script><script>/, data);
+    const obj: GetVideoReturns = { initialState, playInfo };
     await cache.put(key, JSON.stringify(obj), 5400); // 90 分钟
     return obj;
 }
+
+export interface EpisodeItem {
+    bvid: string;
+    title: string;
+    cover: string;
+    duration: number;
+}
+
+export interface GetEpisodeUserResponse {
+    pageSize: number;
+    pageNum: number;
+    total: number;
+    rows: EpisodeItem[];
+    meta: {
+        name: string;
+        description: string;
+        cover: string;
+        userId: Numberish;
+        seasonId: Numberish;
+    };
+}
+
+export type UserListMode = "episode" | "series";

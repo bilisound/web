@@ -1,7 +1,10 @@
 import { IRequest } from "itty-router";
 import { ajaxError } from "@bilisound2/server-wintercg";
 
-const whitelist = [/^https:\/\/(?:[\w-]+\.)*bilisound\.moe(?:\/[\w\/.-]*)?$/];
+const whitelist = [
+    /^https:\/\/(?:[\w-]+\.)*bilisound\.moe(?:\/[\w/.-]*)?$/,
+    /^http:\/\/(?:[\w-]+\.)*localhost:\d{4,5}(?:\/[\w/.-]*)?$/,
+];
 
 const withRefererCheck = (request: IRequest) => {
     const refererValue = request.headers.get("referer");

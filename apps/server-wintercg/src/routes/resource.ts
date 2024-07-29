@@ -1,10 +1,10 @@
 import { IRequest } from "itty-router";
-import { BilisoundPlatformTools } from "../types/interfaces";
-import { ajaxError } from "../utils/misc";
-import { getVideo } from "../api/bilibili";
-import { USER_HEADER } from "../constants/visit-header";
-import CORS_HEADERS from "../constants/cors";
-import { findBestAudio } from "../utils/data";
+import { BilisoundPlatformTools } from "@/types/interfaces";
+import { ajaxError } from "@/utils/misc";
+import { getVideo } from "@/api/bilibili";
+import { USER_HEADER } from "@/constants/visit-header";
+import CORS_HEADERS from "@/constants/cors";
+import { findBestAudio } from "@/utils/data";
 
 export async function getResource(request: IRequest, env: BilisoundPlatformTools) {
     const id = request.query.id;
@@ -35,6 +35,7 @@ export async function getResource(request: IRequest, env: BilisoundPlatformTools
         };
         const res = await fetch(dashAudio[maxQualityIndex].baseUrl, {
             headers,
+            method: request.method,
         });
 
         let episodeName = initialState.videoData.title;

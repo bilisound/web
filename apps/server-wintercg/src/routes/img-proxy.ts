@@ -2,6 +2,8 @@ import { IRequest } from "itty-router";
 import { USER_HEADER } from "@/constants/visit-header";
 import CORS_HEADERS from "@/constants/cors";
 
+const HOSTNAME_ALLOWED_SUFFIX = ["hdslb.com", "biliimg.com"];
+
 export async function getImgProxy(request: IRequest) {
     try {
         const url = request.query.url;
@@ -10,7 +12,17 @@ export async function getImgProxy(request: IRequest) {
             return new Response("", { status: 400 });
         }
 
-        if (!new URL(url).hostname.endsWith("hdslb.com")) {
+        const hostname = new URL(url).hostname;
+        let found = false;
+        for (let i = 0; i < HOSTNAME_ALLOWED_SUFFIX.length; i++) {
+            const e = HOSTNAME_ALLOWED_SUFFIX[i];
+            if (hostname.endsWith(e)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
             return new Response("", { status: 403 });
         }
 

@@ -33,8 +33,11 @@ export async function getVideo(
     const data = await response.text();
 
     // 提取视频播放信息
-    const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__={(.+)};/, data);
-    const playInfo: WebPlayInfo = extractJSON(/window\.__playinfo__={(.+)}<\/script><script>/, data);
+    const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__=(\{.+});\(function\(\){/, data);
+    const playInfo: WebPlayInfo = extractJSON(
+        /window\.__playinfo__=(\{.+})<\/script><script>window.__INITIAL_STATE__=/,
+        data,
+    );
     const obj: GetVideoReturns = { initialState, playInfo };
     await cache.put(key, JSON.stringify(obj), 5400); // 90 分钟
     return obj;

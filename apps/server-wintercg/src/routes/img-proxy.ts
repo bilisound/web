@@ -29,7 +29,7 @@ export async function getImgProxy(request: IRequest) {
         const res = await fetch(url, {
             headers: {
                 ...USER_HEADER,
-                referer: "https://www.bilibili.com/video/" + referrer,
+                referer: referrer ? "https://www.bilibili.com/video/" + referrer : "https://www.bilibili.com",
             },
         });
 

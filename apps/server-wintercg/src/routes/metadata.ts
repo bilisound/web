@@ -1,7 +1,7 @@
-import { ajaxError, ajaxSuccess } from "../utils/misc";
-import { getVideo } from "../api/bilibili";
+import { ajaxError, ajaxSuccess } from "@/utils/misc";
+import { getVideo } from "@/api/bilibili";
 import { IRequest } from "itty-router";
-import { BilisoundPlatformTools } from "../types/interfaces";
+import { BilisoundPlatformTools } from "@/types/interfaces";
 
 export async function getMetadata(request: IRequest, { env, cache }: BilisoundPlatformTools) {
     const id = request.query.id;
@@ -29,6 +29,7 @@ export async function getMetadata(request: IRequest, { env, cache }: BilisoundPl
             desc: videoData.desc,
             pubDate: videoData.pubdate * 1000,
             pages: pages.map(({ page, part, duration }) => ({ page, part, duration })),
+            seasonId: videoData.season_id,
         });
     } catch (e) {
         console.log(e);

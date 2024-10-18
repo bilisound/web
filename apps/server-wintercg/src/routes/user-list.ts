@@ -1,8 +1,8 @@
 import { IRequest } from "itty-router";
 import { BilisoundPlatformTools } from "@/types/interfaces";
-import { UserSeasonInfo, UserSeriesInfo } from "@/api/types";
 import { getUserSeason, getUserSeries, getUserSeriesMeta } from "@/api/json";
 import { ajaxError, ajaxSuccess } from "@/utils/misc";
+import { UserSeasonInfo, UserSeriesInfo } from "@/api/types";
 
 export async function getUserList(request: IRequest, env: BilisoundPlatformTools) {
     const { userId, listId, page, mode } = request.query;
@@ -26,7 +26,7 @@ export async function getUserList(request: IRequest, env: BilisoundPlatformTools
     let name = "";
     let description = "";
     let cover = "";
-    if (mode === "episode") {
+    if (mode === "season") {
         response = await getUserSeason(userId, listId, Number(page));
         const data = response.data;
         pageSize = data.page.page_size;

@@ -4,6 +4,7 @@ import { USER_HEADER } from "@/constants/visit-header";
 import { BilisoundPlatformTools } from "@/types/interfaces";
 import { pickRandom } from "@/utils/data";
 import { Numberish } from "@/types/common";
+import { getVideoUrlFestival } from "@/api/json";
 
 const CACHE_PREFIX = "bili_page";
 
@@ -27,17 +28,26 @@ export async function getVideo(
     if (endpoint.key) {
         headers["Bilisound-Token"] = endpoint.key;
     }
-    const response = await fetch(`${endpoint.url}/video/` + id + "/?p=" + episode, {
+    const response = await fetch(`${endpoint?.url || endpoint}/video/` + id + "/?p=" + episode, {
         headers,
     });
+    const url = response.url;
     const data = await response.text();
 
     // 提取视频播放信息
     const initialState: InitialStateResponse = extractJSON(/window\.__INITIAL_STATE__=(\{.+});\(function\(\){/, data);
-    const playInfo: WebPlayInfo = extractJSON(
-        /window\.__playinfo__=(\{.+})<\/script><script>window.__INITIAL_STATE__=/,
-        data,
-    );
+    let playInfo: WebPlayInfo;
+    try {
+        playInfo = extractJSON(/window\.__playinfo__=(\{.+})<\/script><script>window.__INITIAL_STATE__=/, data);
+    } catch (e) {
+        // 采用降级方案
+        playInfo = await getVideoUrlFestival(
+            url,
+            initialState.videoData.aid,
+            initialState.videoData.bvid,
+            initialState.videoData.pages.find(e => e.page === Number(episode))?.cid ?? 0,
+        );
+    }
     const obj: GetVideoReturns = { initialState, playInfo };
     await cache.put(key, JSON.stringify(obj), 5400); // 90 分钟
     return obj;

@@ -6,6 +6,7 @@ import { vstack } from "@styled-system/patterns";
 import Footer from "@/layouts/components/Footer";
 import { css } from "@styled-system/css";
 import AudioPlayer from "@/layouts/components/AudioPlayer";
+import Notice from "@/layouts/components/Notice";
 
 export default function WebLayout() {
     return (
@@ -16,6 +17,7 @@ export default function WebLayout() {
                 gap: 0,
             })}
         >
+            <Notice />
             <Header />
             <main
                 className={css({

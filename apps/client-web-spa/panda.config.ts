@@ -1,5 +1,5 @@
 import { defineConfig } from "@pandacss/dev";
-// import typographyPreset from "pandacss-preset-typography";
+import typographyPreset from "pandacss-preset-typography";
 
 export default defineConfig({
     // Whether to use css reset
@@ -8,13 +8,13 @@ export default defineConfig({
     presets: [
         "@pandacss/dev/presets",
         // "pform-reset",
-        /*typographyPreset({
+        typographyPreset({
             recipe: {
                 semanticTokens: {
                     defaults: false,
                 },
             },
-        }),*/
+        }),
     ],
 
     // Where to look for your css declarations

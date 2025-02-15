@@ -1,8 +1,0 @@
-.DS_Store
-/node_modules
-*-lock.*
-*.lock
-*.log
-.idea
-.wrangler
-/wrangler.toml

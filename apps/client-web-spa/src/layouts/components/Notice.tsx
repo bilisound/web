@@ -29,10 +29,10 @@ export default function Notice() {
                         flex: "auto",
                     })}
                 >
-                    Bilisound 旧 Web 版<b>即将下线</b>，稍后将会上线与手机客户端功能基本一致的新版。
+                    Bilisound 将会推出与手机客户端功能基本一致的新 Web 版
                 </div>
                 <Link
-                    to={"/offline-notice"}
+                    to={"/notice"}
                     className={css({
                         flex: "none",
                         h: 8,

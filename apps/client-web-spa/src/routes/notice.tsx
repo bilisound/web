@@ -17,7 +17,8 @@ function Page() {
                     <h2 className={css({ mt: 2 })}>Bilisound Web 版更新计划</h2>
                     <p>2023 年 6 月，我们复活了沉寂已久的 Bilisound 项目，上线了 Web 版本，开启了新的篇章。</p>
                     <p>
-                        未来，我们会上线新的 Web 版，<b>旧版本将会进入维护模式，</b>不再添加任何新功能。
+                        如今，我们上线了 <a href={"https://app.bilisound.com"}>新的 Web 版</a>，
+                        <b>旧版本将会进入维护模式，</b>不再添加任何新功能。
                     </p>
                     <p>
                         您可以随时导出 Web 版的播放队列到 Bilisound 客户端，或者点击下面的按钮导出可供 Bilisound

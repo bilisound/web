@@ -29,7 +29,7 @@ export default function Notice() {
                         flex: "auto",
                     })}
                 >
-                    Bilisound 将会推出与手机客户端功能基本一致的新 Web 版
+                    Bilisound 有与手机客户端功能基本一致的新 Web 版了！
                 </div>
                 <Link
                     to={"/notice"}

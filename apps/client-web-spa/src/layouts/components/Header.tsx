@@ -131,10 +131,16 @@ export default function Header() {
                         })}
                     >
                         <li>
-                            <Link to={"/"} className={navButtonMobile} onClick={() => setDialogOpen(false)}>
+                            <a
+                                href={"https://bilisound.com"}
+                                target={"_blank"}
+                                className={navButtonMobile}
+                                onClick={() => setDialogOpen(false)}
+                                rel="noreferrer"
+                            >
                                 <IconHome className={css({ w: 4, h: 4 })} />
-                                首页
-                            </Link>
+                                主站
+                            </a>
                         </li>
                         <li>
                             <Link to={"/queue"} className={navButtonMobile} onClick={() => setDialogOpen(false)}>
@@ -226,9 +232,9 @@ export default function Header() {
                     })}
                 >
                     <li>
-                        <Link to={"/"} className={navButton}>
-                            首页
-                        </Link>
+                        <a href={"https://bilisound.com"} target={"_blank"} className={navButton} rel="noreferrer">
+                            主站
+                        </a>
                     </li>
                     <li>
                         <a
